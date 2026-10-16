@@ -1,0 +1,188 @@
+{
+  "kind": "demo",
+  "name": "supplier",
+  "mode": "summary",
+  "provider": "mock",
+  "model": "deterministic-demo-fixture",
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 200
+  },
+  "presentation": "question_first",
+  "status": "completed",
+  "error": null,
+  "answers": [
+    {
+      "question": "Choose the cheapest supplier delivering within 5 days. Return its name only.",
+      "before_retrieval": {
+        "status": "answer",
+        "answer": "Cedar",
+        "query": "",
+        "source_ids": [
+          "c001"
+        ]
+      },
+      "final": {
+        "status": "answer",
+        "answer": "Cedar",
+        "query": "",
+        "source_ids": [
+          "c001"
+        ]
+      },
+      "retrieved_ids": []
+    },
+    {
+      "question": "What payment terms and contract code should the order use for the chosen supplier?",
+      "before_retrieval": {
+        "status": "answer",
+        "answer": "Cedar: payment 30% advance, contract CD-104",
+        "query": "",
+        "source_ids": [
+          "c001"
+        ]
+      },
+      "final": {
+        "status": "answer",
+        "answer": "Cedar: payment 30% advance, contract CD-104",
+        "query": "",
+        "source_ids": [
+          "c001"
+        ]
+      },
+      "retrieved_ids": []
+    }
+  ],
+  "state": {
+    "goal": "Prepare order terms for the previously chosen supplier, including payment and contract code.",
+    "plan": [
+      "Read relevant evidence",
+      "Answer the current question"
+    ],
+    "current_step": "Read relevant evidence",
+    "last_result": "Cedar: payment 30% advance, contract CD-104",
+    "completed_results": [
+      "Cedar",
+      "Cedar: payment 30% advance, contract CD-104"
+    ]
+  },
+  "memory": [
+    {
+      "text": "Supplier Cedar: price=90; delivery_days=4; payment=30% advance; contract=CD-104.",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "Supplier Maple: price=80; delivery_days=9; payment=full advance; contract=MP-209.",
+      "source_ids": [
+        "c002"
+      ]
+    },
+    {
+      "text": "Supplier Birch: price=110; delivery_days=3; payment=on delivery; contract=BR-307.",
+      "source_ids": [
+        "c004"
+      ]
+    }
+  ],
+  "metrics": {
+    "max_memory_ref_tokens": 99,
+    "max_request_ref_tokens": 1261,
+    "compressions": 5,
+    "retrievals": 0,
+    "reread_ref_tokens": 0,
+    "input_ref_tokens": 79,
+    "api_calls": 9,
+    "attempts": 9,
+    "duration_s": 0.0,
+    "api_errors": 0,
+    "response_errors": 0,
+    "known_prompt_tokens": 0,
+    "prompt_tokens": 0,
+    "unknown_prompt_tokens_calls": 0,
+    "known_completion_tokens": 0,
+    "completion_tokens": 0,
+    "unknown_completion_tokens_calls": 0,
+    "known_total_tokens": 0,
+    "total_tokens": 0,
+    "unknown_total_tokens_calls": 0,
+    "known_cost_usd": 0.0,
+    "unknown_cost_calls": 0,
+    "cost_usd": 0.0,
+    "stage_totals": {
+      "answer": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 0.0,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 0,
+        "prompt_tokens": 0,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 0,
+        "completion_tokens": 0,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 0,
+        "total_tokens": 0,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "plan": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 0.0,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 0,
+        "prompt_tokens": 0,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 0,
+        "completion_tokens": 0,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 0,
+        "total_tokens": 0,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "summary": {
+        "api_calls": 5,
+        "attempts": 5,
+        "duration_s": 0.0,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 0,
+        "prompt_tokens": 0,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 0,
+        "completion_tokens": 0,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 0,
+        "total_tokens": 0,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      }
+    }
+  },
+  "elapsed_s": 0.206,
+  "prompt_sha256": {
+    "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+    "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+    "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+    "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+    "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+    "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+  }
+}

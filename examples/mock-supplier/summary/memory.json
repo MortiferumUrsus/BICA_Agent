@@ -1,0 +1,20 @@
+[
+  {
+    "text": "Supplier Cedar: price=90; delivery_days=4; payment=30% advance; contract=CD-104.",
+    "source_ids": [
+      "c001"
+    ]
+  },
+  {
+    "text": "Supplier Maple: price=80; delivery_days=9; payment=full advance; contract=MP-209.",
+    "source_ids": [
+      "c002"
+    ]
+  },
+  {
+    "text": "Supplier Birch: price=110; delivery_days=3; payment=on delivery; contract=BR-307.",
+    "source_ids": [
+      "c004"
+    ]
+  }
+]

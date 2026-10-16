@@ -1,0 +1,9 @@
+{"version": 1, "reason": "read", "memory": [{"text": "Sandra", "source_ids": ["c001"]}, {"text": "Sandra is missing", "source_ids": ["c001"]}], "ref_tokens": 28}
+{"version": 2, "reason": "read", "memory": [{"text": "Sandra", "source_ids": ["c001"]}, {"text": "Sandra is missing", "source_ids": ["c001"]}], "ref_tokens": 28}
+{"version": 3, "reason": "read", "memory": [{"text": "Sandra is missing", "source_ids": ["c001"]}, {"text": "Sandra is presumed dead", "source_ids": ["c001"]}], "ref_tokens": 31}
+{"version": 4, "reason": "read", "memory": [{"text": "Sandra is missing", "source_ids": ["c001"]}, {"text": "Sandra is presumed dead", "source_ids": ["c001"]}], "ref_tokens": 31}
+{"version": 5, "reason": "read", "memory": [{"text": "Sandra is missing", "source_ids": ["c001"]}, {"text": "Sandra is presumed dead", "source_ids": ["c001"]}], "ref_tokens": 31}
+{"version": 6, "reason": "read", "memory": [{"text": "Sandra is missing", "source_ids": ["c001"]}, {"text": "Sandra presumed dead", "source_ids": ["c001"]}], "ref_tokens": 30}
+{"version": 7, "reason": "read", "memory": [{"text": "Sandra is alive", "source_ids": ["c001"]}, {"text": "Sandra presumed dead", "source_ids": ["c001"]}], "ref_tokens": 30}
+{"version": 8, "reason": "read", "memory": [{"text": "Sandra is alive", "source_ids": ["c001"]}, {"text": "Sandra presumed dead", "source_ids": ["c001"]}, {"text": "Sandra is presumed dead", "source_ids": ["c001"]}], "ref_tokens": 45}
+{"version": 9, "reason": "retrieval", "memory": [{"text": "Sandra is alive", "source_ids": ["c001"]}, {"text": "Sandra presumed dead", "source_ids": ["c001"]}, {"text": "Sandra is presumed dead", "source_ids": ["c001"]}, {"text": "Sandra is alive", "source_ids": ["c001"]}], "ref_tokens": 59}

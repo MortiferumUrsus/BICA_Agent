@@ -1,0 +1,16 @@
+flowchart LR
+    taskPlan["Цель и план"]
+    sourceChunk["Фрагмент в журнал"]
+    memoryUpdate["Обновить память"]
+    checkpoint["Контрольный вопрос"]
+    retrieval["Поиск в журнале"]
+    outcome["Ответ / недостаточно"]
+    taskPlan --> sourceChunk
+    sourceChunk --> memoryUpdate
+    memoryUpdate -->|"Следующий фрагмент"| sourceChunk
+    memoryUpdate -->|"Контрольная точка"| checkpoint
+    checkpoint --> outcome
+    checkpoint -->|"Один раунд"| retrieval
+    retrieval -->|"До двух фрагментов"| memoryUpdate
+    style memoryUpdate fill:#e8eef7,stroke:#385b82
+    style retrieval fill:#fff2db,stroke:#8c6732

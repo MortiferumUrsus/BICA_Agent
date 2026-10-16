@@ -1,0 +1,138 @@
+{
+  "verified_at": "2026-10-09T19:51:45.7496281+03:00",
+  "backend": "ollama",
+  "base_url": "http://localhost:11434",
+  "ollama_version": "0.21.0",
+  "model": "llama3.2:1b",
+  "model_digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+  "model_size_bytes": 1321098329,
+  "parameter_count": 1235814432,
+  "parameter_size": "1.2B",
+  "quantization": "Q8_0",
+  "model_context_length": 131072,
+  "gpu": {
+    "driver_version": "616.56",
+    "name": "NVIDIA GeForce GTX 1660 Ti",
+    "total_memory_mib": 6144
+  },
+  "smoke_test": {
+    "total_duration_ns": 60573003100,
+    "parsed_response": {
+      "source_ids": [
+        "c001",
+        "c002"
+      ],
+      "answer": "Thursday"
+    },
+    "request": {
+      "prompt": "Read these facts in order: [c001] Delivery is scheduled for Monday. [c002] Correction: delivery is now scheduled for Thursday. Return a JSON object with the current delivery day as answer and the source_ids supporting the current value. Answer with just the English weekday.",
+      "keep_alive": "10m",
+      "options": {
+        "num_predict": 128,
+        "temperature": 0,
+        "num_ctx": 4096,
+        "seed": 42
+      },
+      "format": {
+        "type": "object",
+        "required": [
+          "answer",
+          "source_ids"
+        ],
+        "properties": {
+          "source_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "answer": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "model": "llama3.2:1b",
+      "stream": false
+    },
+    "eval_count": 26,
+    "prompt_eval_count": 81,
+    "passed": true,
+    "load_duration_ns": 59161438400,
+    "eval_duration_ns": 212296600,
+    "description": "Structured JSON output and corrected delivery fact",
+    "done_reason": "stop"
+  },
+  "loaded_models": [
+    {
+      "name": "llama3.2:1b",
+      "model": "llama3.2:1b",
+      "size": 2152114176,
+      "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "1.2B",
+        "quantization_level": "Q8_0"
+      },
+      "expires_at": "2026-10-09T20:22:25.9781958+03:00",
+      "size_vram": 2152114176,
+      "context_length": 8192
+    }
+  ],
+  "paid_api_calls": 0,
+  "cloud_inference_used": false,
+  "documentation": [
+    "https://docs.ollama.com/api/generate",
+    "https://docs.ollama.com/api/pull",
+    "https://ollama.com/library/llama3.2:1b"
+  ],
+  "chat_smoke_test": {
+    "request": {
+      "model": "llama3.2:1b",
+      "keep_alive": "30m",
+      "stream": false,
+      "messages": [
+        {
+          "content": "Return JSON only.",
+          "role": "system"
+        },
+        {
+          "content": "Mary moved to the kitchen. John moved to the garden. Where is Mary? Return only the location in answer.",
+          "role": "user"
+        }
+      ],
+      "format": {
+        "required": [
+          "answer"
+        ],
+        "properties": {
+          "answer": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
+      },
+      "options": {
+        "seed": 42,
+        "temperature": 0,
+        "num_predict": 128,
+        "num_ctx": 8192
+      }
+    },
+    "parsed_response": {
+      "answer": "kitchen"
+    },
+    "done_reason": "stop",
+    "prompt_eval_count": 52,
+    "eval_count": 8,
+    "total_duration_ns": 604404600,
+    "load_duration_ns": 109548000,
+    "passed": true
+  }
+}

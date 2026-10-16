@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="231" viewBox="0 0 1200 231">
+<rect width="1200" height="100%" fill="#f5f6f7"/>
+<g font-family="Segoe UI, Arial, sans-serif" fill="#16283b">
+<text x="32" y="36" font-size="20" font-weight="600">ollama / llama3.2:1b</text>
+<rect x="24" y="59" width="564" height="148" rx="12" fill="#fff" stroke="#bdcbd6"/>
+<text x="44" y="91" font-size="20" font-weight="600">Before compression</text>
+<text x="44" y="123" font-size="15" xml:space="preserve">{&quot;text&quot;: &quot;Orion&#x27;s current delivery date is 12 November</text>
+<text x="44" y="147" font-size="15" xml:space="preserve">2026.&quot;, &quot;source_ids&quot;: [&quot;c001&quot;, &quot;c002&quot;]}</text>
+<text x="44" y="171" font-size="15" xml:space="preserve"></text>
+<rect x="612" y="59" width="564" height="148" rx="12" fill="#fff" stroke="#bdcbd6"/>
+<text x="632" y="91" font-size="20" font-weight="600">After compression</text>
+<text x="632" y="123" font-size="15" xml:space="preserve">{&quot;text&quot;: &quot;Orion&#x27;s current delivery date is 19 November</text>
+<text x="632" y="147" font-size="15" xml:space="preserve">2026.&quot;, &quot;source_ids&quot;: [&quot;c001&quot;, &quot;c002&quot;]}</text>
+<text x="632" y="171" font-size="15" xml:space="preserve"></text>
+</g>
+</svg>

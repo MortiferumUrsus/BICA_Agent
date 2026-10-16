@@ -1,0 +1,112 @@
+{
+  "passed": true,
+  "examples_attempted": 10,
+  "api_attempts": 97,
+  "tests_passed": 136,
+  "max_request_with_reserve": 2765,
+  "max_memory_ref_tokens": 275,
+  "source_order_preserved": true,
+  "completed_examples_full_input": true,
+  "per_example": [
+    {
+      "id": "qa1-8k-00005",
+      "mode": "summary",
+      "status": "completed",
+      "full_source_preserved": true,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7588,
+      "read_ref_tokens": 7588,
+      "max_request_with_reserve": 2245
+    },
+    {
+      "id": "qa1-8k-00005",
+      "mode": "reflexive",
+      "status": "error",
+      "full_source_preserved": false,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7588,
+      "read_ref_tokens": 1024,
+      "max_request_with_reserve": 2348
+    },
+    {
+      "id": "qa1-8k-00006",
+      "mode": "summary",
+      "status": "completed",
+      "full_source_preserved": true,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7454,
+      "read_ref_tokens": 7454,
+      "max_request_with_reserve": 2313
+    },
+    {
+      "id": "qa1-8k-00006",
+      "mode": "reflexive",
+      "status": "error",
+      "full_source_preserved": false,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7454,
+      "read_ref_tokens": 1024,
+      "max_request_with_reserve": 2433
+    },
+    {
+      "id": "qa1-8k-00007",
+      "mode": "summary",
+      "status": "completed",
+      "full_source_preserved": true,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7484,
+      "read_ref_tokens": 7484,
+      "max_request_with_reserve": 2451
+    },
+    {
+      "id": "qa1-8k-00007",
+      "mode": "reflexive",
+      "status": "error",
+      "full_source_preserved": false,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7484,
+      "read_ref_tokens": 2048,
+      "max_request_with_reserve": 2765
+    },
+    {
+      "id": "qa1-8k-00008",
+      "mode": "summary",
+      "status": "completed",
+      "full_source_preserved": true,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7414,
+      "read_ref_tokens": 7414,
+      "max_request_with_reserve": 2430
+    },
+    {
+      "id": "qa1-8k-00008",
+      "mode": "reflexive",
+      "status": "completed",
+      "full_source_preserved": true,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7414,
+      "read_ref_tokens": 7414,
+      "max_request_with_reserve": 2510
+    },
+    {
+      "id": "qa1-8k-00009",
+      "mode": "summary",
+      "status": "error",
+      "full_source_preserved": false,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7347,
+      "read_ref_tokens": 1024,
+      "max_request_with_reserve": 2176
+    },
+    {
+      "id": "qa1-8k-00009",
+      "mode": "reflexive",
+      "status": "error",
+      "full_source_preserved": false,
+      "read_prefix_preserved": true,
+      "history_ref_tokens": 7347,
+      "read_ref_tokens": 1024,
+      "max_request_with_reserve": 2329
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "kind": "demo",
+  "name": "correction",
+  "mode": "summary",
+  "provider": "mock",
+  "model": "deterministic-demo-fixture",
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 200
+  },
+  "presentation": "question_first",
+  "status": "completed",
+  "error": null,
+  "answers": [
+    {
+      "question": "What is the current delivery date for Orion?",
+      "before_retrieval": {
+        "status": "answer",
+        "answer": "19 November 2026",
+        "query": "",
+        "source_ids": [
+          "c003"
+        ]
+      },
+      "final": {
+        "status": "answer",
+        "answer": "19 November 2026",
+        "query": "",
+        "source_ids": [
+          "c003"
+        ]
+      },
+      "retrieved_ids": []
+    }
+  ],
+  "state": {
+    "goal": "Remember the current delivery date for Orion.",
+    "plan": [
+      "Read relevant evidence",
+      "Answer the current question"
+    ],
+    "current_step": "Read relevant evidence",
+    "last_result": "19 November 2026",
+    "completed_results": [
+      "19 November 2026"
+    ]
+  },
+  "memory": [
+    {
+      "text": "Correction: Orion delivery date: 19 November 2026. The old date is cancelled.",
+      "source_ids": [
+        "c003"
+      ]
+    }
+  ],
+  "metrics": {
+    "max_memory_ref_tokens": 30,
+    "max_request_ref_tokens": 1150,
+    "compressions": 4,
+    "retrievals": 0,
+    "reread_ref_tokens": 0,
+    "input_ref_tokens": 62,
+    "api_calls": 6,
+    "attempts": 6,
+    "duration_s": 0.0,
+    "api_errors": 0,
+    "response_errors": 0,
+    "known_prompt_tokens": 0,
+    "prompt_tokens": 0,
+    "unknown_prompt_tokens_calls": 0,
+    "known_completion_tokens": 0,
+    "completion_tokens": 0,
+    "unknown_completion_tokens_calls": 0,
+    "known_total_tokens": 0,
+    "total_tokens": 0,
+    "unknown_total_tokens_calls": 0,
+    "known_cost_usd": 0.0,
+    "unknown_cost_calls": 0,
+    "cost_usd": 0.0,
+    "stage_totals": {
+      "answer": {
+        "api_calls": 1,
+        "attempts": 1,
+        "duration_s": 0.0,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 0,
+        "prompt_tokens": 0,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 0,
+        "completion_tokens": 0,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 0,
+        "total_tokens": 0,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "plan": {
+        "api_calls": 1,
+        "attempts": 1,
+        "duration_s": 0.0,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 0,
+        "prompt_tokens": 0,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 0,
+        "completion_tokens": 0,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 0,
+        "total_tokens": 0,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "summary": {
+        "api_calls": 4,
+        "attempts": 4,
+        "duration_s": 0.0,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 0,
+        "prompt_tokens": 0,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 0,
+        "completion_tokens": 0,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 0,
+        "total_tokens": 0,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      }
+    }
+  },
+  "elapsed_s": 0.168,
+  "prompt_sha256": {
+    "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+    "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+    "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+    "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+    "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+    "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "goal": "Where is Daniel? ",
+  "plan": [
+    "Read the current goal to understand what needs to be done.",
+    "Keep useful facts in memory about Daniel's last known location and contact information."
+  ],
+  "current_step": "Read the current goal to understand what needs to be done.",
+  "last_result": "",
+  "completed_results": []
+}

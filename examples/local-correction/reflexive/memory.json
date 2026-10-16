@@ -1,0 +1,23 @@
+[
+  {
+    "text": "The warehouse floor was cleaned.",
+    "source_ids": [
+      "c004"
+    ]
+  },
+  {
+    "text": "Orion delivery date: 19 November 2025",
+    "source_ids": [
+      "c002",
+      "c003"
+    ]
+  },
+  {
+    "text": "The current delivery date for Orion is 19 November 2026.",
+    "source_ids": [
+      "c004",
+      "c002",
+      "c003"
+    ]
+  }
+]

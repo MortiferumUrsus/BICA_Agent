@@ -1,0 +1,1925 @@
+{
+  "kind": "benchmark",
+  "provider": "ollama",
+  "model": "llama3.2:1b",
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 500
+  },
+  "presentation": "question_first",
+  "split": "eval",
+  "examples": [
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00005",
+      "mode": "summary",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "completed",
+      "error": null,
+      "answers": [
+        {
+          "question": "Where is Sandra? ",
+          "before_retrieval": {
+            "status": "retrieve",
+            "answer": "",
+            "query": "",
+            "source_ids": [
+              "c001"
+            ]
+          },
+          "final": {
+            "status": "insufficient_data",
+            "answer": "",
+            "query": "",
+            "source_ids": []
+          },
+          "retrieved_ids": [
+            "c001"
+          ]
+        }
+      ],
+      "state": {
+        "goal": "Where is Sandra? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Sandra's last known location and any relevant details."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "Sandra is alive",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "Sandra presumed dead",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "Sandra is presumed dead",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "Sandra is alive",
+          "source_ids": [
+            "c001"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 59,
+        "max_request_ref_tokens": 2245,
+        "compressions": 9,
+        "retrievals": 1,
+        "reread_ref_tokens": 1024,
+        "input_ref_tokens": 7588,
+        "api_calls": 12,
+        "attempts": 12,
+        "duration_s": 30.581259,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 11144,
+        "prompt_tokens": 11144,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 410,
+        "completion_tokens": 410,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 11554,
+        "total_tokens": 11554,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "answer": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 3.245031,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 578,
+            "prompt_tokens": 578,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 36,
+            "completion_tokens": 36,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 614,
+            "total_tokens": 614,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 2.319153,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 39,
+            "completion_tokens": 39,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 157,
+            "total_tokens": 157,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "summary": {
+            "api_calls": 9,
+            "attempts": 9,
+            "duration_s": 25.017076,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 10448,
+            "prompt_tokens": 10448,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 335,
+            "completion_tokens": 335,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 10783,
+            "total_tokens": 10783,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 31.316,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00005",
+      "row": 5,
+      "correct": false
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00005",
+      "mode": "reflexive",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "error",
+      "error": {
+        "type": "ResponseError",
+        "message": "Model answer does not match the required JSON schema"
+      },
+      "answers": [],
+      "state": {
+        "goal": "Where is Sandra? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Sandra's last known location and any relevant details."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [],
+      "metrics": {
+        "max_memory_ref_tokens": 0,
+        "max_request_ref_tokens": 2348,
+        "compressions": 0,
+        "retrievals": 0,
+        "reread_ref_tokens": 0,
+        "input_ref_tokens": 1024,
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 37.575118,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 1414,
+        "prompt_tokens": 1414,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 664,
+        "completion_tokens": 664,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 2078,
+        "total_tokens": 2078,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "assess": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 34.706608,
+            "api_errors": 0,
+            "response_errors": 1,
+            "known_prompt_tokens": 1296,
+            "prompt_tokens": 1296,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 625,
+            "completion_tokens": 625,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1921,
+            "total_tokens": 1921,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 2.86851,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 39,
+            "completion_tokens": 39,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 157,
+            "total_tokens": 157,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 37.606,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00005",
+      "row": 5,
+      "correct": null
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00006",
+      "mode": "summary",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "completed",
+      "error": null,
+      "answers": [
+        {
+          "question": "Where is Sandra? ",
+          "before_retrieval": {
+            "status": "retrieve",
+            "answer": "",
+            "query": "2-5 distinctive words",
+            "source_ids": [
+              "c001",
+              "c001"
+            ]
+          },
+          "final": {
+            "status": "insufficient_data",
+            "answer": "",
+            "query": "",
+            "source_ids": []
+          },
+          "retrieved_ids": [
+            "c001"
+          ]
+        }
+      ],
+      "state": {
+        "goal": "Where is Sandra? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Sandra's last known location and any relevant details."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "Sandra",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "Sandra travelled to Westminster.",
+          "source_ids": [
+            "c001"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 30,
+        "max_request_ref_tokens": 2313,
+        "compressions": 9,
+        "retrievals": 1,
+        "reread_ref_tokens": 1024,
+        "input_ref_tokens": 7455,
+        "api_calls": 12,
+        "attempts": 12,
+        "duration_s": 31.994134,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 11059,
+        "prompt_tokens": 11059,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 382,
+        "completion_tokens": 382,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 11441,
+        "total_tokens": 11441,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "answer": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 4.245447,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 532,
+            "prompt_tokens": 532,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 56,
+            "completion_tokens": 56,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 588,
+            "total_tokens": 588,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 2.955667,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 39,
+            "completion_tokens": 39,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 157,
+            "total_tokens": 157,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "summary": {
+            "api_calls": 9,
+            "attempts": 9,
+            "duration_s": 24.793019,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 10409,
+            "prompt_tokens": 10409,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 287,
+            "completion_tokens": 287,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 10696,
+            "total_tokens": 10696,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 32.198,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00006",
+      "row": 6,
+      "correct": false
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00006",
+      "mode": "reflexive",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "error",
+      "error": {
+        "type": "ResponseError",
+        "message": "Model answer does not match the required JSON schema"
+      },
+      "answers": [],
+      "state": {
+        "goal": "Where is Sandra? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Sandra's last known location and any relevant details."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [],
+      "metrics": {
+        "max_memory_ref_tokens": 0,
+        "max_request_ref_tokens": 2433,
+        "compressions": 0,
+        "retrievals": 0,
+        "reread_ref_tokens": 0,
+        "input_ref_tokens": 1024,
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 33.393869,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 1457,
+        "prompt_tokens": 1457,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 614,
+        "completion_tokens": 614,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 2071,
+        "total_tokens": 2071,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "assess": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 31.041819,
+            "api_errors": 0,
+            "response_errors": 1,
+            "known_prompt_tokens": 1339,
+            "prompt_tokens": 1339,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 575,
+            "completion_tokens": 575,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1914,
+            "total_tokens": 1914,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 2.35205,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 39,
+            "completion_tokens": 39,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 157,
+            "total_tokens": 157,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 33.427,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00006",
+      "row": 6,
+      "correct": null
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00007",
+      "mode": "summary",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "completed",
+      "error": null,
+      "answers": [
+        {
+          "question": "Where is Daniel? ",
+          "before_retrieval": {
+            "status": "retrieve",
+            "answer": "",
+            "query": "2-5 distinctive words",
+            "source_ids": [
+              "c003"
+            ]
+          },
+          "final": {
+            "status": "insufficient_data",
+            "answer": "",
+            "query": "",
+            "source_ids": []
+          },
+          "retrieved_ids": [
+            "c003"
+          ]
+        }
+      ],
+      "state": {
+        "goal": "Where is Daniel? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Daniel's last known location and contact information."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "Daniel",
+          "source_ids": [
+            "c003"
+          ]
+        },
+        {
+          "text": "Norman descent within a generation or two after the Conquest",
+          "source_ids": [
+            "c001",
+            "c002"
+          ]
+        },
+        {
+          "text": "English lands according to English law; equal terms with other landowners of English birth",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "French varnish",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "Normans, in their sojourn in Gaul, had put on a slight French varnish",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "Yorkshire or Lincolnshire who has somehow picked up a bad habit of talking French",
+          "source_ids": [
+            "c002"
+          ]
+        },
+        {
+          "text": "Contemporary writers; incidental notices that, among all classes between the highest and the lowest,\namong all between the great noble and the villain, the distinction of Norman and Englishman had been forgotten within little more than a\nhundred years after the time when King William came into England",
+          "source_ids": [
+            "c001",
+            "c002"
+          ]
+        },
+        {
+          "text": "Henry the Second, Count of Anjou through his father, Duke of Aquitaine\nthrough his wife, inherited also his mother’s claims on Normandy and England",
+          "source_ids": [
+            "c001",
+            "c002"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 252,
+        "max_request_ref_tokens": 2451,
+        "compressions": 9,
+        "retrievals": 1,
+        "reread_ref_tokens": 1024,
+        "input_ref_tokens": 7485,
+        "api_calls": 12,
+        "attempts": 12,
+        "duration_s": 116.823153,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 12956,
+        "prompt_tokens": 12956,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 2189,
+        "completion_tokens": 2189,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 15145,
+        "total_tokens": 15145,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "answer": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 3.264812,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 970,
+            "prompt_tokens": 970,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 47,
+            "completion_tokens": 47,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1017,
+            "total_tokens": 1017,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 3.64167,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 38,
+            "completion_tokens": 38,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 156,
+            "total_tokens": 156,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "summary": {
+            "api_calls": 9,
+            "attempts": 9,
+            "duration_s": 109.916671,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 11868,
+            "prompt_tokens": 11868,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 2104,
+            "completion_tokens": 2104,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 13972,
+            "total_tokens": 13972,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 117.026,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00007",
+      "row": 7,
+      "correct": false
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00007",
+      "mode": "reflexive",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "error",
+      "error": {
+        "type": "ResponseError",
+        "message": "Model answer does not match the required JSON schema"
+      },
+      "answers": [],
+      "state": {
+        "goal": "Where is Daniel? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Daniel's last known location and contact information."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "But we need not speculate as to what might have been; it is\nenough that one man did arise to do the work, that there is one man to\nwhom we owe that the wonderful thirteenth century, the great creative\nand destructive age throughout the world(14), was to us an age of\ncreation and not of destruction. That man, the man who finally gave to\nEnglish freedom its second and more lasting shape, the hero and martyr\nof England in the greatest of her constitutional struggles, was Simon\nof Montfort, Earl of莱",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "The land of his birth was—shall I say flourishing or suffering?—under the baleful\nvirtues of the most righteous of Kings. Saint Lewis reigned in France,\nSaint Lewis the just and holy, the man who never swerved from the path\nof right, the man who swared to his neighbour and disappointed him not,\nthough it were to his own hindrance.",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "He thus did more than any other man to strengthen its power. He thus didmore than any other man to pave the way for that foul despotism ofhis successors whose evil deeds would have daily vexed his righteous soul.",
+          "source_ids": [
+            "c001"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 275,
+        "max_request_ref_tokens": 2765,
+        "compressions": 1,
+        "retrievals": 0,
+        "reread_ref_tokens": 0,
+        "input_ref_tokens": 2048,
+        "api_calls": 7,
+        "attempts": 7,
+        "duration_s": 81.728513,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 7412,
+        "prompt_tokens": 7412,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 1521,
+        "completion_tokens": 1521,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 8933,
+        "total_tokens": 8933,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "assess": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 33.156111,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 2820,
+            "prompt_tokens": 2820,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 591,
+            "completion_tokens": 591,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 3411,
+            "total_tokens": 3411,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "compress": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 24.745393,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 3373,
+            "prompt_tokens": 3373,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 442,
+            "completion_tokens": 442,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 3815,
+            "total_tokens": 3815,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 1.910006,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 38,
+            "completion_tokens": 38,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 156,
+            "total_tokens": 156,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "verify": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 21.917003,
+            "api_errors": 0,
+            "response_errors": 1,
+            "known_prompt_tokens": 1101,
+            "prompt_tokens": 1101,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 450,
+            "completion_tokens": 450,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1551,
+            "total_tokens": 1551,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 81.82,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00007",
+      "row": 7,
+      "correct": null
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00008",
+      "mode": "summary",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "completed",
+      "error": null,
+      "answers": [
+        {
+          "question": "Where is Sandra? ",
+          "before_retrieval": {
+            "status": "retrieve",
+            "answer": "",
+            "query": "2-5 distinctive words",
+            "source_ids": [
+              "c004",
+              "c006"
+            ]
+          },
+          "final": {
+            "status": "insufficient_data",
+            "answer": "",
+            "query": "",
+            "source_ids": []
+          },
+          "retrieved_ids": [
+            "c004",
+            "c006"
+          ]
+        }
+      ],
+      "state": {
+        "goal": "Where is Sandra? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Sandra's last known location and any relevant details."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "Sandra Demitt",
+          "source_ids": [
+            "c004"
+          ]
+        },
+        {
+          "text": "Roxie Daymon alias Roxie Fairfield, or Suza Fairfield, or her descendants still survive.",
+          "source_ids": [
+            "c006",
+            "c003"
+          ]
+        },
+        {
+          "text": "Cousin Cæsar died from malnutrition and poor health due to his father's hardships.",
+          "source_ids": [
+            "c006",
+            "c003"
+          ]
+        },
+        {
+          "text": "Sandra travelled to the office in 1923.",
+          "source_ids": [
+            "c004"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 225,
+        "max_request_ref_tokens": 2430,
+        "compressions": 10,
+        "retrievals": 1,
+        "reread_ref_tokens": 2048,
+        "input_ref_tokens": 7416,
+        "api_calls": 13,
+        "attempts": 13,
+        "duration_s": 54.665189,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 12902,
+        "prompt_tokens": 12902,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 1032,
+        "completion_tokens": 1032,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 13934,
+        "total_tokens": 13934,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "answer": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 2.916024,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 707,
+            "prompt_tokens": 707,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 53,
+            "completion_tokens": 53,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 760,
+            "total_tokens": 760,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 1.932793,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 39,
+            "completion_tokens": 39,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 157,
+            "total_tokens": 157,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "summary": {
+            "api_calls": 10,
+            "attempts": 10,
+            "duration_s": 49.816372,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 12077,
+            "prompt_tokens": 12077,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 940,
+            "completion_tokens": 940,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 13017,
+            "total_tokens": 13017,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 54.858,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00008",
+      "row": 8,
+      "correct": false
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00008",
+      "mode": "reflexive",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "completed",
+      "error": null,
+      "answers": [
+        {
+          "question": "Where is Sandra? ",
+          "before_retrieval": {
+            "status": "retrieve",
+            "answer": "",
+            "query": "",
+            "source_ids": [
+              "c002",
+              "c001"
+            ]
+          },
+          "final": {
+            "status": "insufficient_data",
+            "answer": "",
+            "query": "",
+            "source_ids": []
+          },
+          "retrieved_ids": [
+            "c002",
+            "c001"
+          ]
+        }
+      ],
+      "state": {
+        "goal": "Where is Sandra? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Sandra's last known location and any relevant details."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "Sandra Fairfield.",
+          "source_ids": [
+            "c002"
+          ]
+        },
+        {
+          "text": "Aunt Katy.",
+          "source_ids": [
+            "c001",
+            "c002"
+          ]
+        },
+        {
+          "text": "Suza Fairfield left Tom Ditamus and his family sleeping soundly on the bank of the creek in the dark woods.",
+          "source_ids": [
+            "c002",
+            "c001"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 67,
+        "max_request_ref_tokens": 2510,
+        "compressions": 10,
+        "retrievals": 1,
+        "reread_ref_tokens": 2048,
+        "input_ref_tokens": 7416,
+        "api_calls": 33,
+        "attempts": 33,
+        "duration_s": 146.8309,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 29368,
+        "prompt_tokens": 29368,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 2839,
+        "completion_tokens": 2839,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 32207,
+        "total_tokens": 32207,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "answer": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 1.941297,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 605,
+            "prompt_tokens": 605,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 39,
+            "completion_tokens": 39,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 644,
+            "total_tokens": 644,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "assess": {
+            "api_calls": 10,
+            "attempts": 10,
+            "duration_s": 56.72454,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 12596,
+            "prompt_tokens": 12596,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 1051,
+            "completion_tokens": 1051,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 13647,
+            "total_tokens": 13647,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "compress": {
+            "api_calls": 10,
+            "attempts": 10,
+            "duration_s": 53.388357,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 13569,
+            "prompt_tokens": 13569,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 945,
+            "completion_tokens": 945,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 14514,
+            "total_tokens": 14514,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 1.815704,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 39,
+            "completion_tokens": 39,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 157,
+            "total_tokens": 157,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "verify": {
+            "api_calls": 10,
+            "attempts": 10,
+            "duration_s": 32.961001,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 2480,
+            "prompt_tokens": 2480,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 765,
+            "completion_tokens": 765,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 3245,
+            "total_tokens": 3245,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 147.234,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00008",
+      "row": 8,
+      "correct": false
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00009",
+      "mode": "summary",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "error",
+      "error": {
+        "type": "ResponseError",
+        "message": "Model answer does not match the required JSON schema"
+      },
+      "answers": [],
+      "state": {
+        "goal": "Where is Daniel? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Daniel's last known location and contact information."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [],
+      "metrics": {
+        "max_memory_ref_tokens": 0,
+        "max_request_ref_tokens": 2176,
+        "compressions": 0,
+        "retrievals": 0,
+        "reread_ref_tokens": 0,
+        "input_ref_tokens": 1024,
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 3.904477,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 1341,
+        "prompt_tokens": 1341,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 60,
+        "completion_tokens": 60,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 1401,
+        "total_tokens": 1401,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 1.920631,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 38,
+            "completion_tokens": 38,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 156,
+            "total_tokens": 156,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "summary": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 1.983845,
+            "api_errors": 0,
+            "response_errors": 1,
+            "known_prompt_tokens": 1223,
+            "prompt_tokens": 1223,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 22,
+            "completion_tokens": 22,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1245,
+            "total_tokens": 1245,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 3.931,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00009",
+      "row": 9,
+      "correct": null
+    },
+    {
+      "kind": "benchmark",
+      "name": "qa1-8k-00009",
+      "mode": "reflexive",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 500
+      },
+      "presentation": "question_first",
+      "status": "error",
+      "error": {
+        "type": "ResponseError",
+        "message": "Model answer does not match the required JSON schema"
+      },
+      "answers": [],
+      "state": {
+        "goal": "Where is Daniel? ",
+        "plan": [
+          "Read the current goal to understand what needs to be done.",
+          "Keep useful facts in memory about Daniel's last known location and contact information."
+        ],
+        "current_step": "Read the current goal to understand what needs to be done.",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [],
+      "metrics": {
+        "max_memory_ref_tokens": 0,
+        "max_request_ref_tokens": 2329,
+        "compressions": 0,
+        "retrievals": 0,
+        "reread_ref_tokens": 0,
+        "input_ref_tokens": 1024,
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 8.620359,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 1420,
+        "prompt_tokens": 1420,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 181,
+        "completion_tokens": 181,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 1601,
+        "total_tokens": 1601,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "assess": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 6.732554,
+            "api_errors": 0,
+            "response_errors": 1,
+            "known_prompt_tokens": 1302,
+            "prompt_tokens": 1302,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 143,
+            "completion_tokens": 143,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1445,
+            "total_tokens": 1445,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 1.887805,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 118,
+            "prompt_tokens": 118,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 38,
+            "completion_tokens": 38,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 156,
+            "total_tokens": 156,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 8.648,
+      "prompt_sha256": {
+        "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+        "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+        "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+        "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+        "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+        "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+      },
+      "id": "qa1-8k-00009",
+      "row": 9,
+      "correct": null
+    }
+  ],
+  "metrics": {
+    "api_calls": 97,
+    "attempts": 97,
+    "duration_s": 546.116969,
+    "api_errors": 0,
+    "response_errors": 5,
+    "known_prompt_tokens": 90473,
+    "prompt_tokens": 90473,
+    "unknown_prompt_tokens_calls": 0,
+    "known_completion_tokens": 9892,
+    "completion_tokens": 9892,
+    "unknown_completion_tokens_calls": 0,
+    "known_total_tokens": 100365,
+    "total_tokens": 100365,
+    "unknown_total_tokens_calls": 0,
+    "known_cost_usd": 0.0,
+    "unknown_cost_calls": 0,
+    "cost_usd": 0.0,
+    "stage_totals": {
+      "answer": {
+        "api_calls": 10,
+        "attempts": 10,
+        "duration_s": 15.612611,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 3392,
+        "prompt_tokens": 3392,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 231,
+        "completion_tokens": 231,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 3623,
+        "total_tokens": 3623,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "assess": {
+        "api_calls": 15,
+        "attempts": 15,
+        "duration_s": 162.361632,
+        "api_errors": 0,
+        "response_errors": 3,
+        "known_prompt_tokens": 19353,
+        "prompt_tokens": 19353,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 2985,
+        "completion_tokens": 2985,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 22338,
+        "total_tokens": 22338,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "compress": {
+        "api_calls": 12,
+        "attempts": 12,
+        "duration_s": 78.13375,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 16942,
+        "prompt_tokens": 16942,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 1387,
+        "completion_tokens": 1387,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 18329,
+        "total_tokens": 18329,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "plan": {
+        "api_calls": 10,
+        "attempts": 10,
+        "duration_s": 23.60399,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 1180,
+        "prompt_tokens": 1180,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 386,
+        "completion_tokens": 386,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 1566,
+        "total_tokens": 1566,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "summary": {
+        "api_calls": 38,
+        "attempts": 38,
+        "duration_s": 211.526983,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 46025,
+        "prompt_tokens": 46025,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 3688,
+        "completion_tokens": 3688,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 49713,
+        "total_tokens": 49713,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "verify": {
+        "api_calls": 12,
+        "attempts": 12,
+        "duration_s": 54.878004,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 3581,
+        "prompt_tokens": 3581,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 1215,
+        "completion_tokens": 1215,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 4796,
+        "total_tokens": 4796,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      }
+    }
+  },
+  "summary_by_mode": {
+    "summary": {
+      "requested": 5,
+      "processed": 4,
+      "correct": 0,
+      "infra_errors": 0,
+      "failed_examples": 1,
+      "model_output_errors": 1,
+      "limit_errors": 0,
+      "accuracy": 0.0,
+      "completed_accuracy": 0.0,
+      "max_memory_ref_tokens": 252,
+      "max_request_ref_tokens": 2451,
+      "api_calls": 51,
+      "attempts": 51,
+      "duration_s": 237.968211,
+      "api_errors": 0,
+      "response_errors": 1,
+      "known_prompt_tokens": 49402,
+      "prompt_tokens": 49402,
+      "unknown_prompt_tokens_calls": 0,
+      "known_completion_tokens": 4073,
+      "completion_tokens": 4073,
+      "unknown_completion_tokens_calls": 0,
+      "known_total_tokens": 53475,
+      "total_tokens": 53475,
+      "unknown_total_tokens_calls": 0,
+      "known_cost_usd": 0.0,
+      "unknown_cost_calls": 0,
+      "cost_usd": 0.0,
+      "stage_totals": {
+        "answer": {
+          "api_calls": 8,
+          "attempts": 8,
+          "duration_s": 13.671314,
+          "api_errors": 0,
+          "response_errors": 0,
+          "known_prompt_tokens": 2787,
+          "prompt_tokens": 2787,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 192,
+          "completion_tokens": 192,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 2979,
+          "total_tokens": 2979,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        },
+        "plan": {
+          "api_calls": 5,
+          "attempts": 5,
+          "duration_s": 12.769914,
+          "api_errors": 0,
+          "response_errors": 0,
+          "known_prompt_tokens": 590,
+          "prompt_tokens": 590,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 193,
+          "completion_tokens": 193,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 783,
+          "total_tokens": 783,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        },
+        "summary": {
+          "api_calls": 38,
+          "attempts": 38,
+          "duration_s": 211.526983,
+          "api_errors": 0,
+          "response_errors": 1,
+          "known_prompt_tokens": 46025,
+          "prompt_tokens": 46025,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 3688,
+          "completion_tokens": 3688,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 49713,
+          "total_tokens": 49713,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        }
+      },
+      "compressions": 37,
+      "retrievals": 4,
+      "reread_ref_tokens": 5120
+    },
+    "reflexive": {
+      "requested": 5,
+      "processed": 1,
+      "correct": 0,
+      "infra_errors": 0,
+      "failed_examples": 4,
+      "model_output_errors": 4,
+      "limit_errors": 0,
+      "accuracy": 0.0,
+      "completed_accuracy": 0.0,
+      "max_memory_ref_tokens": 275,
+      "max_request_ref_tokens": 2765,
+      "api_calls": 46,
+      "attempts": 46,
+      "duration_s": 308.148759,
+      "api_errors": 0,
+      "response_errors": 4,
+      "known_prompt_tokens": 41071,
+      "prompt_tokens": 41071,
+      "unknown_prompt_tokens_calls": 0,
+      "known_completion_tokens": 5819,
+      "completion_tokens": 5819,
+      "unknown_completion_tokens_calls": 0,
+      "known_total_tokens": 46890,
+      "total_tokens": 46890,
+      "unknown_total_tokens_calls": 0,
+      "known_cost_usd": 0.0,
+      "unknown_cost_calls": 0,
+      "cost_usd": 0.0,
+      "stage_totals": {
+        "answer": {
+          "api_calls": 2,
+          "attempts": 2,
+          "duration_s": 1.941297,
+          "api_errors": 0,
+          "response_errors": 0,
+          "known_prompt_tokens": 605,
+          "prompt_tokens": 605,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 39,
+          "completion_tokens": 39,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 644,
+          "total_tokens": 644,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        },
+        "assess": {
+          "api_calls": 15,
+          "attempts": 15,
+          "duration_s": 162.361632,
+          "api_errors": 0,
+          "response_errors": 3,
+          "known_prompt_tokens": 19353,
+          "prompt_tokens": 19353,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 2985,
+          "completion_tokens": 2985,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 22338,
+          "total_tokens": 22338,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        },
+        "compress": {
+          "api_calls": 12,
+          "attempts": 12,
+          "duration_s": 78.13375,
+          "api_errors": 0,
+          "response_errors": 0,
+          "known_prompt_tokens": 16942,
+          "prompt_tokens": 16942,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 1387,
+          "completion_tokens": 1387,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 18329,
+          "total_tokens": 18329,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        },
+        "plan": {
+          "api_calls": 5,
+          "attempts": 5,
+          "duration_s": 10.834076,
+          "api_errors": 0,
+          "response_errors": 0,
+          "known_prompt_tokens": 590,
+          "prompt_tokens": 590,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 193,
+          "completion_tokens": 193,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 783,
+          "total_tokens": 783,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        },
+        "verify": {
+          "api_calls": 12,
+          "attempts": 12,
+          "duration_s": 54.878004,
+          "api_errors": 0,
+          "response_errors": 1,
+          "known_prompt_tokens": 3581,
+          "prompt_tokens": 3581,
+          "unknown_prompt_tokens_calls": 0,
+          "known_completion_tokens": 1215,
+          "completion_tokens": 1215,
+          "unknown_completion_tokens_calls": 0,
+          "known_total_tokens": 4796,
+          "total_tokens": 4796,
+          "unknown_total_tokens_calls": 0,
+          "known_cost_usd": 0.0,
+          "unknown_cost_calls": 0,
+          "cost_usd": 0.0
+        }
+      },
+      "compressions": 11,
+      "retrievals": 1,
+      "reread_ref_tokens": 2048
+    }
+  },
+  "notes": [
+    "Accuracy denominator includes all requested examples; failures are separately counted.",
+    "Small exploratory sample, not evidence of superiority."
+  ]
+}

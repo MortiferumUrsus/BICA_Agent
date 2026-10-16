@@ -1,0 +1,169 @@
+{
+  "kind": "benchmark",
+  "name": "qa1-8k-00007",
+  "mode": "reflexive",
+  "provider": "ollama",
+  "model": "llama3.2:1b",
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 500
+  },
+  "presentation": "question_first",
+  "status": "error",
+  "error": {
+    "type": "ResponseError",
+    "message": "Model answer does not match the required JSON schema"
+  },
+  "answers": [],
+  "state": {
+    "goal": "Where is Daniel? ",
+    "plan": [
+      "Read the current goal to understand what needs to be done.",
+      "Keep useful facts in memory about Daniel's last known location and contact information."
+    ],
+    "current_step": "Read the current goal to understand what needs to be done.",
+    "last_result": "",
+    "completed_results": []
+  },
+  "memory": [
+    {
+      "text": "But we need not speculate as to what might have been; it is\nenough that one man did arise to do the work, that there is one man to\nwhom we owe that the wonderful thirteenth century, the great creative\nand destructive age throughout the world(14), was to us an age of\ncreation and not of destruction. That man, the man who finally gave to\nEnglish freedom its second and more lasting shape, the hero and martyr\nof England in the greatest of her constitutional struggles, was Simon\nof Montfort, Earl of莱",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "The land of his birth was—shall I say flourishing or suffering?—under the baleful\nvirtues of the most righteous of Kings. Saint Lewis reigned in France,\nSaint Lewis the just and holy, the man who never swerved from the path\nof right, the man who swared to his neighbour and disappointed him not,\nthough it were to his own hindrance.",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "He thus did more than any other man to strengthen its power. He thus didmore than any other man to pave the way for that foul despotism ofhis successors whose evil deeds would have daily vexed his righteous soul.",
+      "source_ids": [
+        "c001"
+      ]
+    }
+  ],
+  "metrics": {
+    "max_memory_ref_tokens": 275,
+    "max_request_ref_tokens": 2765,
+    "compressions": 1,
+    "retrievals": 0,
+    "reread_ref_tokens": 0,
+    "input_ref_tokens": 2048,
+    "api_calls": 7,
+    "attempts": 7,
+    "duration_s": 81.728513,
+    "api_errors": 0,
+    "response_errors": 1,
+    "known_prompt_tokens": 7412,
+    "prompt_tokens": 7412,
+    "unknown_prompt_tokens_calls": 0,
+    "known_completion_tokens": 1521,
+    "completion_tokens": 1521,
+    "unknown_completion_tokens_calls": 0,
+    "known_total_tokens": 8933,
+    "total_tokens": 8933,
+    "unknown_total_tokens_calls": 0,
+    "known_cost_usd": 0.0,
+    "unknown_cost_calls": 0,
+    "cost_usd": 0.0,
+    "stage_totals": {
+      "assess": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 33.156111,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 2820,
+        "prompt_tokens": 2820,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 591,
+        "completion_tokens": 591,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 3411,
+        "total_tokens": 3411,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "compress": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 24.745393,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 3373,
+        "prompt_tokens": 3373,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 442,
+        "completion_tokens": 442,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 3815,
+        "total_tokens": 3815,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "plan": {
+        "api_calls": 1,
+        "attempts": 1,
+        "duration_s": 1.910006,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 118,
+        "prompt_tokens": 118,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 38,
+        "completion_tokens": 38,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 156,
+        "total_tokens": 156,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "verify": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 21.917003,
+        "api_errors": 0,
+        "response_errors": 1,
+        "known_prompt_tokens": 1101,
+        "prompt_tokens": 1101,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 450,
+        "completion_tokens": 450,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 1551,
+        "total_tokens": 1551,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      }
+    }
+  },
+  "elapsed_s": 81.82,
+  "prompt_sha256": {
+    "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+    "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+    "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+    "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+    "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+    "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+  },
+  "id": "qa1-8k-00007",
+  "row": 7,
+  "correct": null
+}

@@ -1,0 +1,14 @@
+{
+  "name": "supplier",
+  "description": "The ordering task is disclosed only after the supplier selection checkpoint.",
+  "goal": "Choose the supplier with the lowest price among those delivering within 5 days.",
+  "events": [
+    {"text": "Supplier Cedar: price=90; delivery_days=4; payment=30% advance; contract=CD-104.\n"},
+    {"text": "Supplier Maple: price=80; delivery_days=9; payment=full advance; contract=MP-209.\n"},
+    {"text": "The purchasing team discussed desk colours and coffee.\n"},
+    {"text": "Supplier Birch: price=110; delivery_days=3; payment=on delivery; contract=BR-307.\n"},
+    {"question": "Choose the cheapest supplier delivering within 5 days. Return its name only."},
+    {"goal": "Prepare order terms for the previously chosen supplier, including payment and contract code."},
+    {"question": "What payment terms and contract code should the order use for the chosen supplier?"}
+  ]
+}

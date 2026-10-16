@@ -1,0 +1,13 @@
+{
+  "goal": "Prepare order terms for the previously chosen supplier, including payment and contract code.",
+  "plan": [
+    "Read relevant evidence",
+    "Answer the current question"
+  ],
+  "current_step": "Read relevant evidence",
+  "last_result": "Cedar: payment 30% advance, contract CD-104",
+  "completed_results": [
+    "Cedar",
+    "Cedar: payment 30% advance, contract CD-104"
+  ]
+}

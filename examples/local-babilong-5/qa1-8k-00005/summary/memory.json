@@ -1,0 +1,26 @@
+[
+  {
+    "text": "Sandra is alive",
+    "source_ids": [
+      "c001"
+    ]
+  },
+  {
+    "text": "Sandra presumed dead",
+    "source_ids": [
+      "c001"
+    ]
+  },
+  {
+    "text": "Sandra is presumed dead",
+    "source_ids": [
+      "c001"
+    ]
+  },
+  {
+    "text": "Sandra is alive",
+    "source_ids": [
+      "c001"
+    ]
+  }
+]

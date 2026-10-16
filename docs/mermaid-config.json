@@ -1,0 +1,18 @@
+{
+  "theme": "base",
+  "themeCSS": ".edgeLabel rect { opacity: 1 !important; fill: #ffffff !important; }",
+  "themeVariables": {
+    "fontFamily": "Segoe UI, Arial, sans-serif",
+    "fontSize": "16px",
+    "primaryColor": "#f5f6f7",
+    "primaryTextColor": "#182c40",
+    "primaryBorderColor": "#526a80",
+    "lineColor": "#526a80"
+  },
+  "flowchart": {
+    "htmlLabels": false,
+    "curve": "linear",
+    "nodeSpacing": 28,
+    "rankSpacing": 35
+  }
+}

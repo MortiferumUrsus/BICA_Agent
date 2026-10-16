@@ -1,0 +1,6 @@
+{"version": 1, "reason": "read", "memory": [{"text": "The current delivery date for Orion is 12 November 2026.", "source_ids": ["c001"]}], "ref_tokens": 25}
+{"version": 2, "reason": "read", "memory": [{"text": "Orion's current delivery date is 12 November 2026.", "source_ids": ["c001", "c002"]}], "ref_tokens": 28}
+{"version": 3, "reason": "read", "memory": [{"text": "Orion's current delivery date is 19 November 2026.", "source_ids": ["c001", "c002"]}], "ref_tokens": 28}
+{"version": 4, "reason": "read", "memory": [{"text": "Orion's current delivery date is 19 November 2026.", "source_ids": ["c001"]}, {"text": "Delivery dates are typically set for the month of release.", "source_ids": ["c002"]}], "ref_tokens": 45}
+{"version": 5, "reason": "retrieval", "memory": [{"text": "Orion's current delivery date is 19 November 2026.", "source_ids": ["c001"]}, {"text": "Delivery dates are typically set for the month of release.", "source_ids": ["c002"]}], "ref_tokens": 45}
+{"version": 6, "reason": "retrieval", "memory": [{"text": "Orion's current delivery date is 19 November 2026.", "source_ids": ["c001"]}, {"text": "Delivery dates are typically set for the month of release.", "source_ids": ["c002"]}], "ref_tokens": 45}

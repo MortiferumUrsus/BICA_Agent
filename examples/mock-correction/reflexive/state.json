@@ -1,0 +1,12 @@
+{
+  "goal": "Remember the current delivery date for Orion.",
+  "plan": [
+    "Read relevant evidence",
+    "Answer the current question"
+  ],
+  "current_step": "Read relevant evidence",
+  "last_result": "19 November 2026",
+  "completed_results": [
+    "19 November 2026"
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "kind": "demo",
+  "name": "correction",
+  "mode": "summary",
+  "provider": "ollama",
+  "model": "llama3.2:1b",
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 200
+  },
+  "presentation": "question_first",
+  "status": "completed",
+  "error": null,
+  "answers": [
+    {
+      "question": "What is the current delivery date for Orion?",
+      "before_retrieval": {
+        "status": "retrieve",
+        "answer": "",
+        "query": "2-5 distinctive words",
+        "source_ids": [
+          "c001",
+          "c002"
+        ]
+      },
+      "final": {
+        "status": "insufficient_data",
+        "answer": "",
+        "query": "",
+        "source_ids": []
+      },
+      "retrieved_ids": [
+        "c001",
+        "c002"
+      ]
+    }
+  ],
+  "state": {
+    "goal": "Remember the current delivery date for Orion.",
+    "plan": [
+      "Read the current delivery date from the local source journal",
+      "Keep this information in memory for future reference",
+      "Search the local source journal again to confirm",
+      "Answer: 'What is the current delivery date for Orion?'"
+    ],
+    "current_step": "Read the current delivery date from the local source journal",
+    "last_result": "",
+    "completed_results": []
+  },
+  "memory": [
+    {
+      "text": "Orion's current delivery date is 19 November 2026.",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "Delivery dates are typically set for the month of release.",
+      "source_ids": [
+        "c002"
+      ]
+    }
+  ],
+  "metrics": {
+    "max_memory_ref_tokens": 45,
+    "max_request_ref_tokens": 1218,
+    "compressions": 6,
+    "retrievals": 1,
+    "reread_ref_tokens": 29,
+    "input_ref_tokens": 62,
+    "api_calls": 9,
+    "attempts": 9,
+    "duration_s": 22.069702,
+    "api_errors": 0,
+    "response_errors": 0,
+    "known_prompt_tokens": 2005,
+    "prompt_tokens": 2005,
+    "unknown_prompt_tokens_calls": 0,
+    "known_completion_tokens": 342,
+    "completion_tokens": 342,
+    "unknown_completion_tokens_calls": 0,
+    "known_total_tokens": 2347,
+    "total_tokens": 2347,
+    "unknown_total_tokens_calls": 0,
+    "known_cost_usd": 0.0,
+    "unknown_cost_calls": 0,
+    "cost_usd": 0.0,
+    "stage_totals": {
+      "answer": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 3.370302,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 610,
+        "prompt_tokens": 610,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 56,
+        "completion_tokens": 56,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 666,
+        "total_tokens": 666,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "plan": {
+        "api_calls": 1,
+        "attempts": 1,
+        "duration_s": 3.067484,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 122,
+        "prompt_tokens": 122,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 53,
+        "completion_tokens": 53,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 175,
+        "total_tokens": 175,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "summary": {
+        "api_calls": 6,
+        "attempts": 6,
+        "duration_s": 15.631917,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 1273,
+        "prompt_tokens": 1273,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 233,
+        "completion_tokens": 233,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 1506,
+        "total_tokens": 1506,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      }
+    }
+  },
+  "elapsed_s": 22.62
+}

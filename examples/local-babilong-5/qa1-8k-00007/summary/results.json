@@ -1,0 +1,201 @@
+{
+  "kind": "benchmark",
+  "name": "qa1-8k-00007",
+  "mode": "summary",
+  "provider": "ollama",
+  "model": "llama3.2:1b",
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 500
+  },
+  "presentation": "question_first",
+  "status": "completed",
+  "error": null,
+  "answers": [
+    {
+      "question": "Where is Daniel? ",
+      "before_retrieval": {
+        "status": "retrieve",
+        "answer": "",
+        "query": "2-5 distinctive words",
+        "source_ids": [
+          "c003"
+        ]
+      },
+      "final": {
+        "status": "insufficient_data",
+        "answer": "",
+        "query": "",
+        "source_ids": []
+      },
+      "retrieved_ids": [
+        "c003"
+      ]
+    }
+  ],
+  "state": {
+    "goal": "Where is Daniel? ",
+    "plan": [
+      "Read the current goal to understand what needs to be done.",
+      "Keep useful facts in memory about Daniel's last known location and contact information."
+    ],
+    "current_step": "Read the current goal to understand what needs to be done.",
+    "last_result": "",
+    "completed_results": []
+  },
+  "memory": [
+    {
+      "text": "Daniel",
+      "source_ids": [
+        "c003"
+      ]
+    },
+    {
+      "text": "Norman descent within a generation or two after the Conquest",
+      "source_ids": [
+        "c001",
+        "c002"
+      ]
+    },
+    {
+      "text": "English lands according to English law; equal terms with other landowners of English birth",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "French varnish",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "Normans, in their sojourn in Gaul, had put on a slight French varnish",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "Yorkshire or Lincolnshire who has somehow picked up a bad habit of talking French",
+      "source_ids": [
+        "c002"
+      ]
+    },
+    {
+      "text": "Contemporary writers; incidental notices that, among all classes between the highest and the lowest,\namong all between the great noble and the villain, the distinction of Norman and Englishman had been forgotten within little more than a\nhundred years after the time when King William came into England",
+      "source_ids": [
+        "c001",
+        "c002"
+      ]
+    },
+    {
+      "text": "Henry the Second, Count of Anjou through his father, Duke of Aquitaine\nthrough his wife, inherited also his mother’s claims on Normandy and England",
+      "source_ids": [
+        "c001",
+        "c002"
+      ]
+    }
+  ],
+  "metrics": {
+    "max_memory_ref_tokens": 252,
+    "max_request_ref_tokens": 2451,
+    "compressions": 9,
+    "retrievals": 1,
+    "reread_ref_tokens": 1024,
+    "input_ref_tokens": 7485,
+    "api_calls": 12,
+    "attempts": 12,
+    "duration_s": 116.823153,
+    "api_errors": 0,
+    "response_errors": 0,
+    "known_prompt_tokens": 12956,
+    "prompt_tokens": 12956,
+    "unknown_prompt_tokens_calls": 0,
+    "known_completion_tokens": 2189,
+    "completion_tokens": 2189,
+    "unknown_completion_tokens_calls": 0,
+    "known_total_tokens": 15145,
+    "total_tokens": 15145,
+    "unknown_total_tokens_calls": 0,
+    "known_cost_usd": 0.0,
+    "unknown_cost_calls": 0,
+    "cost_usd": 0.0,
+    "stage_totals": {
+      "answer": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 3.264812,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 970,
+        "prompt_tokens": 970,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 47,
+        "completion_tokens": 47,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 1017,
+        "total_tokens": 1017,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "plan": {
+        "api_calls": 1,
+        "attempts": 1,
+        "duration_s": 3.64167,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 118,
+        "prompt_tokens": 118,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 38,
+        "completion_tokens": 38,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 156,
+        "total_tokens": 156,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      },
+      "summary": {
+        "api_calls": 9,
+        "attempts": 9,
+        "duration_s": 109.916671,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 11868,
+        "prompt_tokens": 11868,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 2104,
+        "completion_tokens": 2104,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 13972,
+        "total_tokens": 13972,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0
+      }
+    }
+  },
+  "elapsed_s": 117.026,
+  "prompt_sha256": {
+    "answer.txt": "1302cd586c78c2aa8d8ce189bb4c677903202361eaa68b1db18d537a760cf006",
+    "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+    "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+    "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+    "summary.txt": "be8872cfcd8f27c4abf88e079a09c3cb9d9afe7e803fe06cd362c3127d7b5fdf",
+    "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+  },
+  "id": "qa1-8k-00007",
+  "row": 7,
+  "correct": false
+}

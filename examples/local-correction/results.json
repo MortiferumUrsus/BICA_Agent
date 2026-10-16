@@ -1,0 +1,375 @@
+{
+  "kind": "demo",
+  "name": "correction",
+  "provider": "ollama",
+  "model": "llama3.2:1b",
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 200
+  },
+  "examples": [
+    {
+      "kind": "demo",
+      "name": "correction",
+      "mode": "summary",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 200
+      },
+      "presentation": "question_first",
+      "status": "completed",
+      "error": null,
+      "answers": [
+        {
+          "question": "What is the current delivery date for Orion?",
+          "before_retrieval": {
+            "status": "retrieve",
+            "answer": "",
+            "query": "2-5 distinctive words",
+            "source_ids": [
+              "c001",
+              "c002"
+            ]
+          },
+          "final": {
+            "status": "insufficient_data",
+            "answer": "",
+            "query": "",
+            "source_ids": []
+          },
+          "retrieved_ids": [
+            "c001",
+            "c002"
+          ]
+        }
+      ],
+      "state": {
+        "goal": "Remember the current delivery date for Orion.",
+        "plan": [
+          "Read the current delivery date from the local source journal",
+          "Keep this information in memory for future reference",
+          "Search the local source journal again to confirm",
+          "Answer: 'What is the current delivery date for Orion?'"
+        ],
+        "current_step": "Read the current delivery date from the local source journal",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "Orion's current delivery date is 19 November 2026.",
+          "source_ids": [
+            "c001"
+          ]
+        },
+        {
+          "text": "Delivery dates are typically set for the month of release.",
+          "source_ids": [
+            "c002"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 45,
+        "max_request_ref_tokens": 1218,
+        "compressions": 6,
+        "retrievals": 1,
+        "reread_ref_tokens": 29,
+        "input_ref_tokens": 62,
+        "api_calls": 9,
+        "attempts": 9,
+        "duration_s": 22.069702,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 2005,
+        "prompt_tokens": 2005,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 342,
+        "completion_tokens": 342,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 2347,
+        "total_tokens": 2347,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "answer": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 3.370302,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 610,
+            "prompt_tokens": 610,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 56,
+            "completion_tokens": 56,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 666,
+            "total_tokens": 666,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 3.067484,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 122,
+            "prompt_tokens": 122,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 53,
+            "completion_tokens": 53,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 175,
+            "total_tokens": 175,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "summary": {
+            "api_calls": 6,
+            "attempts": 6,
+            "duration_s": 15.631917,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 1273,
+            "prompt_tokens": 1273,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 233,
+            "completion_tokens": 233,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1506,
+            "total_tokens": 1506,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 22.62
+    },
+    {
+      "kind": "demo",
+      "name": "correction",
+      "mode": "reflexive",
+      "provider": "ollama",
+      "model": "llama3.2:1b",
+      "config": {
+        "window_ref_tokens": 4096,
+        "memory_ref_tokens": 512,
+        "state_ref_tokens": 256,
+        "chunk_ref_tokens": 1024,
+        "max_output_tokens": 768,
+        "max_retrieval_rounds": 1,
+        "retrieval_top_k": 2,
+        "max_api_calls": 200
+      },
+      "presentation": "question_first",
+      "status": "completed",
+      "error": null,
+      "answers": [
+        {
+          "question": "What is the current delivery date for Orion?",
+          "before_retrieval": {
+            "status": "retrieve",
+            "answer": "",
+            "query": "2-5 distinctive words",
+            "source_ids": [
+              "c002",
+              "c003"
+            ]
+          },
+          "final": {
+            "status": "insufficient_data",
+            "answer": "",
+            "query": "",
+            "source_ids": []
+          },
+          "retrieved_ids": [
+            "c002",
+            "c003"
+          ]
+        }
+      ],
+      "state": {
+        "goal": "Remember the current delivery date for Orion.",
+        "plan": [
+          "Read the current delivery date from the local source journal",
+          "Keep this information in memory for future reference",
+          "Search the local source journal again to confirm",
+          "Answer: 'What is the current delivery date for Orion?'"
+        ],
+        "current_step": "Read the current delivery date from the local source journal",
+        "last_result": "",
+        "completed_results": []
+      },
+      "memory": [
+        {
+          "text": "The warehouse floor was cleaned.",
+          "source_ids": [
+            "c004"
+          ]
+        },
+        {
+          "text": "Orion delivery date: 19 November 2025",
+          "source_ids": [
+            "c002",
+            "c003"
+          ]
+        },
+        {
+          "text": "The current delivery date for Orion is 19 November 2026.",
+          "source_ids": [
+            "c004",
+            "c002",
+            "c003"
+          ]
+        }
+      ],
+      "metrics": {
+        "max_memory_ref_tokens": 70,
+        "max_request_ref_tokens": 1364,
+        "compressions": 6,
+        "retrievals": 1,
+        "reread_ref_tokens": 36,
+        "input_ref_tokens": 62,
+        "api_calls": 21,
+        "attempts": 21,
+        "duration_s": 89.805268,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 6235,
+        "prompt_tokens": 6235,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 1504,
+        "completion_tokens": 1504,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 7739,
+        "total_tokens": 7739,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0,
+        "stage_totals": {
+          "answer": {
+            "api_calls": 2,
+            "attempts": 2,
+            "duration_s": 3.585135,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 631,
+            "prompt_tokens": 631,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 53,
+            "completion_tokens": 53,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 684,
+            "total_tokens": 684,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "assess": {
+            "api_calls": 6,
+            "attempts": 6,
+            "duration_s": 29.048604,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 1895,
+            "prompt_tokens": 1895,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 502,
+            "completion_tokens": 502,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 2397,
+            "total_tokens": 2397,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "compress": {
+            "api_calls": 6,
+            "attempts": 6,
+            "duration_s": 22.526313,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 2339,
+            "prompt_tokens": 2339,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 374,
+            "completion_tokens": 374,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 2713,
+            "total_tokens": 2713,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "plan": {
+            "api_calls": 1,
+            "attempts": 1,
+            "duration_s": 3.204176,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 122,
+            "prompt_tokens": 122,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 53,
+            "completion_tokens": 53,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 175,
+            "total_tokens": 175,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          },
+          "verify": {
+            "api_calls": 6,
+            "attempts": 6,
+            "duration_s": 31.441039,
+            "api_errors": 0,
+            "response_errors": 0,
+            "known_prompt_tokens": 1248,
+            "prompt_tokens": 1248,
+            "unknown_prompt_tokens_calls": 0,
+            "known_completion_tokens": 522,
+            "completion_tokens": 522,
+            "unknown_completion_tokens_calls": 0,
+            "known_total_tokens": 1770,
+            "total_tokens": 1770,
+            "unknown_total_tokens_calls": 0,
+            "known_cost_usd": 0.0,
+            "unknown_cost_calls": 0,
+            "cost_usd": 0.0
+          }
+        }
+      },
+      "elapsed_s": 90.021
+    }
+  ]
+}

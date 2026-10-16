@@ -1,0 +1,87 @@
+{
+  "dataset": "RMT-team/babilong-1k-samples",
+  "configuration": "8k",
+  "split": "qa1",
+  "revision": "fc4d1a584dfc498c37578753bee4cdd91b987ae2",
+  "requested_revision": "main",
+  "path": "8k/qa1-00000-of-00001.parquet",
+  "local_source": "data/babilong/source/8k/qa1-00000-of-00001.parquet",
+  "sha256": "aa77f2270acefcd508c067dd572678c38219fc6b1c68e74ce8f2e2a3d68227a0",
+  "total_rows": 1000,
+  "row_indexing": "zero_based",
+  "selected_rows": {
+    "debug": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "eval": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ]
+  },
+  "presentation": "question_first",
+  "exports": {
+    "debug": {
+      "rows": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "inputs": "debug_inputs.jsonl",
+      "targets": "debug_targets.jsonl",
+      "inputs_sha256": "23548379b5a0dc4e3a0fa5ab3c6e8014cc60d51ee573ee8bdef95f22b8484fc8",
+      "targets_sha256": "a31cd9796ac55715aa2031e65c5ab45ff970cf609e9070de034a6eb9e8772fd0"
+    },
+    "eval": {
+      "rows": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "inputs": "eval_inputs.jsonl",
+      "targets": "eval_targets.jsonl",
+      "inputs_sha256": "91751e6c28678c0fdcce6e1067392667a1ca52549115ac5ddd9c1b396d9b5f58",
+      "targets_sha256": "df42812f4a50b0663226f1d243250daace1a9abcb1954beab91693c62c308f7f"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "retrieval",
+  "description": "A newly disclosed task needs an old incidental detail.",
+  "goal": "Remember the current delivery date for Orion.",
+  "events": [
+    {"text": "Archive access code: RIVER-17.\n"},
+    {"text": "Orion delivery date: 19 November 2026.\n"},
+    {"text": "The team discussed next month's packaging colours and cafeteria menu.\n"},
+    {"question": "What is the current delivery date for Orion?"},
+    {"goal": "Find the archive access code mentioned earlier."},
+    {"question": "What is the archive access code?"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "correction",
+  "description": "A later delivery correction must supersede the original date.",
+  "goal": "Remember the current delivery date for Orion.",
+  "events": [
+    {"text": "Orion delivery date: 12 November 2026.\n"},
+    {"text": "The team discussed blue packaging, lunch and office chairs. No delivery changes were made.\n"},
+    {"text": "Correction: Orion delivery date: 19 November 2026. The old date is cancelled.\n"},
+    {"text": "The warehouse floor was cleaned. The team will discuss labels next week.\n"},
+    {"question": "What is the current delivery date for Orion?"}
+  ]
+}

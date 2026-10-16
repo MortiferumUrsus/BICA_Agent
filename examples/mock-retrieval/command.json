@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "demo",
+    "--name",
+    "retrieval",
+    "--mode",
+    "both",
+    "--out",
+    "runs/mock-final-retrieval"
+  ],
+  "python": "3.11.15",
+  "cwd": "C:\\Projects\\Mephi\\BICA",
+  "started_at": "2026-10-09T20:04:36.228934+03:00"
+}

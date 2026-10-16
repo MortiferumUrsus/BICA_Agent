@@ -1,0 +1,5 @@
+{"version": 1, "reason": "read", "memory": [], "ref_tokens": 1}
+{"version": 2, "reason": "read", "memory": [{"text": "Orion delivery date: 19 November 2026.", "source_ids": ["c002"]}], "ref_tokens": 23}
+{"version": 3, "reason": "read", "memory": [{"text": "Orion delivery date: 19 November 2026.", "source_ids": ["c002"]}], "ref_tokens": 23}
+{"version": 4, "reason": "transition", "memory": [], "ref_tokens": 1}
+{"version": 5, "reason": "retrieval", "memory": [{"text": "Archive access code: RIVER-17.", "source_ids": ["c001"]}], "ref_tokens": 20}

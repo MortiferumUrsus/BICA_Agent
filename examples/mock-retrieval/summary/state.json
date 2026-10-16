@@ -1,0 +1,13 @@
+{
+  "goal": "Find the archive access code mentioned earlier.",
+  "plan": [
+    "Read relevant evidence",
+    "Answer the current question"
+  ],
+  "current_step": "Read relevant evidence",
+  "last_result": "RIVER-17",
+  "completed_results": [
+    "19 November 2026",
+    "RIVER-17"
+  ]
+}

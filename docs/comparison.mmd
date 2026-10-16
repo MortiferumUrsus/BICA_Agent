@@ -1,0 +1,16 @@
+flowchart LR
+    inputState["Цель, память, фрагмент"]
+    summaryCall["summary: пересказ"]
+    assessment["reflexive: оценка"]
+    compression["Сжатие"]
+    verification["Проверка фактов"]
+    savedMemory["Новая память"]
+    inputState --> summaryCall
+    summaryCall --> savedMemory
+    inputState --> assessment
+    assessment --> compression
+    compression --> verification
+    verification --> savedMemory
+    style summaryCall fill:#e8eef7,stroke:#385b82
+    style assessment fill:#f1eafa,stroke:#75528c
+    style verification fill:#f1eafa,stroke:#75528c

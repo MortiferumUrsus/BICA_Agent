@@ -98,6 +98,6 @@ class MockClient:
             if answer:
                 return {"status": "answer", "answer": answer, "query": "", "source_ids": ids}
             allowed = body["retrieval_allowed"]
-            query = "Archive access code" if "access code" in question else body["question"]
+            query = "Archive access code" if "access code" in question else " ".join(body["question"].splitlines()[0].split()[:5])[:160]
             return {"status": "retrieve" if allowed else "insufficient_data", "answer": "", "query": query if allowed else "", "source_ids": []}
         raise ValueError(stage)

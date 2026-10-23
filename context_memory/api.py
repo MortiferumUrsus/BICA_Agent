@@ -22,9 +22,15 @@ class HTTPClient:
     """One explicitly selected model and one cumulative generation budget."""
 
     def __init__(self, provider, model, config, budget_usd=None, api_key=None,
-                 base_url=None, transport=None, sleep=time.sleep):
-        if provider not in {"openrouter", "ollama"}:
-            raise APIError("Provider must be openrouter or ollama")
+                 base_url=None, transport=None, sleep=time.sleep, seed=42,
+                 timeout_s=60, local_context_tokens=8192):
+        if provider not in {"openrouter", "ollama", "openai"}:
+            raise APIError("Provider must be openrouter, ollama or openai")
+        if type(seed) is not int or type(local_context_tokens) is not int or local_context_tokens <= 0:
+            raise APIError("Invalid local runtime options")
+        if not isinstance(timeout_s, (int, float)) or not math.isfinite(timeout_s) or timeout_s <= 0:
+            raise APIError("timeout_s must be positive")
+        self.seed, self.local_context_tokens = seed, local_context_tokens
         if not isinstance(model, str) or not model.strip():
             raise APIError("An explicit model identifier is required")
         self.provider, self.model, self.config = provider, model.strip(), config
@@ -50,14 +56,14 @@ class HTTPClient:
             if self.base_url != "https://openrouter.ai/api/v1":
                 raise APIError("OpenRouter base URL must be https://openrouter.ai/api/v1")
         else:
-            self.base_url = (base_url or "http://127.0.0.1:11434").rstrip("/")
+            self.base_url = (base_url or ("http://127.0.0.1:11434" if provider == "ollama" else "http://127.0.0.1:8000/v1")).rstrip("/")
             self._validate_local_url()
             if re.search(r"(?:^|[/:_-])cloud(?:$|[/:_-])", self.model, re.I):
                 raise APIError("Ollama cloud model identifiers are not allowed")
         headers = {"Content-Type": "application/json"}
         if self._api_key:
             headers["Authorization"] = "Bearer " + self._api_key
-        self._http = httpx.Client(headers=headers, timeout=60.0, transport=transport,
+        self._http = httpx.Client(headers=headers, timeout=timeout_s, transport=transport,
                                   follow_redirects=False, trust_env=False)
 
     def _validate_local_url(self):
@@ -70,7 +76,7 @@ class HTTPClient:
             raise APIError("Ollama requires a valid loopback HTTP(S) base URL") from None
         if (not loopback or parsed.scheme not in {"http", "https"}
                 or parsed.username or parsed.password or parsed.query or parsed.fragment
-                or parsed.path not in {"", "/"}):
+                or parsed.path not in ({"", "/"} if self.provider == "ollama" else {"/v1"})):
             raise APIError("Ollama requires a loopback HTTP(S) base URL without a path")
 
     def close(self):
@@ -101,7 +107,7 @@ class HTTPClient:
 
     def build_payload(self, messages, schema):
         """The complete POST body; no hidden schema or prompt is added later."""
-        if self.provider == "openrouter":
+        if self.provider in {"openrouter", "openai"}:
             payload = {
                 "model": self.model, "messages": messages, "stream": False,
                 "temperature": 0, "max_tokens": self.config.max_output_tokens,
@@ -110,11 +116,15 @@ class HTTPClient:
                 "provider": {"require_parameters": True},
                 "plugins": [{"id": "context-compression", "enabled": False}],
             }
+            if self.provider == "openai":
+                payload.pop("plugins")
+                payload.pop("provider")
+                payload["seed"] = self.seed
         else:
             payload = {
                 "model": self.model, "messages": messages, "stream": False,
                 "format": schema, "options": {"temperature": 0,
-                    "num_predict": self.config.max_output_tokens, "num_ctx": 8192},
+                    "num_predict": self.config.max_output_tokens, "num_ctx": self.local_context_tokens, "seed": self.seed},
             }
         return copy.deepcopy(payload)
 
@@ -154,6 +164,11 @@ class HTTPClient:
                     or "text" not in architecture.get("input_modalities", [])
                     or "text" not in architecture.get("output_modalities", [])):
                 raise APIError("Selected model does not advertise text input and output")
+        elif self.provider == "openai":
+            models = self._metadata("GET", "/models").get("data", [])
+            model = next((m for m in models if isinstance(m, dict) and m.get("id") == self.model), None) if isinstance(models, list) else None
+            if model is None:
+                raise APIError("Selected model is absent from local server /models")
         else:
             model = self._metadata("POST", "/api/show", {"model": self.model})
             if model.get("remote_host") or model.get("remote_model"):
@@ -161,6 +176,7 @@ class HTTPClient:
             if "completion" not in (model.get("capabilities") or []):
                 raise APIError("Selected Ollama model does not advertise text completion")
         self._ready = True
+        self.model_metadata = self._sanitize(model)
         return {"provider": self.provider, "model": self.model,
                 "ready": True, "generation_performed": False}
 
@@ -179,7 +195,7 @@ class HTTPClient:
         usage, response_id = {}, None
         if isinstance(response, dict):
             response_id = response.get("id")
-            if self.provider == "openrouter":
+            if self.provider in {"openrouter", "openai"}:
                 usage = response.get("usage") or {}
                 if not isinstance(usage, dict):
                     usage = {}
@@ -188,7 +204,7 @@ class HTTPClient:
                          "completion_tokens": response.get("eval_count")}
                 if all(isinstance(v, int) for v in usage.values()):
                     usage["total_tokens"] = sum(usage.values())
-        cost = 0.0 if self.provider == "ollama" else usage.get("cost")
+        cost = usage.get("cost") if self.provider == "openrouter" else 0.0
         if (isinstance(cost, bool) or not isinstance(cost, (int, float))
                 or not math.isfinite(cost) or cost < 0):
             cost = None
@@ -204,7 +220,7 @@ class HTTPClient:
             "error_type": "APIError" if error else None,
             "request_ref_tokens": count(payload),
             "cost_basis": ("local API charge; local compute excluded"
-                           if self.provider == "ollama" else "OpenRouter usage.cost"),
+                           if self.provider != "openrouter" else "OpenRouter usage.cost"),
         })
         self.records.append(record)
         return record
@@ -237,7 +253,7 @@ class HTTPClient:
         if response.get("error"):
             raise APIError("Provider returned an error object")
         try:
-            if self.provider == "openrouter":
+            if self.provider in {"openrouter", "openai"}:
                 choice = response["choices"][0]
                 if choice.get("finish_reason") != "stop":
                     raise ResponseError("Model response was truncated or did not finish normally")
@@ -258,8 +274,9 @@ class HTTPClient:
             raise ResponseError("Model answer must be a JSON object")
         try:
             Draft202012Validator(schema).validate(parsed)
-        except ValidationError:
-            raise ResponseError("Model answer does not match the required JSON schema") from None
+        except ValidationError as exc:
+            path = "/".join(map(str, exc.absolute_path))
+            raise ResponseError(f"Model answer violates JSON schema: {exc.validator} at {path}") from None
         return parsed
 
     def complete(self, stage, messages, schema):
@@ -274,7 +291,7 @@ class HTTPClient:
         self._check_limits()
         if not self._ready:
             self.preflight()
-        path = "/chat/completions" if self.provider == "openrouter" else "/api/chat"
+        path = "/api/chat" if self.provider == "ollama" else "/chat/completions"
         for attempt in range(1, 4):
             self._check_limits()
             self.attempts += 1

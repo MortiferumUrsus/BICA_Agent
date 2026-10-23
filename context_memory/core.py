@@ -27,6 +27,7 @@ class Controller:
         self.answers = []
         self.version = 0
         self.record_start = len(client.records)
+        self.flushed_records = self.record_start
         self.started = time.perf_counter()
         self.metrics = {"max_memory_ref_tokens": 0, "max_request_ref_tokens": 0,
                         "compressions": 0, "retrievals": 0, "reread_ref_tokens": 0, "input_ref_tokens": 0}
@@ -57,6 +58,7 @@ class Controller:
                     field = value["source_ids"]
                     if ids:
                         field["items"]["enum"] = sorted(ids)
+                        field["maxItems"] = min(field.get("maxItems", 6), len(ids))
                     else:
                         field["maxItems"] = 0
                 for child in value.values():
@@ -65,6 +67,8 @@ class Controller:
                 for child in value:
                     constrain(child)
         constrain(schema)
+        if stage == "answer" and body.get("choices"):
+            schema["properties"]["answer"]["enum"] = ["", *body["choices"]]
         return messages, schema, count(self.client.build_payload(messages, schema))
 
     def _call(self, stage, body):
@@ -74,11 +78,27 @@ class Controller:
             raise LimitError(f"{stage} request {size} + output reserve {self.config.max_output_tokens} exceeds window {self.config.window_ref_tokens}")
         self.metrics["max_request_ref_tokens"] = max(self.metrics["max_request_ref_tokens"], total)
         self.trace("call", stage=stage, input_ref_tokens=size, reserved_output_ref_tokens=self.config.max_output_tokens)
-        response = self.client.complete(stage, messages, schema)
-        try:
-            jsonschema.validate(response, schema)
-        except jsonschema.ValidationError as exc:
-            raise ResponseError(f"{stage}: response violates JSON schema at {list(exc.absolute_path)}") from exc
+        for attempt in range(self.config.format_retries + 1):
+            try:
+                try:
+                    response = self.client.complete(stage, messages, schema)
+                finally:
+                    for record in self.client.records[self.flushed_records:]:
+                        append_jsonl(self.run_dir / "api_calls.jsonl", record)
+                    self.flushed_records = len(self.client.records)
+                jsonschema.validate(response, schema)
+                break
+            except (ResponseError, jsonschema.ValidationError) as exc:
+                reason = f"Invalid JSON schema response at stage {stage}"
+                self.trace("format_error", stage=stage, attempt=attempt + 1, error=reason)
+                if attempt == self.config.format_retries:
+                    raise ResponseError(reason) from exc
+                # Retry from the same authorized state; never feed raw invalid output back.
+                retry_body = {**body, "format_correction": "Previous response was invalid. Return only JSON matching the schema, with unique source_ids and short factual records."}
+                messages, schema, size = self._request(stage, retry_body)
+                if size + self.config.max_output_tokens > self.config.window_ref_tokens:
+                    raise LimitError("No room for a format correction request") from exc
+                self.metrics["max_request_ref_tokens"] = max(self.metrics["max_request_ref_tokens"], size + self.config.max_output_tokens)
         if count(response) > self.config.max_output_tokens:
             raise LimitError(f"{stage} response exceeds reference output reserve")
         return response
@@ -180,9 +200,12 @@ class Controller:
                    selected_facts=assessment["selected_facts"] if assessment else None,
                    memory_before=before, memory_after=self.memory, verification=verification)
 
-    def _decision(self, question, retrieval_allowed):
-        result = self._call("answer", {"goal": self.state["goal"], "question": question,
-                         "state": self.state, "memory": self.memory, "retrieval_allowed": retrieval_allowed})
+    def _decision(self, question, retrieval_allowed, choices=None):
+        body = {"goal": self.state["goal"], "question": question,
+                "state": self.state, "memory": self.memory, "retrieval_allowed": retrieval_allowed}
+        if choices:
+            body["choices"] = choices
+        result = self._call("answer", body)
         self.journal.validate_ids(result["source_ids"])
         if result["status"] == "answer" and not result["answer"].strip():
             result = {"status": "insufficient_data", "answer": "", "query": "", "source_ids": []}
@@ -190,8 +213,8 @@ class Controller:
             result = {"status": "insufficient_data", "answer": "", "query": "", "source_ids": []}
         return result
 
-    def checkpoint(self, question):
-        first = self._decision(question, True)
+    def checkpoint(self, question, choices=None):
+        first = self._decision(question, True, choices)
         outcome = {"question": question, "before_retrieval": first, "final": None, "retrieved_ids": []}
         self.answers.append(outcome)
         self.trace("decision_before_retrieval", question=question, decision=first)
@@ -210,7 +233,7 @@ class Controller:
                     self.metrics["reread_ref_tokens"] += count(part)
                     self.update([{**chunk, "text": part}], reason="retrieval")
                     text = text[len(part):]
-            final = self._decision(question, False)
+            final = self._decision(question, False, choices)
         outcome["final"] = final
         self.trace("checkpoint", **outcome)
         if final["status"] == "answer":
@@ -234,6 +257,10 @@ class Controller:
                   "metrics": metrics, "elapsed_s": round(time.perf_counter() - self.started, 3)}
         result["prompt_sha256"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                     for p in sorted((Path(__file__).parent / "prompts").glob("*.txt"))}
+        result["compression_verifier"] = {"role": "internal_memory_check", "used_for_final_score": False}
+        result["runtime"] = {"seed": getattr(self.client, "seed", None),
+                             "local_context_tokens": getattr(self.client, "local_context_tokens", None),
+                             "model_metadata": getattr(self.client, "model_metadata", None)}
         write_report(self.run_dir, result)
         return result
 

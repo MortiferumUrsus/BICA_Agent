@@ -1,0 +1,18 @@
+{
+  "checks": [
+    {
+      "mode": "summary",
+      "pipeline_completed": true,
+      "answer_correct": true
+    },
+    {
+      "mode": "reflexive",
+      "pipeline_completed": true,
+      "answer_correct": true
+    }
+  ],
+  "passed": true,
+  "evaluator": "exact_match_code",
+  "provider": "mock",
+  "model": "deterministic-demo-fixture"
+}

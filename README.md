@@ -7,6 +7,8 @@
 
 Исходный текст хранится в журнале. Когда данных в памяти не хватает, модель может запросить поиск по уже прочитанным фрагментам. Поддерживаются Ollama, OpenRouter и mock-ответы для тестов.
 
+Версия 0.2 добавляет PersonaMem, отдельную оценку ответов без LLM-судьи, проверочный запуск `smoke`, планирование без API и подключение GPU-сервера через OpenAI-совместимый API. [Порядок тестирования и готовые команды](docs/testing.md), [найденные бенчмарки и протокол эксперимента](docs/benchmarks.md).
+
 ## Установка
 
 Python 3.11+. В PowerShell:
@@ -30,6 +32,7 @@ python -m pip install -e ".[dev,bench]"
 ```bash
 python -m context_memory doctor
 python -m pytest
+python -m context_memory smoke
 ```
 
 Версии проверенной среды указаны в [requirements-tested.txt](requirements-tested.txt).
@@ -83,7 +86,18 @@ python -m context_memory demo --name supplier --mode both --live --budget-usd 1
 
 Размеры измеряются токенизатором `cl100k_base`, независимо от модели. Учитывается весь JSON запроса, включая инструкции и схему ответа. При нехватке места входной фрагмент уменьшается. Лимиты меняются флагами, например `--memory-ref-tokens 256`. Нативные токены и стоимость из API записываются отдельно; неизвестные значения сохраняются как `null`.
 
-## BABILong
+## Бенчмарки
+
+Основной подключённый набор для меняющихся предпочтений — PersonaMem. Подготовка без вызовов модели:
+
+```bash
+python -m context_memory fetch-benchmark --dataset personamem
+python -m context_memory benchmark --dataset personamem --dry-run --provider ollama --model qwen3:4b-instruct-2507-q4_K_M --max-api-calls 1500
+```
+
+Генерация с `--no-score` не открывает эталоны. После неё `python -m context_memory evaluate runs/имя-прогона --data-dir data/personamem` оценивает сохранённые ответы кодом. Подробности — в [инструкции](docs/testing.md). Внутренняя проверка памяти не используется как итоговая оценка.
+
+BABILong остаётся дополнительной проверкой извлечения факта:
 
 ```bash
 python -m context_memory fetch-benchmark

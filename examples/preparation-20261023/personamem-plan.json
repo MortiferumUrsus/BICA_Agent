@@ -1,0 +1,57 @@
+{
+  "dataset": "personamem",
+  "split": "eval",
+  "dataset_manifest_sha256": "de982f73808fae4176bbefd8f929c506795bd75bc41e1db3296db2028681f366",
+  "ids": [
+    "personamem-32k-00052",
+    "personamem-32k-00053",
+    "personamem-32k-00054",
+    "personamem-32k-00055",
+    "personamem-32k-00056"
+  ],
+  "modes": [
+    "summary",
+    "reflexive"
+  ],
+  "config": {
+    "window_ref_tokens": 4096,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 256,
+    "chunk_ref_tokens": 1024,
+    "max_output_tokens": 768,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 1500,
+    "format_retries": 1
+  },
+  "presentation": "question_later",
+  "input_ref_tokens": [
+    27739,
+    27739,
+    27739,
+    27739,
+    27739
+  ],
+  "minimum_api_calls_estimate": 580,
+  "call_limit_below_estimate": false,
+  "estimate_note": "Excludes retrieval, format retries and extra adaptive chunks; actual calls can be higher.",
+  "provider": "ollama",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "seed": 42,
+  "seed_scope": "local providers",
+  "timeout_s": 60,
+  "local_context_tokens": 8192,
+  "mode_order": "alternate",
+  "evaluation": {
+    "method": "strict_choice_label",
+    "judge_model": null
+  },
+  "prompt_sha256": {
+    "answer.txt": "75a8a3e17824207b3749cfb258f6a5fd53be5a1e0251f5c4901a7d87ebcb1d4e",
+    "assess.txt": "269f0f81baa3c8b4648937b7ee7f43fd6d6ad00f9f300e701b485e4dbd3cb7c9",
+    "compress.txt": "bb8f320e99c12d9df0739c17e34afb67ce10ed3070ce9c6de357a6b1610478f5",
+    "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+    "summary.txt": "23ed0b344cfe05f2816e108347eddb90ae2560035c7ab7f29f89f52a6ee34023",
+    "verify.txt": "6706a52c9b22b7bd6c1a9bd98a335f2f5a25ebfcc9d776077fdc2650ff2ac9d1"
+  }
+}

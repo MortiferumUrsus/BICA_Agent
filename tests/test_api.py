@@ -125,7 +125,7 @@ def test_local_payload_usage_and_cost():
     assert api.complete("plan", MESSAGES, SCHEMA) == {"answer": "yes"}
     payload = json.loads(seen[0].content)
     assert payload["format"] == SCHEMA and not payload["stream"]
-    assert payload["options"] == {"temperature": 0, "num_predict": 768, "num_ctx": 8192}
+    assert payload["options"] == {"temperature": 0, "num_predict": 768, "num_ctx": 8192, "seed": 42}
     assert "authorization" not in seen[0].headers
     record = api.records[0]
     assert record["usage"]["total_tokens"] == 25

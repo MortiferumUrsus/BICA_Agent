@@ -148,6 +148,7 @@ def write_report(run_dir: Path, result: dict[str, Any]) -> Path:
         "local_ollama": "LOCAL MODEL (Ollama). API cost excludes local compute.",
         "ollama": "LOCAL MODEL (Ollama). API cost excludes local compute.",
         "openrouter": "OPENROUTER. Missing usage or cost is reported as unknown.",
+        "openai": "LOCAL API (OpenAI-compatible). API cost excludes local compute.",
     }.get(provider, f"Provider: {_cell(provider)}.")
     lines = [
         f"# Context memory — {_cell(result.get('kind', 'run'))}", "", provider_note, "",
@@ -157,6 +158,11 @@ def write_report(run_dir: Path, result: dict[str, Any]) -> Path:
         "## Configuration", "", "```json", json.dumps(result.get("config", {}), ensure_ascii=False, indent=2), "```", "",
     ]
     metrics = result.get("metrics", {})
+    if result.get("dataset"):
+        lines.extend([f"Dataset: `{_cell(result['dataset'])}`. Split: `{_cell(result.get('split'))}`.", ""])
+    evaluation = result.get("evaluation")
+    if evaluation:
+        lines.extend([f"Evaluation: `{_cell(evaluation['method'])}`. Judge model: none (reference-based code).", ""])
     lines.extend(["## Measured totals", ""] + _metrics_table(metrics))
     if "elapsed_s" in result:
         lines.extend(["", f"Wall time: {_cell(result['elapsed_s'])} seconds."])
@@ -175,6 +181,18 @@ def write_report(run_dir: Path, result: dict[str, Any]) -> Path:
             values = [mode, summary.get("requested"), summary.get("processed"), summary.get("correct"), wrong]
             values.extend(summary.get(key) for key in ("failed_examples", "infra_errors", "model_output_errors", "limit_errors", "accuracy"))
             lines.append("| " + " | ".join(_cell(value) for value in values) + " |")
+        categories = [(mode, kind, values) for mode, summary in comparison.items() for kind, values in summary.get("by_question_type", {}).items()]
+        if categories:
+            lines.extend(["", "| Mode | Question type | Requested | Completed | Correct | Accuracy |", "| --- | --- | ---: | ---: | ---: | ---: |"])
+            for mode, kind, values in categories:
+                lines.append("| " + " | ".join(_cell(v) for v in [mode, kind, values["requested"], values["processed"], values["correct"], values["accuracy"]]) + " |")
+        retrieval_scores = [(mode, summary) for mode, summary in comparison.items() if "correct_before_retrieval" in summary]
+        if retrieval_scores:
+            lines.extend(["", "| Mode | Accuracy before retrieval | Final accuracy | Correct after retrieval only |", "| --- | ---: | ---: | ---: |"])
+            for mode, summary in retrieval_scores:
+                recovered = sum(e.get("correct") is True and e.get("correct_before_retrieval") is not True for e in result.get("examples", []) if e["mode"] == mode)
+                values = [mode, summary["correct_before_retrieval"] / summary["requested"], summary["accuracy"], recovered]
+                lines.append("| " + " | ".join(_cell(v) for v in values) + " |")
         lines.extend([
             "", "| Mode | Max memory | Compressions | Retrievals | Re-read tokens | Calls | Tokens | Cost USD | Seconds |",
             "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",

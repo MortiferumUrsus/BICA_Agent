@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "date": "2026-10-23",
+  "unit_tests_passed": 167,
+  "wheel_build": "passed",
+  "dataset_download": "PersonaMem 32k native files, pinned commit and SHA256",
+  "mock_personamem_debug": {
+    "completed_modes": [
+      "summary",
+      "reflexive"
+    ],
+    "full_history_preserved": true,
+    "max_request_with_reserve_ref_tokens": 2367,
+    "window_ref_tokens": 4096,
+    "scored_by": "strict_choice_label code after inference",
+    "model_quality_measured": false
+  },
+  "new_real_model_run": false,
+  "real_run_blocker": "Automatic approval review rejected background Ollama startup; no reason supplied",
+  "paid_api_calls": 0
+}

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import sqlite3
 
-from context_memory.paid_openai import PRICES
+from context_memory.paid_openai import usage_cost
 from context_memory.storage import write_json
 from context_memory.study import implementation_matches, sha
 from context_memory.tokens import count
@@ -50,19 +50,20 @@ def audit(root):
                 response_models[body['model']]+=1
                 assert body['model']==record['model'], f'Model changed: {path}'
     calls=[]
-    for path in root.rglob('api_calls.jsonl'):
-        calls.extend(json.loads(line) for line in path.read_text(encoding='utf-8').splitlines())
+    roots=[root]
+    if protocol.get('parent_study'):roots.append(Path(protocol['parent_study']))
+    for directory in roots:
+        for path in directory.rglob('api_calls.jsonl'):
+            calls.extend(json.loads(line) for line in path.read_text(encoding='utf-8').splitlines())
     identities=[r['ledger_id'] for r in calls]
     assert len(identities)==len(set(identities)), 'Duplicate physical requests in logs'
-    with sqlite3.connect(root/'budget.sqlite3') as db:
+    with sqlite3.connect(protocol.get('ledger_path',root/'budget.sqlite3')) as db:
         ledger=db.execute('SELECT id,charged,state FROM calls').fetchall()
     assert {r[0] for r in ledger}==set(identities), 'Missing or unaccounted physical request'
     assert not any(r[2]=='pending' for r in ledger), 'A request is still pending'
     for record in calls:
         if record['cost_usd'] is not None and record.get('http_status')==200:
-            usage=record['usage'];rates=PRICES[record['model']]
-            cached=(usage.get('prompt_tokens_details') or {}).get('cached_tokens',0)
-            expected=((usage['prompt_tokens']-cached)*rates[0]+cached*rates[1]+usage['completion_tokens']*rates[2])/1e6
+            expected=usage_cost(record['model'],record['usage'])
             assert abs(record['cost_usd']-expected)<1e-9
     charged=sum(r[1] for r in ledger)
     assert charged<=protocol['budget_usd']

@@ -6,10 +6,28 @@ import pytest
 
 from context_memory.config import Config
 from context_memory.errors import APIError, LimitError, ResponseError
-from context_memory.paid_openai import BudgetLedger, OpenAIClient
+from context_memory.paid_openai import BudgetLedger, OpenAIClient, usage_cost
 
 MODEL = "gpt-5.4-nano-2026-03-17"
 SCHEMA = {"type": "object", "properties": {"answer": {"type": "string"}}, "required": ["answer"], "additionalProperties": False}
+
+
+def test_cache_writes_are_total_rate_not_additional_charge():
+    u={'prompt_tokens':1000,'completion_tokens':100,'prompt_tokens_details':{'cached_tokens':200,'cache_write_tokens':500}}
+    assert usage_cost('gpt-6.1-sol',u)==pytest.approx((300*2+200*.1+500*2.5+100*10)/1e6)
+    u['prompt_tokens_details']['cache_write_tokens']=900
+    assert usage_cost('gpt-6.1-sol',u) is None
+
+
+def test_explicit_budget_revision_retains_spend(tmp_path):
+    ledger=BudgetLedger(tmp_path/'ledger.sqlite3',26)
+    identity=ledger.reserve(MODEL,'answer',10)
+    ledger.settle(identity,9.37739709)
+    ledger.authorize_limit_change(26,28,'User authorized spending remaining allocation')
+    reopened=BudgetLedger.open_existing(ledger.path)
+    assert reopened.snapshot()['limit_usd']==28
+    assert reopened.snapshot()['accounted_usd']==pytest.approx(9.37739709)
+    with pytest.raises(ValueError):ledger.authorize_limit_change(26,30,'stale limit')
 
 
 def client(tmp_path, response, **kwargs):

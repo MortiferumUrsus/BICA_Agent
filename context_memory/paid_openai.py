@@ -23,8 +23,22 @@ PRICES = {
     "gpt-4.1-mini-2025-04-14": (0.40, 0.10, 1.60),
     "gpt-5.4-nano-2026-03-17": (0.20, 0.02, 1.25),
     "gpt-5.4-mini-2026-03-17": (0.75, 0.075, 4.50),
+    "gpt-6.1-sol": (2.0, 0.10, 10.0),
+    "gpt-6-astra": (10.0, 1.0, 50.0),
 }
 PRICE_SOURCE = "https://developers.openai.com/api/docs/pricing"
+CACHE_WRITE_RATES = {"gpt-6.1-sol": 2.50, "gpt-6-astra": 12.50}
+
+
+def usage_cost(model, usage):
+    rates = PRICES[model]
+    inp, out = usage.get("prompt_tokens"), usage.get("completion_tokens")
+    details = usage.get("prompt_tokens_details") or {}
+    cached, writes = details.get("cached_tokens", 0), details.get("cache_write_tokens", 0)
+    if not all(type(v) is int and v >= 0 for v in (inp, out, cached, writes)) or cached + writes > inp:
+        return None
+    write_rate = CACHE_WRITE_RATES.get(model, rates[0])
+    return ((inp-cached-writes)*rates[0]+cached*rates[1]+writes*write_rate+out*rates[2])/1e6
 
 
 def read_api_key(path=None):
@@ -60,6 +74,28 @@ class BudgetLedger:
 
     def connect(self):
         return sqlite3.connect(self.path, timeout=30)
+
+    def authorize_limit_change(self, expected_limit, new_limit, reason):
+        """Explicit authorization only; keep every previous charge and an audit row."""
+        if not isinstance(reason, str) or not reason.strip() or not math.isfinite(new_limit) or new_limit <= 0:
+            raise ValueError("Valid new limit and authorization reason required")
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            current = db.execute("SELECT cap FROM settings WHERE id=1").fetchone()[0]
+            used = db.execute("SELECT COALESCE(SUM(charged),0) FROM calls").fetchone()[0]
+            if current != expected_limit or new_limit < used:
+                raise ValueError("Budget revision conflicts with current limit or spend")
+            db.execute("CREATE TABLE IF NOT EXISTS authorizations (changed_at TEXT, old_cap REAL, new_cap REAL, reason TEXT)")
+            db.execute("INSERT INTO authorizations VALUES (datetime('now'),?,?,?)", (current,new_limit,reason))
+            db.execute("UPDATE settings SET cap=? WHERE id=1", (new_limit,))
+
+    @classmethod
+    def open_existing(cls, path):
+        if not Path(path).is_file():
+            raise ValueError("Budget ledger does not exist")
+        with sqlite3.connect(path) as db:
+            cap = db.execute("SELECT cap FROM settings WHERE id=1").fetchone()[0]
+        return cls(path, cap)
 
     def snapshot(self):
         with self.connect() as db:
@@ -113,8 +149,8 @@ class OpenAIClient(HTTPClient):
             if reasoning_effort not in {None, "none"}:
                 raise APIError("GPT-4.1 does not support reasoning effort")
             reasoning_effort = None
-        elif reasoning_effort not in {"none", "low", "medium", "high", "xhigh"}:
-            raise APIError("Specify reasoning effort for GPT-5.4")
+        elif reasoning_effort not in ({"low", "medium", "high", "xhigh", "max"} if model.startswith("gpt-6") else {"none", "low", "medium", "high", "xhigh"}):
+            raise APIError("Specify a supported reasoning effort for the selected model")
         key = api_key or read_api_key(key_file)
         self.provider, self.model, self.config = "openai-api", model, config
         self.ledger, self.reasoning_effort = ledger, reasoning_effort
@@ -174,7 +210,7 @@ class OpenAIClient(HTTPClient):
             self.preflight()
         rates = PRICES[self.model]
         # Bytes upper-bound byte-BPE input tokens, with additional framing margin.
-        reservation = ((len(dumps(payload).encode("utf-8")) + 1024) * rates[0]
+        reservation = ((len(dumps(payload).encode("utf-8")) + 1024) * max(rates[0], CACHE_WRITE_RATES.get(self.model, rates[0]))
                        + self.config.max_output_tokens * rates[2]) / 1e6
         for attempt in range(1, 4):
             if self.attempts >= self.config.max_api_calls:
@@ -198,11 +234,8 @@ class OpenAIClient(HTTPClient):
                         self._fatal_error = error
                 else:
                     usage = body.get("usage", {})
-                    inp, out = usage.get("prompt_tokens"), usage.get("completion_tokens")
-                    cached = (usage.get("prompt_tokens_details") or {}).get("cached_tokens", 0)
-                    if all(type(v) is int and v >= 0 for v in (inp, out, cached)) and cached <= inp:
-                        cost = ((inp - cached) * rates[0] + cached * rates[1] + out * rates[2]) / 1e6
-                    else:
+                    cost = usage_cost(self.model, usage)
+                    if cost is None:
                         error = "OpenAI usage missing; conservative charge retained"
                         self._fatal_error = error
             except httpx.TransportError as exc:

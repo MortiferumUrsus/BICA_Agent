@@ -1,0 +1,1456 @@
+{
+  "version": 2,
+  "date": "2026-11-01",
+  "seed": 20261101,
+  "budget_usd": 28,
+  "profiles": {
+    "6.1-sol-low": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "low"
+    },
+    "6-astra-low": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low"
+    },
+    "6.1-sol-medium-control": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "medium"
+    }
+  },
+  "config": {
+    "window_ref_tokens": 8192,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 512,
+    "chunk_ref_tokens": 2048,
+    "max_output_tokens": 2048,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 250,
+    "format_retries": 2
+  },
+  "prices_usd_per_million": {
+    "gpt-6.1-sol": [
+      2.0,
+      0.1,
+      10.0
+    ],
+    "gpt-6-astra": [
+      10.0,
+      1.0,
+      50.0
+    ]
+  },
+  "price_source": "https://developers.openai.com/api/docs/pricing",
+  "inputs_sha256": "a3f06d8e22cb0f9afe129c57e95b8a566469127f58cc6c2ad9629c5f299a1a70",
+  "implementation_sha256": {
+    "core.py": "cf29d89b4997fd8259ea2442042a25a62319acee7ea41061e4e11e1d5130e1af",
+    "paid_openai.py": "8d27bc8961a7238cb8c271c759c1eeba55cdc049ca6ed753db8986c9fb77f262",
+    "schemas.py": "668ad88975a8d616ebb5fb5786f823089a322bec8726d32ca6cecae8406d7aa6",
+    "storage.py": "bd2da3c148e2c588cab3ca9c3aada870211aaf85d165040027679d84fabf5585",
+    "tokens.py": "957b7f121f5dd655c28730787dc5407ba9dbe0c1923fd2350073a322524cbb9e",
+    "prompts/answer.txt": "75a8a3e17824207b3749cfb258f6a5fd53be5a1e0251f5c4901a7d87ebcb1d4e",
+    "prompts/assess.txt": "d60ade69ad3bed4ad9b30c1fafb34816764ed9ce3f30c1aa7ad1964cd0831cef",
+    "prompts/compress.txt": "42db61d9c84ff8a7045c6b0ccb3495069a8ea214267d26647a226aa9c94b7526",
+    "prompts/plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+    "prompts/summary.txt": "ff762f51ec48427e5ea8e8c9b84ebce78cba02f15bcd487e0628f8d6bdf8c944",
+    "prompts/verify.txt": "e119d19d36fee98b50e1f74bccbf2562c51d8f8505748adb718169d5bf8ef8c7"
+  },
+  "dataset_manifest_sha256": {
+    "personamem": "de982f73808fae4176bbefd8f929c506795bd75bc41e1db3296db2028681f366",
+    "babilong": "c46bcf15d0e834062fc24bda93185db8ccdbe4c413a35b72c903903b28f4afc2"
+  },
+  "tasks": [
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00018",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00024",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00576",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00016",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00075",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00428",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00271",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-000",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-007",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00007",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00347",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00540",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00299",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-005",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00077",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00576",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00449",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00008",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00271",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00449",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-005",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00194",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00019",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-011",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00005",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00015",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00013",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00021",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00576",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-011",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00015",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00075",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00012",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00428",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-006",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00506",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-006",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00012",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00506",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00386",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00017",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00347",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00077",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00023",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00009",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-007",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-010",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00014",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-008",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00271",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00075",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00013",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-001",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00022",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00428",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-008",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00194",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00014",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00347",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00540",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00077",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00364",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00144",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00428",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00386",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-010",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00299",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-002",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-009",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-003",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00194",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00005",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-009",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00010",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00010",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00506",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-000",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00144",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00018",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-004",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00347",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00540",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00364",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00449",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00299",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00271",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00008",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00364",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00006",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00017",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00364",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00075",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00144",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00144",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00019",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00299",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00024",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00009",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00023",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-002",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00386",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00386",
+      "dataset": "personamem",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00449",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00020",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00021",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-001",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-004",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00007",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00077",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00194",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00016",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "goal-shift-003",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00011",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00576",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00006",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00020",
+      "dataset": "babilong",
+      "mode": "summary"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00506",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "personamem-32k-00540",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00011",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6.1-sol-low",
+      "id": "qa1-8k-00022",
+      "dataset": "babilong",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-000",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-000",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-001",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-001",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-002",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-002",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-003",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-003",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-004",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-004",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-005",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-005",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-006",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-006",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-007",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-007",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-008",
+      "dataset": "goal_shift",
+      "mode": "summary"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "goal-shift-008",
+      "dataset": "goal_shift",
+      "mode": "reflexive"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00075",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00077",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00144",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00194",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00271",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00299",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00347",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6-astra-low",
+      "id": "personamem-32k-00364",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "mode": "full_context"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00075",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00077",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00144",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00194",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00271",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00299",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00347",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00364",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00386",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00428",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00449",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00506",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00540",
+      "dataset": "personamem",
+      "mode": "last_window"
+    },
+    {
+      "profile": "6.1-sol-medium-control",
+      "id": "personamem-32k-00576",
+      "dataset": "personamem",
+      "mode": "last_window"
+    }
+  ],
+  "selection": [
+    {
+      "id": "personamem-32k-00075",
+      "dataset": "personamem",
+      "question_type": "generalizing_to_new_scenarios",
+      "persona_id": "3"
+    },
+    {
+      "id": "personamem-32k-00364",
+      "dataset": "personamem",
+      "question_type": "provide_preference_aligned_recommendations",
+      "persona_id": "19"
+    },
+    {
+      "id": "personamem-32k-00131",
+      "dataset": "personamem",
+      "question_type": "recall_user_shared_facts",
+      "persona_id": "7"
+    },
+    {
+      "id": "personamem-32k-00386",
+      "dataset": "personamem",
+      "question_type": "recall_user_shared_facts",
+      "persona_id": "2"
+    },
+    {
+      "id": "personamem-32k-00314",
+      "dataset": "personamem",
+      "question_type": "recalling_the_reasons_behind_previous_updates",
+      "persona_id": "17"
+    },
+    {
+      "id": "personamem-32k-00144",
+      "dataset": "personamem",
+      "question_type": "suggest_new_ideas",
+      "persona_id": "8"
+    },
+    {
+      "id": "personamem-32k-00194",
+      "dataset": "personamem",
+      "question_type": "track_full_preference_evolution",
+      "persona_id": "9"
+    },
+    {
+      "id": "personamem-32k-00540",
+      "dataset": "personamem",
+      "question_type": "track_full_preference_evolution",
+      "persona_id": "16"
+    },
+    {
+      "id": "personamem-32k-00299",
+      "dataset": "personamem",
+      "question_type": "provide_preference_aligned_recommendations",
+      "persona_id": "15"
+    },
+    {
+      "id": "personamem-32k-00428",
+      "dataset": "personamem",
+      "question_type": "recall_user_shared_facts",
+      "persona_id": "4"
+    },
+    {
+      "id": "personamem-32k-00077",
+      "dataset": "personamem",
+      "question_type": "recall_user_shared_facts",
+      "persona_id": "6"
+    },
+    {
+      "id": "personamem-32k-00449",
+      "dataset": "personamem",
+      "question_type": "recalling_the_reasons_behind_previous_updates",
+      "persona_id": "5"
+    },
+    {
+      "id": "personamem-32k-00576",
+      "dataset": "personamem",
+      "question_type": "suggest_new_ideas",
+      "persona_id": "12"
+    },
+    {
+      "id": "personamem-32k-00347",
+      "dataset": "personamem",
+      "question_type": "track_full_preference_evolution",
+      "persona_id": "18"
+    },
+    {
+      "id": "personamem-32k-00271",
+      "dataset": "personamem",
+      "question_type": "generalizing_to_new_scenarios",
+      "persona_id": "13"
+    },
+    {
+      "id": "personamem-32k-00506",
+      "dataset": "personamem",
+      "question_type": "provide_preference_aligned_recommendations",
+      "persona_id": "14"
+    },
+    {
+      "id": "qa1-8k-00005",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00006",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00007",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00008",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00009",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00010",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00011",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00012",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00013",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00014",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00015",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00016",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00017",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00018",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00019",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00020",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00021",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00022",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00023",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "qa1-8k-00024",
+      "dataset": "babilong",
+      "question_type": "qa1"
+    },
+    {
+      "id": "goal-shift-000",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-001",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-002",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-003",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-004",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-005",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-006",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-007",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-008",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-009",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-010",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    },
+    {
+      "id": "goal-shift-011",
+      "dataset": "goal_shift",
+      "question_type": "price_update_then_new_goal"
+    }
+  ],
+  "primary_comparison": "reflexive minus summary, paired final correctness; all assigned runs in denominator",
+  "presentation": {
+    "personamem": "question_later",
+    "babilong": "question_first",
+    "goal_shift": "new goal revealed after first answer"
+  },
+  "baselines": {
+    "full_context": "65536-token window, no compression; reference with a larger context budget",
+    "last_window": "last 4096 reference tokens, no persistent memory"
+  },
+  "evaluation": {
+    "judge_model": null,
+    "targets_visible_to_solver": false
+  },
+  "limitations": [
+    "16 independent PersonaMem personas, one selected question each",
+    "One stochastic run per condition; no claim of statistical significance from point estimates",
+    "Synthetic goal shifts are a custom diagnostic, not AgentChangeBench",
+    "Low reasoning vs none ablation only on GPT-5.4 nano",
+    "Follow-up on the same eval examples, not an independent new holdout",
+    "GPT-6 model IDs have no dated snapshots in official model metadata",
+    "Astra subset size depends on remaining budget, never on observed correctness"
+  ],
+  "parent_study": "runs\\openai-first-20261101",
+  "ledger_path": "runs\\openai-first-20261101\\budget.sqlite3",
+  "prior_study_cost_usd": 9.37739709,
+  "cache_write_rates": {
+    "gpt-6.1-sol": 2.5,
+    "gpt-6-astra": 12.5
+  },
+  "astra_queue": [
+    "goal-shift-000",
+    "goal-shift-001",
+    "goal-shift-002",
+    "goal-shift-003",
+    "goal-shift-004",
+    "goal-shift-005",
+    "goal-shift-006",
+    "goal-shift-007",
+    "goal-shift-008",
+    "goal-shift-009",
+    "goal-shift-010",
+    "goal-shift-011",
+    "qa1-8k-00005",
+    "qa1-8k-00006",
+    "qa1-8k-00007",
+    "qa1-8k-00008",
+    "qa1-8k-00009",
+    "qa1-8k-00010",
+    "qa1-8k-00011",
+    "qa1-8k-00012",
+    "qa1-8k-00013",
+    "qa1-8k-00014",
+    "qa1-8k-00015",
+    "qa1-8k-00016",
+    "qa1-8k-00017",
+    "qa1-8k-00018",
+    "qa1-8k-00019",
+    "qa1-8k-00020",
+    "qa1-8k-00021",
+    "qa1-8k-00022",
+    "qa1-8k-00023",
+    "qa1-8k-00024",
+    "personamem-32k-00075",
+    "personamem-32k-00077",
+    "personamem-32k-00131",
+    "personamem-32k-00144",
+    "personamem-32k-00194",
+    "personamem-32k-00271",
+    "personamem-32k-00299",
+    "personamem-32k-00314",
+    "personamem-32k-00347",
+    "personamem-32k-00364",
+    "personamem-32k-00386",
+    "personamem-32k-00428",
+    "personamem-32k-00449",
+    "personamem-32k-00506",
+    "personamem-32k-00540",
+    "personamem-32k-00576"
+  ],
+  "astra_admission_rule": "Fixed order: all goal shifts, then BABILong, then PersonaMem. Admit complete summary/reflexive pairs only when remaining allocation covers 1.5x replayed Sol token cost at Astra rates plus USD 0.15. No accuracy-based selection.",
+  "astra_controls_rule": "After paired tests, try full_context then last_window on PersonaMem in sorted ID order. Single-call controls are admitted only if their full conservative request reservation fits the remaining allocation.",
+  "protocol_addenda": [
+    {
+      "date": "2026-11-01",
+      "change": "After Astra controls, spend any safely admissible residual on Sol medium single-call PersonaMem controls, full_context then last_window in sorted ID order. Same 2048 output cap.",
+      "reason": "Use the remaining authorized allocation on a reasoning-effort check.",
+      "new_eval_scores_inspected": false
+    }
+  ]
+}

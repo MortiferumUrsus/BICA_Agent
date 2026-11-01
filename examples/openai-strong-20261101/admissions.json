@@ -1,0 +1,574 @@
+[
+  {
+    "id": "goal-shift-000",
+    "remaining_usd": 5.266338709999999,
+    "admission_estimate_usd": 0.8293125,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-001",
+    "remaining_usd": 4.786761209999998,
+    "admission_estimate_usd": 0.8546250000000001,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-002",
+    "remaining_usd": 4.345266209999998,
+    "admission_estimate_usd": 0.9729187499999999,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-003",
+    "remaining_usd": 3.80437371,
+    "admission_estimate_usd": 0.99534375,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-004",
+    "remaining_usd": 3.2595637099999983,
+    "admission_estimate_usd": 0.8400187499999999,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-005",
+    "remaining_usd": 2.8270112099999984,
+    "admission_estimate_usd": 0.7654312499999999,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-006",
+    "remaining_usd": 2.419688709999999,
+    "admission_estimate_usd": 1.004775,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-007",
+    "remaining_usd": 1.9534362099999996,
+    "admission_estimate_usd": 0.9388875,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-008",
+    "remaining_usd": 1.4840987100000014,
+    "admission_estimate_usd": 0.9585750000000001,
+    "admitted": true
+  },
+  {
+    "id": "goal-shift-009",
+    "remaining_usd": 0.9991287100000008,
+    "admission_estimate_usd": 1.0487249999999997,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00075",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.137775,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00077",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.2243375,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00131",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.0280875,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00144",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.2078625,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00194",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.8254625,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00271",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.309975,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00299",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.9698875,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00314",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.3530625,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00347",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.881525,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00364",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.9503125,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00386",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.634225,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00428",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.5563375,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00449",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.1825375,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00506",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.1857,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00540",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 1.928975,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00576",
+    "profile": "6-astra-low",
+    "mode": "full_context",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 2.332175,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00075",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.9991287100000008,
+    "full_reservation_usd": 0.4103125,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00077",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.9426737100000011,
+    "full_reservation_usd": 0.4166875,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00131",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.8893187100000013,
+    "full_reservation_usd": 0.4270875,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00144",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.8336887100000006,
+    "full_reservation_usd": 0.4293875,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00194",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.7761212099999995,
+    "full_reservation_usd": 0.4422125,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00271",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.7167162100000013,
+    "full_reservation_usd": 0.4118125,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00299",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.6593737100000006,
+    "full_reservation_usd": 0.4295625,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00314",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.6006562100000004,
+    "full_reservation_usd": 0.4514,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00347",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.5414137100000005,
+    "full_reservation_usd": 0.45195,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00364",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.47910870999999844,
+    "full_reservation_usd": 0.4357125,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00386",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.426125,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00428",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.4269,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00449",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.448275,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00506",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.42435,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00540",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.4559375,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00576",
+    "profile": "6-astra-low",
+    "mode": "last_window",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.4292,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00075",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.4275625,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00077",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.444875,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00131",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.4219912100000016,
+    "full_reservation_usd": 0.405625,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00144",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3539277100000007,
+    "full_reservation_usd": 0.44158,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00194",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3539277100000007,
+    "full_reservation_usd": 0.3651,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00271",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3539277100000007,
+    "full_reservation_usd": 0.4620025,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00299",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3539277100000007,
+    "full_reservation_usd": 0.393985,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00314",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3539277100000007,
+    "full_reservation_usd": 0.27062,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00347",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.3763125,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00364",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.39007,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00386",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.3268525,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00428",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.311275,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00449",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.436515,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00506",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.4371475,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00540",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.3858025,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00576",
+    "profile": "6.1-sol-medium-control",
+    "mode": "full_context",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.4664425,
+    "admitted": false
+  },
+  {
+    "id": "personamem-32k-00075",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.3101817099999984,
+    "full_reservation_usd": 0.08207,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00077",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.2988107100000015,
+    "full_reservation_usd": 0.083345,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00131",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.2880697099999985,
+    "full_reservation_usd": 0.085425,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00144",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.2766637100000011,
+    "full_reservation_usd": 0.085885,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00194",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.2650502099999983,
+    "full_reservation_usd": 0.08845,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00271",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.25311921000000126,
+    "full_reservation_usd": 0.08237,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00299",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.2415007100000004,
+    "full_reservation_usd": 0.08592,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00314",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.22964720999999955,
+    "full_reservation_usd": 0.0902875,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00347",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.21779871000000028,
+    "full_reservation_usd": 0.0903975,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00364",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.2046877099999982,
+    "full_reservation_usd": 0.08715,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00386",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.19326420999999883,
+    "full_reservation_usd": 0.0852325,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00428",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.18267071000000001,
+    "full_reservation_usd": 0.0853875,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00449",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.17170970999999824,
+    "full_reservation_usd": 0.0896625,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00506",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.15945620999999832,
+    "full_reservation_usd": 0.0848775,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00540",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.14720771,
+    "full_reservation_usd": 0.091195,
+    "admitted": true
+  },
+  {
+    "id": "personamem-32k-00576",
+    "profile": "6.1-sol-medium-control",
+    "mode": "last_window",
+    "remaining_usd": 0.13525671000000017,
+    "full_reservation_usd": 0.0858475,
+    "admitted": true
+  }
+]

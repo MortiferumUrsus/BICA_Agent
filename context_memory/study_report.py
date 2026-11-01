@@ -144,7 +144,10 @@ def score(root):
         for mode in sorted({r["mode"] for r in rows if r["dataset"] == dataset}):
             subset = [{**r, "mode": r["profile"]} for r in rows if r["dataset"] == dataset and r["mode"] == mode and r["profile"] in {"5.4-nano-none", "5.4-nano-low"}]
             reasoning_comparisons.append({"dataset": dataset, "mode": mode, **paired(subset, "5.4-nano-none", "5.4-nano-low")})
-    budget = BudgetLedger(root/"budget.sqlite3",26).snapshot()
+    # A later authorized study can share the ledger. Historical reports retain
+    # their own closing balance instead of including future charges.
+    closing = root/"budget-snapshot.json"
+    budget = json.loads(closing.read_text(encoding="utf-8")) if closing.exists() else BudgetLedger.open_existing(root/"budget.sqlite3").snapshot()
     report = {"evaluation":{"judge_model":None,"method":"reference_only","denominator":"all protocol tasks, failures counted incorrect"},
               "summaries":summaries,"paired_comparisons":comparisons,"reasoning_comparisons":reasoning_comparisons,"budget":budget,"rows":rows}
     write_json(output/"results.json",report)

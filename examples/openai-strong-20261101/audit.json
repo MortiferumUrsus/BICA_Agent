@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "tasks": 174,
+  "complete_source_checks": 114,
+  "physical_requests_including_debug": 9683,
+  "max_memory_ref_tokens": 470,
+  "max_memory_method_request_including_output_reserve": 6222,
+  "served_models": {
+    "gpt-6.1-sol": 1878,
+    "gpt-6-astra": 313
+  },
+  "accounted_usd": 27.876314290000053,
+  "unknown_requests": 0,
+  "checks": [
+    "frozen implementation and inputs",
+    "all requested tasks present",
+    "complete source reconstruction for completed memory tasks",
+    "memory/state/window limits",
+    "requested and served model snapshots match",
+    "every ledger request has one physical trace",
+    "usage prices include cached input and all output tokens",
+    "total within shared budget"
+  ]
+}

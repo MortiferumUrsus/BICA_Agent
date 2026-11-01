@@ -1,0 +1,15 @@
+{
+  "version": "0.4.0",
+  "tests_passed": 182,
+  "wheel": "context_memory_mvp-0.4.0-py3-none-any.whl",
+  "followup_runs": 174,
+  "all_runs": 686,
+  "followup_api_calls_including_debug": 2295,
+  "followup_cost_usd": 18.4989172,
+  "total_cost_usd": 27.87631429,
+  "remaining_usd": 0.12368571000000017,
+  "audit_passed": true,
+  "unknown_requests": 0,
+  "errors": 0,
+  "judge_model": null
+}

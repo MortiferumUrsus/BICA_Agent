@@ -1,0 +1,14 @@
+{
+  "goal": "The purchasing priority has changed: choose the fastest supplier regardless of price and recover its contract code.",
+  "plan": [
+    "Keep last_result vendor code in memory.",
+    "Read available supplier data for delivery speed.",
+    "Select fastest supplier and recover its contract code."
+  ],
+  "current_step": "Keep last_result vendor code in memory.",
+  "last_result": "AG-88779-1",
+  "completed_results": [
+    "Vendor-01-D",
+    "AG-88779-1"
+  ]
+}

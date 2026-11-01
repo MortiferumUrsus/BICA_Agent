@@ -44,7 +44,10 @@ def parser():
     inspect.add_argument("--snapshot", type=Path)
     inspect.add_argument("--event-index", type=int, default=-1, help="Index among memory_update events")
     for command in (doctor, demo, benchmark, smoke):
-        command.add_argument("--provider", choices=["mock", "ollama", "openrouter", "openai"])
+        command.add_argument("--provider", choices=["mock", "ollama", "openrouter", "openai", "openai-api"])
+        command.add_argument("--key-file", type=Path, help="File containing only an OpenAI API key; never logged")
+        command.add_argument("--ledger", type=Path, default=Path("runs/openai-budget.sqlite3"))
+        command.add_argument("--reasoning-effort", choices=["none", "low", "medium", "high", "xhigh"], default="low")
         command.add_argument("--model", help="Explicit local model; OpenRouter uses OPENROUTER_MODEL")
         command.add_argument("--live", action="store_true", help="Enable paid OpenRouter calls only with --budget-usd")
         command.add_argument("--budget-usd", type=float)
@@ -63,6 +66,13 @@ def parser():
 
 def make_client(args, config):
     provider = args.provider or ("openrouter" if args.live else "mock")
+    if provider == "openai-api":
+        from .paid_openai import BudgetLedger, OpenAIClient
+        if not args.live or args.budget_usd is None:
+            raise ValueError("OpenAI API requires --live and --budget-usd")
+        return OpenAIClient(args.model, config, BudgetLedger(args.ledger, args.budget_usd),
+                            reasoning_effort=args.reasoning_effort, key_file=args.key_file,
+                            timeout_s=args.timeout_s)
     if provider == "mock":
         if args.live:
             raise ValueError("--live requires provider openrouter")

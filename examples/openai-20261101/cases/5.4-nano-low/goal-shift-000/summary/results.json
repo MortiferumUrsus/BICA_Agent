@@ -1,0 +1,204 @@
+{
+  "kind": "benchmark",
+  "name": "goal-shift-000",
+  "mode": "summary",
+  "provider": "openai-api",
+  "model": "gpt-5.4-nano-2026-03-17",
+  "config": {
+    "window_ref_tokens": 8192,
+    "memory_ref_tokens": 512,
+    "state_ref_tokens": 512,
+    "chunk_ref_tokens": 2048,
+    "max_output_tokens": 2048,
+    "max_retrieval_rounds": 1,
+    "retrieval_top_k": 2,
+    "max_api_calls": 250,
+    "format_retries": 2
+  },
+  "presentation": "question_first",
+  "status": "completed",
+  "error": null,
+  "answers": [
+    {
+      "question": "Which supplier is cheapest among those delivering within 5 days? Return its name only.",
+      "before_retrieval": {
+        "status": "answer",
+        "answer": "Vendor-00-A",
+        "query": "",
+        "source_ids": [
+          "c004",
+          "c001"
+        ]
+      },
+      "final": {
+        "status": "answer",
+        "answer": "Vendor-00-A",
+        "query": "",
+        "source_ids": [
+          "c004",
+          "c001"
+        ]
+      },
+      "retrieved_ids": []
+    },
+    {
+      "question": "What is the contract code of the supplier with the shortest delivery time, regardless of price? Return only the exact code.",
+      "before_retrieval": {
+        "status": "retrieve",
+        "answer": "",
+        "query": "fastest supplier contract_code Vendor-00-A delivery time contract_code",
+        "source_ids": []
+      },
+      "final": {
+        "status": "answer",
+        "answer": "AG-10894-7",
+        "query": "",
+        "source_ids": [
+          "c001"
+        ]
+      },
+      "retrieved_ids": [
+        "c001",
+        "c004"
+      ]
+    }
+  ],
+  "state": {
+    "goal": "The purchasing priority has changed: choose the fastest supplier regardless of price and recover its contract code.",
+    "plan": [
+      "read text to identify the updated rule: prioritize fastest supplier over price.",
+      "search the local source journal for the fastest supplier and its contract code.",
+      "keep the fastest supplier and contract code as useful facts in memory.",
+      "answer with the recovered contract code for the fastest supplier."
+    ],
+    "current_step": "read text to identify the updated rule: prioritize fastest supplier over price.",
+    "last_result": "AG-10894-7",
+    "completed_results": [
+      "Vendor-00-A",
+      "AG-10894-7"
+    ]
+  },
+  "memory": [
+    {
+      "text": "Purchasing priority is to choose the fastest supplier regardless of price. In provided data, the fastest option is Vendor-00-H with delivery_days=1 and contract_code=AG-10894-7 (price=82; payment=on delivery).",
+      "source_ids": [
+        "c001"
+      ]
+    },
+    {
+      "text": "Vendor-00-A now has price=50. All delivery times and contract codes are unchanged.",
+      "source_ids": [
+        "c004"
+      ]
+    }
+  ],
+  "metrics": {
+    "max_memory_ref_tokens": 188,
+    "max_request_ref_tokens": 4683,
+    "compressions": 7,
+    "retrievals": 1,
+    "reread_ref_tokens": 312,
+    "input_ref_tokens": 2562,
+    "api_calls": 12,
+    "attempts": 12,
+    "duration_s": 19.040795,
+    "api_errors": 0,
+    "response_errors": 0,
+    "known_prompt_tokens": 7333,
+    "prompt_tokens": 7333,
+    "unknown_prompt_tokens_calls": 0,
+    "known_completion_tokens": 2046,
+    "completion_tokens": 2046,
+    "unknown_completion_tokens_calls": 0,
+    "known_total_tokens": 9379,
+    "total_tokens": 9379,
+    "unknown_total_tokens_calls": 0,
+    "known_cost_usd": 0.0040241,
+    "unknown_cost_calls": 0,
+    "cost_usd": 0.0040241,
+    "stage_totals": {
+      "answer": {
+        "api_calls": 3,
+        "attempts": 3,
+        "duration_s": 3.19512,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 1591,
+        "prompt_tokens": 1591,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 238,
+        "completion_tokens": 238,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 1829,
+        "total_tokens": 1829,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.0006157,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.0006157
+      },
+      "plan": {
+        "api_calls": 2,
+        "attempts": 2,
+        "duration_s": 2.17724,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 296,
+        "prompt_tokens": 296,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 201,
+        "completion_tokens": 201,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 497,
+        "total_tokens": 497,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.00031045,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.00031045
+      },
+      "summary": {
+        "api_calls": 7,
+        "attempts": 7,
+        "duration_s": 13.668435,
+        "api_errors": 0,
+        "response_errors": 0,
+        "known_prompt_tokens": 5446,
+        "prompt_tokens": 5446,
+        "unknown_prompt_tokens_calls": 0,
+        "known_completion_tokens": 1607,
+        "completion_tokens": 1607,
+        "unknown_completion_tokens_calls": 0,
+        "known_total_tokens": 7053,
+        "total_tokens": 7053,
+        "unknown_total_tokens_calls": 0,
+        "known_cost_usd": 0.00309795,
+        "unknown_cost_calls": 0,
+        "cost_usd": 0.00309795
+      }
+    }
+  },
+  "elapsed_s": 20.124,
+  "prompt_sha256": {
+    "answer.txt": "75a8a3e17824207b3749cfb258f6a5fd53be5a1e0251f5c4901a7d87ebcb1d4e",
+    "assess.txt": "d60ade69ad3bed4ad9b30c1fafb34816764ed9ce3f30c1aa7ad1964cd0831cef",
+    "compress.txt": "42db61d9c84ff8a7045c6b0ccb3495069a8ea214267d26647a226aa9c94b7526",
+    "plan.txt": "505475cf31b0a399e67beb67db6734bc724bd5114bd94507d6ebf7ea0f970187",
+    "summary.txt": "ff762f51ec48427e5ea8e8c9b84ebce78cba02f15bcd487e0628f8d6bdf8c944",
+    "verify.txt": "e119d19d36fee98b50e1f74bccbf2562c51d8f8505748adb718169d5bf8ef8c7"
+  },
+  "compression_verifier": {
+    "role": "internal_memory_check",
+    "used_for_final_score": false
+  },
+  "runtime": {
+    "seed": null,
+    "reasoning_effort": "low",
+    "local_context_tokens": null,
+    "model_metadata": {
+      "id": "gpt-5.4-nano-2026-03-17",
+      "object": "model",
+      "created": 1773450837,
+      "owned_by": "system",
+      "shutdown_date": "2027-04-01"
+    }
+  }
+}

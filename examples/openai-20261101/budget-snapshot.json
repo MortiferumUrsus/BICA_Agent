@@ -1,0 +1,11 @@
+{
+  "limit_usd": 26.0,
+  "accounted_usd": 9.37739709,
+  "by_state": {
+    "settled": {
+      "calls": 7388,
+      "charged_usd": 9.37739709,
+      "reserved_usd": 65.3712907
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "text": "Purchasing priority is to choose the fastest supplier regardless of price. In provided data, the fastest option is Vendor-00-H with delivery_days=1 and contract_code=AG-10894-7 (price=82; payment=on delivery).",
+    "source_ids": [
+      "c001"
+    ]
+  },
+  {
+    "text": "Vendor-00-A now has price=50. All delivery times and contract codes are unchanged.",
+    "source_ids": [
+      "c004"
+    ]
+  }
+]

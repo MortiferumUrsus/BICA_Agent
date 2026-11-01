@@ -12,3 +12,7 @@ runs/
 .cache/
 build/
 dist/
+*OPENAI.txt
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm

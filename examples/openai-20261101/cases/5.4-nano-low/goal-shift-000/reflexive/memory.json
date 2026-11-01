@@ -1,0 +1,26 @@
+[
+  {
+    "text": "Vendor-00-A: price=50; delivery_days=5 (eligible: delivery_days<=5).",
+    "source_ids": [
+      "c004"
+    ]
+  },
+  {
+    "text": "Vendor-00-H: price=82; delivery_days=1 (eligible: delivery_days<=5).",
+    "source_ids": [
+      "c001"
+    ]
+  },
+  {
+    "text": "Vendor-00-C: price=99; delivery_days=3 (eligible: delivery_days<=5).",
+    "source_ids": [
+      "c001"
+    ]
+  },
+  {
+    "text": "Vendor-00-I: price=236; delivery_days=2 (eligible: delivery_days<=5).",
+    "source_ids": [
+      "c001"
+    ]
+  }
+]

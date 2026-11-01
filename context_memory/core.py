@@ -87,6 +87,9 @@ class Controller:
                         append_jsonl(self.run_dir / "api_calls.jsonl", record)
                     self.flushed_records = len(self.client.records)
                 jsonschema.validate(response, schema)
+                measured = count(response) if stage == "assess" else count(response.get("memory", []))
+                if stage in {"summary", "assess", "compress", "verify"} and measured > self.config.memory_ref_tokens and attempt < self.config.format_retries:
+                    raise ResponseError(f"Output used {measured} reference tokens; memory budget is {self.config.memory_ref_tokens}")
                 break
             except (ResponseError, jsonschema.ValidationError) as exc:
                 reason = f"Invalid JSON schema response at stage {stage}"
@@ -94,7 +97,7 @@ class Controller:
                 if attempt == self.config.format_retries:
                     raise ResponseError(reason) from exc
                 # Retry from the same authorized state; never feed raw invalid output back.
-                retry_body = {**body, "format_correction": "Previous response was invalid. Return only JSON matching the schema, with unique source_ids and short factual records."}
+                retry_body = {**body, "format_correction": "Previous response violated schema or token limits. Return only schema-valid JSON with unique source_ids. Make the factual records substantially shorter; aim for at most 70% of the supplied memory/assessment token budget, including JSON overhead."}
                 messages, schema, size = self._request(stage, retry_body)
                 if size + self.config.max_output_tokens > self.config.window_ref_tokens:
                     raise LimitError("No room for a format correction request") from exc
@@ -259,6 +262,7 @@ class Controller:
                                     for p in sorted((Path(__file__).parent / "prompts").glob("*.txt"))}
         result["compression_verifier"] = {"role": "internal_memory_check", "used_for_final_score": False}
         result["runtime"] = {"seed": getattr(self.client, "seed", None),
+                             "reasoning_effort": getattr(self.client, "reasoning_effort", None),
                              "local_context_tokens": getattr(self.client, "local_context_tokens", None),
                              "model_metadata": getattr(self.client, "model_metadata", None)}
         write_report(self.run_dir, result)

@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "tasks": 512,
+  "complete_source_checks": 384,
+  "physical_requests_including_debug": 7388,
+  "max_memory_ref_tokens": 512,
+  "max_memory_method_request_including_output_reserve": 6308,
+  "served_models": {
+    "gpt-5.4-nano-2026-03-17": 3456,
+    "gpt-5.4-mini-2026-03-17": 1740,
+    "gpt-4.1-mini-2025-04-14": 1694
+  },
+  "accounted_usd": 9.377397090000008,
+  "unknown_requests": 0,
+  "checks": [
+    "frozen implementation and inputs",
+    "all requested tasks present",
+    "complete source reconstruction for completed memory tasks",
+    "memory/state/window limits",
+    "requested and served model snapshots match",
+    "every ledger request has one physical trace",
+    "usage prices include cached input and all output tokens",
+    "total within shared budget"
+  ]
+}

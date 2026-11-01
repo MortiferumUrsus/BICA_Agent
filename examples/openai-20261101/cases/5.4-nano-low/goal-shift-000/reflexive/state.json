@@ -1,0 +1,15 @@
+{
+  "goal": "The purchasing priority has changed: choose the fastest supplier regardless of price and recover its contract code.",
+  "plan": [
+    "Read the provided goal and last_result to identify the target supplier and contract fields to recover.",
+    "Keep useful facts in memory (e.g., current purchasing priority = fastest; known vendor code = Vendor-00-A).",
+    "Search the local source journal for the fastest supplier and its contract code.",
+    "Answer with the updated supplier choice and recovered contract code."
+  ],
+  "current_step": "Read the provided goal and last_result to identify the target supplier and contract fields to recover.",
+  "last_result": "Vendor-00-H",
+  "completed_results": [
+    "Vendor-00-A",
+    "Vendor-00-H"
+  ]
+}

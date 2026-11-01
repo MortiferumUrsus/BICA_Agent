@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "context-memory-mvp"
-version = "0.2.0"
+version = "0.3.0"
 description = "Bounded summary and reflexive memory with traceable source retrieval"
 requires-python = ">=3.11"
 dependencies = ["httpx>=0.28,<0.29", "jsonschema>=4.23,<5", "tiktoken>=0.9,<1", "python-dotenv>=1,<2"]
@@ -12,6 +12,7 @@ dependencies = ["httpx>=0.28,<0.29", "jsonschema>=4.23,<5", "tiktoken>=0.9,<1", 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10"]
 bench = ["huggingface-hub>=0.30,<2", "pyarrow>=19,<24"]
+plots = ["matplotlib>=3.9,<4"]
 
 [tool.setuptools.packages.find]
 include = ["context_memory*"]

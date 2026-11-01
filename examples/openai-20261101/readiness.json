@@ -1,0 +1,32 @@
+{
+  "version": "0.3.0",
+  "protocol_date": "2026-11-01",
+  "python": "3.11.15",
+  "pytest_passed": 179,
+  "wheel_build": "passed",
+  "wheel_sha256": "6ce6a682721dfcec376c78e87aabcf21b231a3217610f6f23035a8e3720760fd",
+  "completed_runs": 512,
+  "failed_runs": 0,
+  "distinct_models": 3,
+  "model_reasoning_profiles": 4,
+  "main_api_requests": 6890,
+  "all_api_requests_including_debug": 7388,
+  "main_cost_usd": 8.60545639,
+  "debug_cost_usd": 0.7719407,
+  "total_cost_usd": 9.37739709,
+  "user_budget_usd": 28,
+  "controller_cap_usd": 26,
+  "unspent_allocation_usd": 18.62260291,
+  "evaluation": "reference-only, no LLM judge",
+  "audit": "passed",
+  "plots_visually_checked": [
+    "accuracy.png",
+    "cost.png"
+  ],
+  "credential_scan": "no supplied API key in tracked or publishable files",
+  "notes": [
+    "Debug-v1 partly ran during prompt revisions and is excluded from evaluation. All main prompts/configuration were frozen before evaluation.",
+    "Cost is derived from OpenAI usage and official standard rates, not an account balance API.",
+    "No paid API requests remain running."
+  ]
+}

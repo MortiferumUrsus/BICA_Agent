@@ -1,6 +1,6 @@
 // Native macOS PDF renderer. No external packages, browser, or model requests.
 // swift -module-cache-path /tmp/bica-swift-cache tools/render_research_pdf.swift \
-//   docs/research/pdf_data.json docs/research/report.pdf /tmp/bica-pdf-preview
+//   docs/reports/data/pdf_data.json docs/reports/final/report.pdf /tmp/bica-pdf-preview
 import Foundation
 import AppKit
 import CoreGraphics

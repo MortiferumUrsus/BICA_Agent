@@ -27,7 +27,7 @@ python -m context_memory doctor --provider ollama --model qwen3:4b-instruct-2507
 python -m context_memory smoke --provider ollama --model qwen3:4b-instruct-2507-q4_K_M --format-retries 1 --timeout-s 180 --out runs/smoke-qwen
 ```
 
-Это пример конфигурации, не подтверждённый результат Qwen в опубликованных сериях. Историческая Llama 3.2 1B показала 0/5 на BABILong; её результаты разобраны в [локальной проверке](validation.md). При нехватке памяти модель выбирается вручную. Программа не подменяет её автоматически.
+Это пример конфигурации, не подтверждённый результат Qwen в опубликованных сериях. Историческая Llama 3.2 1B показала 0/5 на BABILong; её результаты разобраны в [локальной проверке](../experiments/validation.md). При нехватке памяти модель выбирается вручную. Программа не подменяет её автоматически.
 
 ## Локальный OpenAI-совместимый сервер
 
@@ -66,7 +66,7 @@ python -m context_memory evaluate runs/personamem-qwen --data-dir data/personame
 python3 tools/build_research_report.py
 ```
 
-Эта команда использует только сохранённые файлы. Она не вызывает модели. В `docs/research/` появятся HTML, графики, CSV и JSON. Для обновления производных Markdown-отчётов есть `--rewrite-run-reports`.
+Эта команда использует только сохранённые файлы. Она не вызывает модели. В `docs/reports/final/` появляются HTML и обзор результатов, в `docs/reports/figures/` — SVG-графики, в `docs/reports/data/` — CSV и JSON, в `docs/reports/analysis/` — дополнительный разбор BABILong. Для обновления производных Markdown-отчётов есть `--rewrite-run-reports`. [Карта раздела отчётов](../reports/README.md) объясняет назначение файлов.
 
 Сборка также создаёт `babilong_sensitivity.md`, `.json` и `.csv`: отдельный ретроспективный разбор формы ответов с неизменной основной метрикой. Проверки этого анализа используют стандартную библиотеку Python и запускаются без зависимостей моделей:
 
@@ -79,7 +79,7 @@ python3 -m unittest discover -s tests -p test_research_report.py -v
 В macOS PDF собирается системным Swift-рендерером. После сборки HTML выполните:
 
 ```bash
-swift -module-cache-path /tmp/bica-swift-cache tools/render_research_pdf.swift docs/research/pdf_data.json docs/research/report.pdf
+swift -module-cache-path /tmp/bica-swift-cache tools/render_research_pdf.swift docs/reports/data/pdf_data.json docs/reports/final/report.pdf
 ```
 
 Получаются полный PDF с приложениями и отдельный краткий `report.summary.pdf` на восьми страницах. Краткая версия объединяет методику с условиями, форму ответа с типами ошибок, полный контекст со стоимостью и разбор случаев с ограничениями. Подробная статистика остаётся в полной версии; размер текста не уменьшен ради сокращения страниц. Обе версии содержат кликабельное оглавление, закладки разделов и ссылку «Содержание» внизу страниц. В полном PDF добавлены закладки наборов данных внутри приложения с ответами и семи сохранённых вопросов в приложении C. Swift-рендерер рассчитан на macOS; на других платформах доступен HTML с печатными стилями.

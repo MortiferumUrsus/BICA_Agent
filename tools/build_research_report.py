@@ -33,6 +33,30 @@ CATEGORY_LABELS = {
     "execution_error": "Ошибка выполнения / статуса",
 }
 LOCATIONS = frozenset({"bathroom", "bedroom", "garden", "hallway", "kitchen", "office"})
+REPORT_FILES = {
+    **dict.fromkeys(("README.md", "report.html", "report.pdf", "report.summary.pdf"), "final"),
+    **dict.fromkeys(("accuracy.svg", "context.svg", "retrieval.svg", "cost.svg"), "figures"),
+    "babilong_sensitivity.md": "analysis",
+    **dict.fromkeys(("all_answers.csv", "all_answers.json", "example_contexts.json", "archived_answers.json",
+                     "saved_stage_responses.json", "verification.json", "pdf_data.json",
+                     "babilong_sensitivity.csv", "babilong_sensitivity.json"), "data"),
+}
+
+
+def report_links(text, section="final"):
+    """Resolve report artifacts within the final/data/analysis/figures layout."""
+    def href(url):
+        path, marker, fragment = url.partition("#")
+        if path in REPORT_FILES:
+            path = Path(os.path.relpath(Path(REPORT_FILES[path]) / path, section)).as_posix()
+        elif path.startswith("../../") and not path.startswith("../../../"):
+            # Report subfolders need three parent steps to reach repository sources.
+            path = "../" + path
+        return path + marker + fragment
+
+    text = re.sub(r'((?:href|src)=[\"\x27])([^\"\x27]+)([\"\x27])',
+                  lambda m: m[1] + href(m[2]) + m[3], text)
+    return re.sub(r'\]\(([^)]+)\)', lambda m: "](" + href(m[1]) + ")", text)
 
 
 def read(path):
@@ -790,7 +814,7 @@ def rewrite_run_reports(root):
             title = "Первая серия сравнения моделей" if "openai-20261101" in path.parts else "Продолжение на Sol и Astra"
             text = f"# {title}\n\n"
             text += ("Трёхстадийное обновление памяти не показало устойчивого преимущества перед одношаговым на этой выборке. "
-                     "Ниже приведены все группы серии. [Общий отчёт с графиками и каталогом ответов](../../docs/research/report.html).\n\n")
+                     "Ниже приведены все группы серии. [Общий отчёт с графиками и каталогом ответов](../../docs/reports/final/report.html).\n\n")
             text += md_table(["Набор", "Модель", "Метод", "Верно", "Точность", "95% Wilson", "USD", "Вызовы"], [
                 [DATASETS[s["dataset"]], LABELS[s["profile"]], METHODS[s["mode"]], f'{s["correct"]}/{s["n"]}',
                  f'{s["accuracy"]:.1%}', f'{100*s["wilson_95_ci"][0]:.1f}–{100*s["wilson_95_ci"][1]:.1f}%',
@@ -824,7 +848,7 @@ def rewrite_run_reports(root):
                      "Пересчёт ретроспективный; сложные фразы автоматически не переоцениваются.\n\n")
             text += md_table(SENSITIVITY_HEADERS, sensitivity_table(analysis))
             text += "\n\n" + md_table(["Категория", "Ответов"], [[v, analysis["category_counts"][k]] for k, v in CATEGORY_LABELS.items()])
-            text += "\n\n[Правила, сложные фразы и парные сравнения обеих серий](../../docs/research/babilong_sensitivity.md).\n"
+            text += "\n\n[Правила, сложные фразы и парные сравнения обеих серий](../../docs/reports/analysis/babilong_sensitivity.md).\n"
             text += ("\n\n## Как читать результаты\n\nОдин прогон на комбинацию. Ошибки остаются в знаменателе. "
                      "Точности разных наборов не объединяются: они проверяют разные задачи. Полный контекст использует большее окно. "
                      "Небольшие выборки и несколько сравнений ограничивают выводы. До/после поиска — наблюдение в одном прогоне, не отдельный контроль без поиска.\n\n"
@@ -914,7 +938,7 @@ def rewrite_run_reports(root):
         path.write_text(text + "\n", encoding="utf-8")
 
 
-def write_sensitivity(output, analysis):
+def write_sensitivity(output, analysis, analysis_output):
     save_json(output / "babilong_sensitivity.json", analysis)
     with (output / "babilong_sensitivity.csv").open("w", encoding="utf-8-sig", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(analysis["rows"][0]))
@@ -951,12 +975,14 @@ def write_sensitivity(output, analysis):
            "Исходные вопросы и полные истории большинства платных прогонов отсутствуют. Правильность сверяется с сохранёнными эталонами; "
            "их извлечение из датасета заново не проверялось. Уменьшение p не является доказательством практической пользы, "
            "а p выше 0,05 не доказывает равенство. Первичные результаты и расходы не редактировались.\n")
-    (output / "babilong_sensitivity.md").write_text(md, encoding="utf-8")
+    (analysis_output / "babilong_sensitivity.md").write_text(report_links(md, "analysis"), encoding="utf-8")
 
 
 def build(root=ROOT, output=None, rewrite=False):
-    output = output or root / "docs/research"
-    output.mkdir(parents=True, exist_ok=True)
+    output = output or root / "docs/reports"
+    final, data_output, figures, analysis_output = (output / name for name in ("final", "data", "figures", "analysis"))
+    for directory in (final, data_output, figures, analysis_output):
+        directory.mkdir(parents=True, exist_ok=True)
     first, strong, rows, summaries, archived, stages, sources = load_data(root)
     verify(root, first, strong, rows, summaries)
     contexts = example_contexts(root, rows, archived)
@@ -971,15 +997,15 @@ def build(root=ROOT, output=None, rewrite=False):
         sources.append({"path": name, "sha256": hashlib.sha256((root / name).read_bytes()).hexdigest()})
     analysis = analyze_babilong(rows)
     analysis["sources"] = sources
-    write_sensitivity(output, analysis)
+    write_sensitivity(data_output, analysis, analysis_output)
     comparisons = first["paired_comparisons"] + strong["paired_method_comparisons"]
     charts = {"ACCURACY": accuracy_chart(summaries), "CONTEXT": context_chart(summaries),
               "RETRIEVAL": retrieval_chart(summaries), "COST": cost_chart(summaries)}
     for name, svg in charts.items():
-        (output / f"{name.lower()}.svg").write_text(svg, encoding="utf-8")
+        (figures / f"{name.lower()}.svg").write_text(svg, encoding="utf-8")
     for filename, data in [("all_answers.json", rows), ("example_contexts.json", contexts), ("archived_answers.json", archived), ("saved_stage_responses.json", stages)]:
-        save_json(output / filename, data)
-    with (output / "all_answers.csv").open("w", encoding="utf-8-sig", newline="") as handle:
+        save_json(data_output / filename, data)
+    with (data_output / "all_answers.csv").open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
@@ -998,7 +1024,7 @@ def build(root=ROOT, output=None, rewrite=False):
                    "Summary counts and costs match rows", "9683 unique receipt IDs", "Receipt total matches recorded total"],
         "limits": ["Dataset exports and most paid traces are absent", "Historical unit tests and full audits were not rerun",
                    "No model calls or external source verification"]}
-    save_json(output / "verification.json", verification)
+    save_json(data_output / "verification.json", verification)
     sections = narrative_sections(rows, summaries, analysis, comparisons)
     for i, (key, title, body) in enumerate(sections):
         for name, svg in charts.items():
@@ -1013,7 +1039,7 @@ def build(root=ROOT, output=None, rewrite=False):
     doc += '<section class="sheet" id="sources"><h2>Исходные файлы</h2><p>SHA-256 фиксирует использованные версии данных. В переносимой HTML-копии внешние файлы могут быть недоступны; ответы и графики встроены.</p><ul class="source-list">'
     doc += "".join(f'<li><a href="../../{e(s["path"])}">{e(s["path"])}</a><br>{s["sha256"]}</li>' for s in sources)
     doc += '</ul></section><footer>Редакция 18 ноября 2026 года. Новые эксперименты не проводились. Исходные ответы, эталоны и журналы не изменены.</footer></main></div><script>' + JS + "</script></body></html>"
-    (output / "report.html").write_text(doc, encoding="utf-8")
+    (final / "report.html").write_text(report_links(doc), encoding="utf-8")
     md = ("# Сжатие контекстной памяти языковых моделей\n\n"
           "При памяти 512 токенов Reflexive не показал устойчивого выигрыша перед Summary. Дополнительные стадии "
           "увеличили расходы. Две серии включают 686 прогонов на 48 основных примерах.\n\n"
@@ -1055,10 +1081,10 @@ def build(root=ROOT, output=None, rewrite=False):
            "## Происхождение\n\nИсточники и SHA-256: [verification.json](verification.json). Учтено 9 683 платных запроса с отладкой "
            "на $27,87631429. Пересчитаны ответы по сохранённым эталонам и суммы. Новых модельных запросов нет. "
            "Редакция — 18 ноября 2026 года.\n")
-    (output / "README.md").write_text(md, encoding="utf-8")
-    save_json(output / "pdf_data.json", {
-        "sections": [{"id": k, "title": t, "html": re.sub(r"<svg.*?</svg>", "", body, flags=re.S)} for k, t, body in sections],
-        "brief_sections": [{"id": k, "title": t, "html": re.sub(r"<svg.*?</svg>", "", body, flags=re.S)}
+    (final / "README.md").write_text(report_links(md), encoding="utf-8")
+    save_json(data_output / "pdf_data.json", {
+        "sections": [{"id": k, "title": t, "html": report_links(re.sub(r"<svg.*?</svg>", "", body, flags=re.S))} for k, t, body in sections],
+        "brief_sections": [{"id": k, "title": t, "html": report_links(re.sub(r"<svg.*?</svg>", "", body, flags=re.S))}
                            for k, t, body in brief_sections(sections, summaries, analysis)],
         "rows": rows, "summaries": summaries, "archived": archived, "contexts": contexts, "stage_count": len(stages),
         "labels": LABELS, "datasets": DATASETS, "methods": METHODS})
@@ -1071,7 +1097,7 @@ def build(root=ROOT, output=None, rewrite=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
-    parser.add_argument("--out", type=Path)
+    parser.add_argument("--out", type=Path, help="Report base directory; creates final/, data/, analysis/ and figures/")
     parser.add_argument("--rewrite-run-reports", action="store_true")
     args = parser.parse_args()
     build(args.root.resolve(), args.out.resolve() if args.out else None, args.rewrite_run_reports)

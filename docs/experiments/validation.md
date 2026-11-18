@@ -6,7 +6,7 @@
 
 Windows, Python 3.11.15, Ollama 0.21.0, GTX 1660 Ti 6 GiB. Модель `llama3.2:1b`, Q8_0, digest и параметры находятся в [local-runtime.json](local-runtime.json). Приложение использовало окно 4096, память 512, состояние 256, фрагмент до 1024 и выход 768 токенов cl100k_base. Окно Ollama — 8192 нативных токена.
 
-BABILong: qa1/8k, строки 5–9, вопрос известен до чтения. [Манифест](../examples/babilong-manifest.json) фиксирует ревизию и хеш.
+BABILong: qa1/8k, строки 5–9, вопрос известен до чтения. [Манифест](../../examples/babilong-manifest.json) фиксирует ревизию и хеш.
 
 ## Результаты
 
@@ -36,4 +36,4 @@ BABILong: qa1/8k, строки 5–9, вопрос известен до чте�
 
 Результат относится к этой модели и конфигурации. Оснований выбирать один метод памяти по пяти неудачным примерам нет. Платные API не использовались.
 
-[Подробный отчёт](../examples/local-babilong-5/report.md) · [Ответы JSON](../examples/local-babilong-5/results.json) · [Общий исследовательский отчёт](research/report.html).
+[Подробный отчёт](../../examples/local-babilong-5/report.md) · [Ответы JSON](../../examples/local-babilong-5/results.json) · [Общий исследовательский отчёт](../reports/final/report.html).

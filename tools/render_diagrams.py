@@ -18,6 +18,7 @@ def main():
     parser.add_argument("--png", action="store_true", help="Also save PNG previews for visual inspection")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
+    diagrams = root / "docs/assets/diagrams"
     npx = shutil.which("npx.cmd" if os.name == "nt" else "npx")
     if not npx:
         raise SystemExit("Install Node.js (including npx) to render the Mermaid diagrams")
@@ -40,9 +41,9 @@ def main():
             for extension in (["svg", "png"] if args.png else ["svg"]):
                 subprocess.run([
                     npx, "--yes", "--package", "@mermaid-js/mermaid-cli@12.0.0", "mmdc",
-                    "-i", str(root / "docs" / f"{name}.mmd"),
-                    "-o", str(root / "docs" / f"{name}.{extension}"),
-                    "-c", str(root / "docs" / "mermaid-config.json"),
+                    "-i", str(diagrams / f"{name}.mmd"),
+                    "-o", str(diagrams / f"{name}.{extension}"),
+                    "-c", str(diagrams / "mermaid-config.json"),
                     "-p", str(config), "-b", "white", "--size", "1600",
                 ], check=True, cwd=root, env=environment)
 

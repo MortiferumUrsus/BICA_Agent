@@ -49,6 +49,7 @@ final class Renderer {
     var section = ""
     var landscape = false
     var starts: [(String, Int)] = []
+    var anchorPages: [String: Int] = [:]
     let margin: CGFloat = 44
     var available: CGFloat { width-2*margin }
     init(_ path: String) {
@@ -97,7 +98,8 @@ final class Renderer {
     func endPage() {
         guard opened else{return}
         line(margin,height-37,width-margin,height-37)
-        drawText("BICA Agent  ·  Исследование памяти LLM",margin,height-29,available-40,8,false,false,muted)
+        drawText("BICA Agent  ·  Исследование памяти LLM",margin,height-29,available-130,8,false,false,muted)
+        drawText("Содержание",width-margin-115,height-29,80,8,false,false,color("#246f86"))
         drawText(String(page),width-margin-26,height-29,26,8,true,false,muted)
         context.endPDFPage();opened=false
     }
@@ -126,7 +128,7 @@ final class Renderer {
         ensure(textHeight(s,available,size,false,true)+55)
         y+=main ? 13 : 8;paragraph(s,size,false,true,color("#153d4d"),11)
     }
-    func table(_ headers:[String],_ rows:[[String]],_ widths:[CGFloat]?=nil,_ font:CGFloat=9,_ repeatTitle:String?=nil) {
+    func table(_ headers:[String],_ rows:[[String]],_ widths:[CGFloat]?=nil,_ font:CGFloat=9,_ repeatTitle:String?=nil,_ rowAnchors:[Int:String]=[:]) {
         let ws=widths ?? Array(repeating:available/CGFloat(headers.count),count:headers.count)
         func rowHeight(_ cells:[String],_ bold:Bool)->CGFloat {
             max(24,zip(cells,ws).map{textHeight($0.0,$0.1-13,font,bold)+12}.max() ?? 24)
@@ -152,12 +154,13 @@ final class Renderer {
                 if let title=repeatTitle {paragraph(title,10,true,false,muted,7)}
                 renderRow(headers,true,false)
             }
+            if let anchor=rowAnchors[i] {anchorPages[anchor]=page-1}
             renderRow(row,false,i%2==1)
         }
         y+=12
     }
     func chart(_ kind:String) {
-        let hh:CGFloat=kind=="accuracy" ? 249 : (kind=="context" ? 187 : 220)
+        let hh:CGFloat=kind=="accuracy" ? 255 : (kind=="context" ? 187 : (kind=="retrieval" ? 230 : 263))
         ensure(hh+32)
         let start=y
         if kind=="accuracy" {
@@ -167,6 +170,7 @@ final class Renderer {
                 drawText(datasetLabels[dataset]!,x,start,span+20,10,true)
                 for tick in [0.0,0.5,1.0] {
                     let xx=x+CGFloat(tick)*span
+                    drawText("\(Int(tick*100))%",xx-8,start+15,27,6.6,false,false,muted)
                     line(xx,start+24,xx,start+222)
                 }
                 for (i,profile) in profiles.enumerated() {
@@ -192,8 +196,11 @@ final class Renderer {
             for (j,mode) in ["summary","reflexive"].enumerated() {
                 let x=left+CGFloat(j)*cw
                 drawText(methods[mode]!,x,start,span+45,10,true,false,colors[mode])
+                for tick in [0.0,0.5,1.0] {
+                    drawText("\(Int(tick*100))%",x+CGFloat(tick)*span-8,start+20,27,6.8,false,false,muted)
+                }
                 for (i,profile) in profiles.enumerated() {
-                    let yy=start+36+CGFloat(i)*27
+                    let yy=start+43+CGFloat(i)*27
                     if j==0{drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),margin,yy-6,108,8)}
                     let s=summaries.first{string($0["profile"])==profile && string($0["dataset"])=="goal_shift" && string($0["mode"])==mode}!
                     let a=x+CGFloat(num(s,"correct_before_retrieval")/num(s,"n"))*span
@@ -203,7 +210,7 @@ final class Renderer {
                     drawText("\(Int(num(s,"correct_before_retrieval"))) → \(Int(num(s,"correct")))/\(Int(num(s,"n")))",x+span+7,yy-5,45,7.5)
                 }
             }
-            drawText("Пустая точка — до поиска; закрашенная — итог.",margin,start+203,available,8,false,false,muted)
+            drawText("Пустая точка — до поиска; закрашенная — итог. При равенстве точки совпадают.",margin,start+211,available,8,false,false,muted)
         } else if kind=="context" {
             let groupW=available/5
             for (i,profile) in profiles.prefix(5).enumerated() {
@@ -221,30 +228,35 @@ final class Renderer {
                 drawText(methods[mode]!,x,start+168,available/4,8,true,false,colors[mode]);x+=available/4
             }
         } else {
-            let cw=available/3,base=start+172
+            let left=margin+91, cw=(available-91)/3, span=cw-18
             for (j,dataset) in datasets.enumerated() {
-                let x=margin+CGFloat(j)*cw
+                let x=left+CGFloat(j)*cw
                 let values=summaries.filter{string($0["dataset"])==dataset && ["summary","reflexive"].contains(string($0["mode"]))}
-                let maxVal=values.map{num($0,"cost_usd")/num($0,"n")}.max()!*1.2
+                let maxVal=values.map{num($0,"cost_usd")/num($0,"n")}.max()!*1.18
                 drawText(datasetLabels[dataset]!,x,start,cw-5,10,true)
                 for tick in [0.0,0.5,1.0] {
-                    let yy=base-CGFloat(tick)*132
-                    line(x,yy,x+cw-14,yy)
-                    drawText("$"+fmt(maxVal*tick,2),x+cw-42,yy-11,36,7,false,false,muted)
+                    let xx=x+CGFloat(tick)*span
+                    line(xx,start+32,xx,start+215)
+                    let labelX=xx-(tick==0 ? 2 : (tick==1 ? 27 : 14))
+                    drawText("$"+fmt(maxVal*tick,3),labelX,start+18,36,6.6,false,false,muted)
                 }
                 for (i,profile) in profiles.enumerated() {
+                    let yy=start+43+CGFloat(i)*29
+                    if j==0 {drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),margin,yy,86,7.3)}
+                    if !values.contains(where:{string($0["profile"])==profile}) {
+                        drawText("нет прогона",x+12,yy,span,7,false,false,muted)
+                    }
                     for (m,mode) in ["summary","reflexive"].enumerated() {
                         if let s=values.first(where:{string($0["profile"])==profile && string($0["mode"])==mode}) {
-                            let hh=CGFloat((num(s,"cost_usd")/num(s,"n"))/maxVal)*132
-                            rect(x+CGFloat(i)*24+CGFloat(m)*8,base-hh,7,hh,colors[mode]!)
+                            let bar=CGFloat((num(s,"cost_usd")/num(s,"n"))/maxVal)*span
+                            rect(x,yy+CGFloat(m)*10,bar,7,colors[mode]!)
                         }
                     }
-                    drawText(["4.1","n0","nL","mini","Sol","Ast"][i],x+CGFloat(i)*24,base+5,25,6.8)
                 }
             }
-            drawText("Summary",margin,start+200,100,8,true,false,colors["summary"])
-            drawText("Reflexive",margin+80,start+200,100,8,true,false,colors["reflexive"])
-            drawText("Шкалы панелей различаются",margin+190,start+200,available-190,8,false,false,muted)
+            drawText("Summary",left,start+230,90,8,true,false,colors["summary"])
+            drawText("Reflexive",left+84,start+230,90,8,true,false,colors["reflexive"])
+            drawText("Средняя стоимость, USD. Шкалы панелей различаются; префикс GPT опущен.",margin,start+248,available,7.7,false,false,muted)
         }
         y=start+hh+8
     }
@@ -286,7 +298,11 @@ final class Renderer {
 }
 
 let renderer=Renderer(argv[2])
-for section in report["sections"] as! [[String:Any]] {renderer.renderSection(section)}
+for (index,section) in (report["sections"] as! [[String:Any]]).enumerated() {
+    renderer.renderSection(section)
+    // Reserve the contents page so all printed page numbers are final.
+    if index==0 {renderer.newPage("Содержание")}
+}
 renderer.newPage("Приложение A · Все итоговые ответы",true)
 renderer.heading("Все 686 итоговых ответов")
 renderer.paragraph("Одна строка — один основной прогон. Сначала указан ответ модели, затем эталон. При смене цели это второй вопрос. ∅ — пустой ответ; «нет данных» — статус insufficient_data. Стоимость округлена, точные значения есть в CSV. Отсутствующие вопросы и варианты PersonaMem не восстановлены.",9.5)
@@ -297,7 +313,13 @@ let answerRows=rows.map{r->[String] in
     return [string(r["id"]),labels[string(r["profile"])]!,methods[string(r["mode"])]!,
             string(r["answer"]).isEmpty ? "∅" : string(r["answer"]),string(r["target"]),status,fmt(num(r,"cost_usd"),5)]
 }
-renderer.table(["Пример","Модель и reasoning","Метод","Ответ","Эталон","Оценка","USD"],answerRows,[135,151,98,111,94,78,86],8.6,"Все 686 ответов · продолжение")
+var datasetAnchors:[Int:String]=[:]
+var seenDatasets=Set<String>()
+for (index,row) in rows.enumerated() {
+    let dataset=string(row["dataset"])
+    if seenDatasets.insert(dataset).inserted {datasetAnchors[index]=dataset}
+}
+renderer.table(["Пример","Модель и reasoning","Метод","Ответ","Эталон","Оценка","USD"],answerRows,[135,151,98,111,94,78,86],8.6,"Все 686 ответов · продолжение",datasetAnchors)
 renderer.newPage("Приложение B · Локальные проверки",true)
 renderer.heading("Локальные и демонстрационные ответы")
 renderer.paragraph("Эти записи не входят в 686 основных платных прогонов. Mock содержит программно заданные ответы. Неудачные локальные прогоны показаны явно. Четыре показательные платные трассы уже представлены итоговыми строками в приложении A.",9.5)
@@ -321,15 +343,86 @@ renderer.heading("Версии данных")
 renderer.paragraph("Основа — коммит 60aa0c4. Источники: examples/openai-20261101 и examples/openai-strong-20261101, а также архив локальных и показательных прогонов. Ревизии датасетов находятся в manifests, SHA-256 файлов сборки — в verification.json.")
 renderer.paragraph("Редакция документации от 18 ноября 2026 года. Новые эксперименты и платные запросы не проводились. Исходные ответы, эталоны, промпты и протоколы не изменены.",9,false,false,muted)
 renderer.finish()
-// Compact version containing only the nine research pages.
+
+// Add real PDF destinations after pagination, independently for each version.
+typealias ContentsEntry = (title:String, page:Int)
+func destination(_ doc:PDFDocument,_ index:Int)->PDFDestination {
+    let page=doc.page(at:index)!
+    return PDFDestination(page:page,at:CGPoint(x:44,y:page.bounds(for:.mediaBox).maxY-44))
+}
+func addNavigation(_ doc:PDFDocument,_ entries:[ContentsEntry],_ groupPages:[String:Int]=[:]) {
+    let temp=FileManager.default.temporaryDirectory.appendingPathComponent("bica-contents-\(UUID().uuidString).pdf")
+    defer {try? FileManager.default.removeItem(at:temp)}
+    let toc=Renderer(temp.path)
+    toc.page=1
+    toc.newPage("Содержание")
+    toc.heading("Содержание",true)
+    toc.paragraph("Нажмите на название раздела или номер страницы. Закладки PDF также позволяют переходить между разделами.",10.5,false,false,muted,20)
+    var links:[(CGRect,Int)]=[]
+    var appendixHeading=false
+    toc.paragraph("ОСНОВНАЯ ЧАСТЬ",8.5,true,false,muted,8)
+    for entry in entries where entry.title != "Содержание" {
+        if entry.title.hasPrefix("Приложение") && !appendixHeading {
+            toc.y+=12
+            toc.paragraph("ПРИЛОЖЕНИЯ И МАТЕРИАЛЫ",8.5,true,false,muted,8)
+            appendixHeading=true
+        }
+        let top=toc.y
+        let hh=max(29,toc.textHeight(entry.title,toc.available-50,11)+9)
+        precondition(top+hh<toc.height-70,"Contents must fit on one page")
+        toc.drawText(entry.title,toc.margin,top+3,toc.available-50,11,false,false,color("#246f86"))
+        toc.drawText(String(entry.page+1),toc.width-toc.margin-27,top+3,27,11,true,false,color("#246f86"))
+        toc.line(toc.margin,top+hh-2,toc.width-toc.margin,top+hh-2)
+        links.append((CGRect(x:toc.margin,y:toc.height-top-hh,width:toc.available,height:hh),entry.page))
+        toc.y+=hh
+    }
+    toc.finish()
+    let tocDoc=PDFDocument(url:temp)!
+    doc.removePage(at:1)
+    doc.insert(tocDoc.page(at:0)!.copy() as! PDFPage,at:1)
+    let contents=doc.page(at:1)!
+    for (bounds,index) in links {
+        let annotation=PDFAnnotation(bounds:bounds,forType:.link,withProperties:nil)
+        annotation.border=PDFBorder();annotation.border!.lineWidth=0
+        annotation.destination=destination(doc,index)
+        contents.addAnnotation(annotation)
+    }
+    for index in 0..<doc.pageCount where index != 1 {
+        let page=doc.page(at:index)!,box=page.bounds(for:.mediaBox)
+        let link=PDFAnnotation(bounds:CGRect(x:box.width-44-118,y:8,width:86,height:19),forType:.link,withProperties:nil)
+        link.border=PDFBorder();link.border!.lineWidth=0
+        link.destination=destination(doc,1)
+        page.addAnnotation(link)
+    }
+    let outline=PDFOutline()
+    for (index,entry) in entries.enumerated() {
+        let item=PDFOutline();item.label=entry.title;item.destination=destination(doc,entry.page)
+        if entry.title.hasPrefix("Приложение A") {
+            for dataset in datasets {
+                if let page=groupPages[dataset] {
+                    let child=PDFOutline();child.label=datasetLabels[dataset]!;child.destination=destination(doc,page)
+                    item.insertChild(child,at:item.numberOfChildren)
+                }
+            }
+        }
+        outline.insertChild(item,at:index)
+    }
+    doc.outlineRoot=outline
+}
+
+// Build both versions before attaching links so their destinations remain local.
 let outputURL=URL(fileURLWithPath:argv[2])
 let pdf=PDFDocument(url:outputURL)!
-let brief=PDFDocument()
 let appendixStart=renderer.starts.first(where:{$0.0.hasPrefix("Приложение A")})!.1
-for index in 0..<appendixStart {brief.insert(pdf.page(at:index)!.copy() as! PDFPage,at:index)}
+let brief=PDFDocument(data:pdf.dataRepresentation()!)!
+for index in stride(from:brief.pageCount-1,through:appendixStart,by:-1) {brief.removePage(at:index)}
+let entries=renderer.starts.map{(title:$0.0,page:$0.1)}
+addNavigation(pdf,entries,renderer.anchorPages)
+addNavigation(brief,entries.filter{$0.page<appendixStart})
+try pdf.dataRepresentation()!.write(to:outputURL,options:.atomic)
 let briefURL=outputURL.deletingPathExtension().appendingPathExtension("summary.pdf")
 try brief.dataRepresentation()!.write(to:briefURL,options:.atomic)
-print("PDF pages: \(renderer.page)")
+print("PDF pages: \(pdf.pageCount); summary: \(brief.pageCount). Contents links and bookmarks added.")
 
 if argv.count>=4 {
     let dir=URL(fileURLWithPath:argv[3]);try FileManager.default.createDirectory(at:dir,withIntermediateDirectories:true)

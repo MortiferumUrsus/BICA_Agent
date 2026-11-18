@@ -230,33 +230,39 @@ def retrieval_chart(summaries):
     out += [label(382, 78, "Summary", 14, anchor="middle", fill=COLORS["summary"], weight="bold"),
             label(762, 78, "Reflexive", 14, anchor="middle", fill=COLORS["reflexive"], weight="bold"),
             label(22, 440, "Пустая точка — до поиска; закрашенная — итог. При одинаковом результате точки совпадают.", 12)]
+    for base in (270, 650):
+        for tick in (0, .5, 1):
+            out.append(label(base + 230*tick, 94, f"{tick:.0%}", 10, anchor="middle", fill="#62737c"))
     return "".join(out) + "</g></svg>"
 
 
 def cost_chart(summaries):
-    out = svg_start(1050, 450, "Стоимость одного примера")
+    out = svg_start(1050, 550, "Средняя стоимость одного примера по моделям и наборам")
     out += [label(22, 28, "Стоимость одного примера", 19, weight="bold"),
             label(22, 51, "USD по сохранённому usage, с попытками внутри основных прогонов. Отладка показана отдельно.", 12)]
     for index, dataset in enumerate(DATASETS):
-        x, y0 = 35+index*345, 366
+        x = 160+index*295
         values = [s for s in summaries if s["dataset"] == dataset and s["mode"] in ("summary", "reflexive")]
         top = max(s["cost_usd"]/s["n"] for s in values)*1.18
-        out.append(label(x+145, 85, DATASETS[dataset], 17, anchor="middle", weight="bold"))
+        out.append(label(x+118, 88, DATASETS[dataset], 17, anchor="middle", weight="bold"))
         for tick in (0, .5, 1):
-            yy = y0-220*tick
-            out.append(f'<line x1="{x}" y1="{yy}" x2="{x+285}" y2="{yy}" stroke="#e6ebed"/>')
-            out.append(label(x+285, yy-5, money(top*tick, 2), 10, anchor="end", fill="#62737c"))
+            xx = x+235*tick
+            out.append(f'<line x1="{xx}" y1="122" x2="{xx}" y2="473" stroke="#e6ebed"/>')
+            out.append(label(xx, 110, money(top*tick, 3), 10, anchor="middle", fill="#62737c"))
         for i, profile in enumerate(PROFILES[:6]):
+            y = 145+i*56
+            if index == 0:
+                out.append(label(145, y+8, LABELS[profile].replace("GPT-", ""), 12, anchor="end"))
+            if not any(s["profile"] == profile for s in values):
+                out.append(label(x+118, y+8, "нет прогона", 12, anchor="middle", fill="#87919a"))
             for j, mode in enumerate(("summary", "reflexive")):
                 s = next((s for s in values if s["profile"] == profile and s["mode"] == mode), None)
                 if s:
-                    hh, xx = (s["cost_usd"]/s["n"])/top*220, x+i*47+j*18
-                    out.append(f'<rect x="{xx}" y="{y0-hh}" width="15" height="{hh}" rx="1" fill="{COLORS[mode]}"/>')
-            for k, part in enumerate(["4.1", "nano\nnone", "nano\nlow", "mini", "Sol", "Astra"][i].split("\n")):
-                out.append(label(x+i*47+16, y0+18+k*12, part, 10, anchor="middle"))
-    out += [label(35, 435, "Summary", 13, fill=COLORS["summary"], weight="bold"),
-            label(150, 435, "Reflexive", 13, fill=COLORS["reflexive"], weight="bold"),
-            label(330, 435, "Вертикальные шкалы панелей различаются.", 12)]
+                    width = (s["cost_usd"]/s["n"])/top*235
+                    out.append(f'<rect x="{x}" y="{y-16+j*20}" width="{width}" height="13" rx="2" fill="{COLORS[mode]}"/>')
+    out += [label(160, 510, "Summary", 13, fill=COLORS["summary"], weight="bold"),
+            label(270, 510, "Reflexive", 13, fill=COLORS["reflexive"], weight="bold"),
+            label(22, 536, "Средняя стоимость, USD. Шкалы панелей различаются. Префикс GPT в названиях опущен.", 12)]
     return "".join(out) + "</g></svg>"
 
 
@@ -328,7 +334,7 @@ def narrative_sections(rows, summaries):
         ("context", "Полный контекст",
          """<h2>Для одного вопроса вся история оказалась полезнее сжатой памяти</h2>
          <p>На PersonaMem полный контекст дал больше верных ответов, чем Summary, у всех пяти основных профилей. По сравнению с Reflexive исключением стал nano none: 6/16 у полного контекста против 8/16. Здесь пять профилей включают две настройки nano.</p>
-         <figure>__CONTEXT__<figcaption>Рисунок 2. Одинаковые 16 примеров PersonaMem. Контроль с полным контекстом имеет большее окно.</figcaption></figure>""" +
+         <figure>__CONTEXT__<figcaption>Рисунок 2. Подписи над столбцами — число верных ответов из 16. Одинаковые примеры PersonaMem; контроль с полным контекстом имеет большее окно.</figcaption></figure>""" +
          table(["Sol low на PersonaMem", "Верно", "USD за 16 примеров", "Вызовы"],
                [["Последнее окно", "5/16", "0,1860", "16"], ["Summary", "10/16", "2,5664", "270"],
                 ["Reflexive", "9/16", "6,1878", "751"], ["Полный контекст", "13/16", "1,0564", "16"]]) +
@@ -336,7 +342,7 @@ def narrative_sections(rows, summaries):
         ("retrieval", "Повторное чтение",
          """<h2>После смены цели модель часто нуждалась в источнике</h2>
          <p>До поиска Sol правильно отвечал на новую цель в 2/12 случаях с Summary и в 3/12 с Reflexive. После повторного чтения оба метода дали 12/12. У Astra на девяти общих сценариях результат вырос с 2/9 до 9/9 в обоих режимах.</p>
-         <figure>__RETRIEVAL__<figcaption>Рисунок 3. Правильность до и после поиска при смене цели. Условия с принудительно отключённым поиском не запускались.</figcaption></figure>
+         <figure>__RETRIEVAL__<figcaption>Рисунок 3. Доля верных ответов до и после поиска при смене цели. Подпись справа: верно до → верно после / число примеров. Условия с принудительно отключённым поиском не запускались.</figcaption></figure>
          <p>Наблюдение поддерживает гипотезу о пользе возврата к источникам. Оно не позволяет приписать весь прирост одному компоненту: решение искать принимает сама модель, а повторно прочитанный текст снова сжимается. Слабые модели иногда отвечали без нужных данных и не запрашивали поиск.</p>"""),
         ("cost", "Стоимость",
          """<h2>Дополнительные стадии увеличивают расход</h2>

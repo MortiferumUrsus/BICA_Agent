@@ -7,18 +7,20 @@
 | [data](data/README.md) | Машиночитаемые ответы, источники и входные данные сборки |
 | [figures](figures/) | Графики в SVG |
 
-Основной вывод и все 686 итоговых ответов представлены в [HTML-отчёте](final/report.html). Для быстрого чтения предназначен [краткий PDF](final/report.summary.pdf); [полный PDF](final/report.pdf) включает подробную статистику и приложения.
+Основной вывод и все 686 итоговых ответов представлены в [HTML-отчёте](final/report.html). Для быстрого чтения предназначен [краткий PDF](final/report.summary.pdf). В [полном PDF](final/report.pdf) добавлены подробная статистика и приложения.
 
-Пересборка HTML, Markdown, графиков и данных из корня проекта:
+HTML, Markdown, графики и данные пересобираются из корня проекта одной командой.
 
 ```bash
 python3 tools/build_research_report.py
 ```
 
-Сборка PDF в macOS:
+Для сборки обеих версий PDF в macOS используется следующая команда.
 
 ```bash
 swift -module-cache-path /tmp/bica-swift-cache tools/render_research_pdf.swift docs/reports/data/pdf_data.json docs/reports/final/report.pdf
 ```
 
 `--out` у Python-скрипта задаёт корневую папку отчётов. В ней создаются `final/`, `analysis/`, `data/` и `figures/`. Для обновления отчётов отдельных прогонов в `examples/` добавьте `--rewrite-run-reports`. Подробности — в [инструкции по запуску](../guides/testing.md).
+
+Текст Markdown, HTML и полного PDF формируется из одного источника. После изменения текста нужно пересобрать отчёты, чтобы версии оставались согласованными.

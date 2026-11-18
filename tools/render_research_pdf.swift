@@ -112,7 +112,7 @@ final class Renderer {
         context.beginPDFPage([kCGPDFContextMediaBox:value] as CFDictionary)
         page+=1;opened=true;y=48
         if !starts.contains(where: {$0.0==title}) {starts.append((title,page-1))}
-        drawText("ИССЛЕДОВАНИЕ КОНТЕКСТНОЙ ПАМЯТИ  /  \(title)",margin,22,available,7.3,false,false,muted)
+        drawText("BICA AGENT  /  ИССЛЕДОВАНИЕ КОНТЕКСТНОЙ ПАМЯТИ",margin,22,available,7.3,false,false,muted)
         line(margin,39,width-margin,39)
     }
     func ensure(_ h: CGFloat) {
@@ -144,7 +144,9 @@ final class Renderer {
             line(margin,y+hh,margin+ws.reduce(0,+),y+hh)
             y+=hh
         }
-        ensure(rowHeight(headers,true)+50)
+        let wholeHeight=rowHeight(headers,true)+rows.reduce(CGFloat(0)){$0+rowHeight($1,false)}
+        if rows.count<=8 && wholeHeight<height-125 {ensure(wholeHeight+12)}
+        else {ensure(rowHeight(headers,true)+50)}
         renderRow(headers,true,false)
         for (i,row) in rows.enumerated() {
             let hh=rowHeight(row,false)
@@ -210,7 +212,7 @@ final class Renderer {
                     drawText("\(Int(num(s,"correct_before_retrieval"))) → \(Int(num(s,"correct")))/\(Int(num(s,"n")))",x+span+7,yy-5,45,8.5)
                 }
             }
-            drawText("Пустая точка — до поиска; закрашенная — итог. При равенстве точки совпадают.",margin,start+235,available,8,false,false,muted)
+            drawText("Пустая точка — до поиска, закрашенная — итог. При равенстве точки совпадают.",margin,start+235,available,8,false,false,muted)
         } else if kind=="context" {
             let groupW=available/5
             for (i,profile) in profiles.prefix(5).enumerated() {
@@ -256,12 +258,21 @@ final class Renderer {
             }
             drawText("Summary",left,start+254,90,8,true,false,colors["summary"])
             drawText("Reflexive",left+84,start+254,90,8,true,false,colors["reflexive"])
-            drawText("Средняя стоимость, USD. Шкалы панелей различаются; префикс GPT опущен.",margin,start+274,available,8.3,false,false,muted)
+            drawText("Средняя стоимость, USD. Шкалы панелей различаются. Префикс GPT опущен.",margin,start+274,available,8.3,false,false,muted)
         }
         y=start+hh+8
     }
     func renderSection(_ s:[String:Any]) {
-        let id=string(s["id"]);newPage(string(s["title"]))
+        let id=string(s["id"]), title=string(s["title"])
+        if !opened || landscape || section=="Содержание" || y>height-210 {
+            newPage(title)
+        } else {
+            section=title
+            y+=18
+            line(margin,y,width-margin,y)
+            y+=15
+            if !starts.contains(where: {$0.0==title}) {starts.append((title,page-1))}
+        }
         let body=string(s["html"])
         for match in matches("<(h1|h2|p|table|figure)\\b[^>]*>.*?</\\1>",body) {
             let chunk=sub(body,match.range),tag=sub(body,match.range(at:1))
@@ -276,16 +287,19 @@ final class Renderer {
                     table(["Примеры","Прогоны","Модели","Расход с отладкой"],[["48","686","5","$27,88"]],nil,10.5)
                 }
             } else if tag=="figure" {
-                chart(id)
                 let caption=matches("<figcaption[^>]*>(.*?)</figcaption>",chunk).first
-                if let cap=caption {paragraph(clean(sub(chunk,cap.range(at:1))),8.1,false,false,muted,8)}
+                let captionText=caption.map{clean(sub(chunk,$0.range(at:1)))} ?? ""
+                let chartHeight:CGFloat=id=="accuracy" ? 285 : (id=="context" ? 210 : (id=="retrieval" ? 255 : 290))
+                ensure(chartHeight+16+textHeight(captionText,available,8.1))
+                chart(id)
+                paragraph(captionText,8.1,false,false,muted,8)
             } else if tag=="table" {
                 let parsed=matches("<tr[^>]*>(.*?)</tr>",chunk).map{m in
                     matches("<t[hd][^>]*>(.*?)</t[hd]>",sub(chunk,m.range(at:1))).map{clean(sub(sub(chunk,m.range(at:1)),$0.range(at:1)))}
                 }
                 if !parsed.isEmpty {
                     var ws:[CGFloat]?=nil
-                    if id=="methods" && parsed[0].count==3{ws=[75,available-126,51]}
+                    if id=="methods" && parsed[0].count==3{ws=[75,available-140,65]}
                     if id=="methods" && parsed[0].count==4{ws=[91,126,157,available-374]}
                     if id=="accuracy"{ws=[155,115,115,available-385]}
                     if id=="metric" && parsed[0].first=="Профиль" {ws=[145,80,100,80,available-405]}
@@ -311,7 +325,7 @@ for (index,section) in (report["sections"] as! [[String:Any]]).enumerated() {
 }
 renderer.newPage("Приложение A · Все итоговые ответы",true)
 renderer.heading("Все 686 итоговых ответов")
-renderer.paragraph("Одна строка — один основной прогон. Сначала указан ответ модели, затем эталон. При смене цели это второй вопрос. ∅ — пустой ответ; «нет данных» — статус insufficient_data. Сохранённые вопросы и пояснения оценки находятся в приложении C, в HTML ID открывает карточку задачи. Стоимость округлена; точные значения и доступные вопросы есть в CSV.",9.5)
+renderer.paragraph("Одна строка — один основной прогон. Сначала указан ответ модели, затем эталон. При смене цели это второй вопрос. ∅ — пустой ответ. «Нет данных» — статус insufficient_data. Сохранённые вопросы и пояснения оценки находятся в приложении C, в HTML ID открывает карточку задачи. Стоимость округлена. Точные значения и доступные вопросы есть в CSV.",9.5)
 let rows=report["rows"] as! [[String:Any]]
 let answerRows=rows.map{r->[String] in
     let correct=(r["correct"] as? Bool)==true
@@ -325,7 +339,7 @@ for (index,row) in rows.enumerated() {
     let dataset=string(row["dataset"])
     if seenDatasets.insert(dataset).inserted {datasetAnchors[index]=dataset}
 }
-renderer.table(["Пример","Модель и reasoning","Метод","Ответ","Эталон","Оценка","USD"],answerRows,[135,151,98,111,94,78,86],8.6,"Все 686 ответов · продолжение",datasetAnchors)
+renderer.table(["Пример","Модель и режим","Метод","Ответ","Эталон","Оценка","USD"],answerRows,[135,151,98,111,94,78,86],8.6,"Все 686 ответов · продолжение",datasetAnchors)
 renderer.newPage("Приложение B · Локальные проверки",true)
 renderer.heading("Локальные и демонстрационные ответы")
 renderer.paragraph("Эти записи не входят в 686 основных платных прогонов. Mock содержит программно заданные ответы. Неудачные локальные прогоны показаны явно. Четыре показательные платные трассы уже представлены итоговыми строками в приложении A.",9.5)
@@ -353,7 +367,7 @@ for c in contexts where !string(c["question"]).isEmpty {
          string(r["answer"]).isEmpty ? "∅" : string(r["answer"]),string(r["answer_note"])]
     }
     renderer.table(["Модель","Метод","Ответ","Как понимать оценку"],values,[129,88,90,renderer.available-307],9,nil)
-    renderer.paragraph("Источники точного вопроса:",9,true)
+    renderer.paragraph("Где сохранён точный вопрос",9,true)
     for source in c["question_sources"] as! [String] {renderer.paragraph(source,8.5,false,false,muted,4)}
     if string(c["dataset"])=="babilong" {
         renderer.paragraph("В локальной и платной сериях совпадают ID, ревизия и SHA-256 исходного датасета. Это основание связать вопрос с платными ответами. Оценка самого ответа сохранена без изменения.",9,false,false,muted)
@@ -361,16 +375,16 @@ for c in contexts where !string(c["question"]).isEmpty {
 }
 renderer.newPage("Материалы и воспроизведение")
 renderer.heading("Как найти отдельный ответ")
-renderer.paragraph("HTML-версия содержит фильтры по модели, набору, методу и правильности. Нажатие на ID открывает карточку задачи с вопросом, эталоном, ответами моделей и пояснениями оценки. Выбранные строки можно выгрузить в CSV. Все 686 записей доступны в all_answers.csv и all_answers.json; вопросы и источники — в example_contexts.json.")
+renderer.paragraph("HTML-версия содержит фильтры по модели, набору, методу и правильности. Нажатие на ID открывает карточку задачи с вопросом, эталоном, ответами моделей и пояснениями оценки. Выбранные строки можно выгрузить в CSV. Все 686 записей доступны в all_answers.csv и all_answers.json. Вопросы и источники — в example_contexts.json.")
 renderer.heading("Дополнительный анализ BABILong")
-renderer.paragraph("В babilong_sensitivity.csv сохранены 200 индивидуальных записей с исходной оценкой, дополнительным результатом без начального артикля и категорией ответа. Правила, все сложные фразы и парные сравнения находятся в babilong_sensitivity.md и babilong_sensitivity.json. Это ретроспективный анализ; первичные оценки не заменены.")
+renderer.paragraph("В babilong_sensitivity.csv сохранены 200 индивидуальных записей с исходной оценкой, дополнительным результатом без начального артикля и категорией ответа. Правила, все сложные фразы и парные сравнения находятся в babilong_sensitivity.md и babilong_sensitivity.json. Это ретроспективный анализ. Первичные оценки не заменены.")
 renderer.heading("Промежуточные ответы")
 renderer.paragraph("В электронное приложение включены \(string(report["stage_count"])) записи вызовов из доступных локальных и mock-журналов, а также четырёх показательных платных прогонов. В saved_stage_responses.json сохранены исходные запросы и ответы. Большинство полных платных трасс в клоне отсутствует. Эти трассы не реконструировались.")
 renderer.heading("Что проверено при сборке")
 renderer.paragraph("Состав заданий сверен с двумя протоколами. Все итоговые ответы повторно сопоставлены с сохранёнными эталонами. Числа верных ответов, стоимость групп и 9 683 уникальных идентификатора оплаченных запросов согласованы. Сумма — $27,87631429.")
 renderer.paragraph("Это проверка опубликованных материалов. Она не подтверждает заново извлечение эталонов из исходных датасетов и не заменяет отсутствующие полные журналы. Исторические модульные тесты и полные аудиты при редактуре не запускались.")
 renderer.heading("Версии данных")
-renderer.paragraph("Основа — коммит 60aa0c4. Источники: examples/openai-20261101 и examples/openai-strong-20261101, а также архив локальных и показательных прогонов. Ревизии датасетов находятся в manifests, SHA-256 файлов сборки — в verification.json.")
+renderer.paragraph("Основа — коммит 60aa0c4. Использованы каталоги examples/openai-20261101 и examples/openai-strong-20261101, а также архив локальных и показательных прогонов. Ревизии датасетов находятся в manifests, SHA-256 файлов сборки — в verification.json.")
 renderer.paragraph("Редакция документации от 18 ноября 2026 года. Новые эксперименты и платные запросы не проводились. Исходные ответы, эталоны, промпты и протоколы не изменены.",9,false,false,muted)
 renderer.finish()
 
@@ -384,7 +398,8 @@ func addNavigation(_ doc:PDFDocument,_ entries:[ContentsEntry],_ groupPages:[Str
     let temp=FileManager.default.temporaryDirectory.appendingPathComponent("bica-contents-\(UUID().uuidString).pdf")
     defer {try? FileManager.default.removeItem(at:temp)}
     let toc=Renderer(temp.path)
-    toc.page=1
+    let contentsIndex=entries.first{$0.title=="Содержание"}!.page
+    toc.page=contentsIndex
     toc.newPage("Содержание")
     toc.heading("Содержание",true)
     toc.paragraph("Нажмите на название раздела или номер страницы. Закладки PDF также позволяют переходить между разделами.",10.5,false,false,muted,20)
@@ -408,20 +423,20 @@ func addNavigation(_ doc:PDFDocument,_ entries:[ContentsEntry],_ groupPages:[Str
     }
     toc.finish()
     let tocDoc=PDFDocument(url:temp)!
-    doc.removePage(at:1)
-    doc.insert(tocDoc.page(at:0)!.copy() as! PDFPage,at:1)
-    let contents=doc.page(at:1)!
+    doc.removePage(at:contentsIndex)
+    doc.insert(tocDoc.page(at:0)!.copy() as! PDFPage,at:contentsIndex)
+    let contents=doc.page(at:contentsIndex)!
     for (bounds,index) in links {
         let annotation=PDFAnnotation(bounds:bounds,forType:.link,withProperties:nil)
         annotation.border=PDFBorder();annotation.border!.lineWidth=0
         annotation.destination=destination(doc,index)
         contents.addAnnotation(annotation)
     }
-    for index in 0..<doc.pageCount where index != 1 {
+    for index in 0..<doc.pageCount where index != contentsIndex {
         let page=doc.page(at:index)!,box=page.bounds(for:.mediaBox)
         let link=PDFAnnotation(bounds:CGRect(x:box.width-44-118,y:8,width:86,height:19),forType:.link,withProperties:nil)
         link.border=PDFBorder();link.border!.lineWidth=0
-        link.destination=destination(doc,1)
+        link.destination=destination(doc,contentsIndex)
         page.addAnnotation(link)
     }
     let outline=PDFOutline()

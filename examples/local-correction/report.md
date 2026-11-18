@@ -1,93 +1,32 @@
-# Context memory — demo
+# Локальная проверка Llama 3.2 1B
 
-LOCAL MODEL (Ollama). API cost excludes local compute.
+Исторический запуск от 9 октября 2026 года. Завершение программы означает выполнение протокола; оно не означает правильный ответ.
 
-Model: `llama3.2:1b`. Provider: `ollama`.
+## Ответы
 
-Presentation: `not specified`. Reference tokens measure application limits; provider usage measures actual model requests.
+| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- |
+| summary | 1 | What is the current delivery date for Orion? | ∅ | insufficient_data | c001, c002 |
+| reflexive | 1 | What is the current delivery date for Orion? | ∅ | insufficient_data | c002, c003 |
 
-## Configuration
+## Условия
 
-```json
-{
-  "window_ref_tokens": 4096,
-  "memory_ref_tokens": 512,
-  "state_ref_tokens": 256,
-  "chunk_ref_tokens": 1024,
-  "max_output_tokens": 768,
-  "max_retrieval_rounds": 1,
-  "retrieval_top_k": 2,
-  "max_api_calls": 200
-}
-```
+| Параметр | Значение |
+| --- | --- |
+| Модель | llama3.2:1b |
+| Окно с резервом | 4096 |
+| Память | 512 |
+| Состояние | 256 |
+| Фрагмент | 1024 |
+| Резерв ответа | 768 |
 
-## Measured totals
+## Работа программы
 
-| Metric | Value |
-| --- | ---: |
+| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- |
+| summary | completed | 9 | 6 | 1 | 0.0 |
+| reflexive | completed | 21 | 6 | 1 | 0.0 |
 
-## Answers and failures
+## Исходные материалы
 
-### correction · summary
-
-Status: completed.
-
-Question: What is the current delivery date for Orion?
-
-| Decision before retrieval | Final decision | Retrieved chunk IDs |
-| --- | --- | --- |
-| retrieve: 2-5 distinctive words; IDs: ['c001', 'c002'] | insufficient_data:  | ["c001", "c002"] |
-
-| Metric | Value |
-| --- | ---: |
-| Maximum working memory (reference tokens) | 45 |
-| Maximum request incl. output reserve (reference tokens) | 1218 |
-| Original input (reference tokens) | 62 |
-| Compressions | 6 |
-| Retrieval rounds | 1 |
-| Re-read text (reference tokens) | 29 |
-| API calls / recorded attempts | 9 |
-| HTTP / mock attempts | 9 |
-| Provider prompt tokens | 2005 |
-| Provider completion tokens | 342 |
-| Provider total tokens | 2347 |
-| Total provider cost (USD) | 0 |
-| Known cost subtotal (USD) | 0 |
-| Calls with unknown cost | 0 |
-| Sum of request duration (seconds) | 22.069702 |
-| API / transport errors | 0 |
-| Invalid model output errors | 0 |
-
-### correction · reflexive
-
-Status: completed.
-
-Question: What is the current delivery date for Orion?
-
-| Decision before retrieval | Final decision | Retrieved chunk IDs |
-| --- | --- | --- |
-| retrieve: 2-5 distinctive words; IDs: ['c002', 'c003'] | insufficient_data:  | ["c002", "c003"] |
-
-| Metric | Value |
-| --- | ---: |
-| Maximum working memory (reference tokens) | 70 |
-| Maximum request incl. output reserve (reference tokens) | 1364 |
-| Original input (reference tokens) | 62 |
-| Compressions | 6 |
-| Retrieval rounds | 1 |
-| Re-read text (reference tokens) | 36 |
-| API calls / recorded attempts | 21 |
-| HTTP / mock attempts | 21 |
-| Provider prompt tokens | 6235 |
-| Provider completion tokens | 1504 |
-| Provider total tokens | 7739 |
-| Total provider cost (USD) | 0 |
-| Known cost subtotal (USD) | 0 |
-| Calls with unknown cost | 0 |
-| Sum of request duration (seconds) | 89.805268 |
-| API / transport errors | 0 |
-| Invalid model output errors | 0 |
-
-## Files
-
-Source chunks: journal.jsonl. State and memory: state.json, memory.json and memory_versions.jsonl. Execution trace: trace.jsonl. Requests, responses and usage: api_calls.jsonl.
+[Результаты JSON](results.json)

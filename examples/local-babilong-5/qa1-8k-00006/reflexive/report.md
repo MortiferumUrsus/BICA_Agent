@@ -1,65 +1,33 @@
-# Context memory — benchmark
+# Локальная проверка Llama 3.2 1B
 
-LOCAL MODEL (Ollama). API cost excludes local compute.
+Исторический запуск от 9 октября 2026 года. Завершение программы означает выполнение протокола; оно не означает правильный ответ.
 
-Model: `llama3.2:1b`. Provider: `ollama`.
+## Ответы
 
-Presentation: `question_first`. Reference tokens measure application limits; provider usage measures actual model requests.
+| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- |
+| reflexive | — | Остановка до вопроса | ∅ | ResponseError | — |
 
-## Configuration
+## Условия
 
-```json
-{
-  "window_ref_tokens": 4096,
-  "memory_ref_tokens": 512,
-  "state_ref_tokens": 256,
-  "chunk_ref_tokens": 1024,
-  "max_output_tokens": 768,
-  "max_retrieval_rounds": 1,
-  "retrieval_top_k": 2,
-  "max_api_calls": 500
-}
-```
+| Параметр | Значение |
+| --- | --- |
+| Модель | llama3.2:1b |
+| Окно с резервом | 4096 |
+| Память | 512 |
+| Состояние | 256 |
+| Фрагмент | 1024 |
+| Резерв ответа | 768 |
 
-## Measured totals
+## Работа программы
 
-| Metric | Value |
-| --- | ---: |
-| Maximum working memory (reference tokens) | 0 |
-| Maximum request incl. output reserve (reference tokens) | 2433 |
-| Original input (reference tokens) | 1024 |
-| Compressions | 0 |
-| Retrieval rounds | 0 |
-| Re-read text (reference tokens) | 0 |
-| API calls / recorded attempts | 2 |
-| HTTP / mock attempts | 2 |
-| Provider prompt tokens | 1457 |
-| Provider completion tokens | 614 |
-| Provider total tokens | 2071 |
-| Total provider cost (USD) | 0 |
-| Known cost subtotal (USD) | 0 |
-| Calls with unknown cost | 0 |
-| Sum of request duration (seconds) | 33.393869 |
-| API / transport errors | 0 |
-| Invalid model output errors | 1 |
+| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- |
+| reflexive | error | 2 | 0 | 0 | 0.0 |
 
-Wall time: 33.427 seconds.
+**Остановка reflexive:** ResponseError — Model answer does not match the required JSON schema.
 
-### Usage by stage
 
-| Stage | Calls | Attempts | Prompt tokens | Completion tokens | Cost USD | Known cost USD | Seconds | API errors | Output errors |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| assess | 1 | 1 | 1339 | 575 | 0 | 0 | 31.041819 | 0 | 1 |
-| plan | 1 | 1 | 118 | 39 | 0 | 0 | 2.35205 | 0 | 0 |
+## Исходные материалы
 
-## Answers and failures
-
-### qa1-8k-00006 · reflexive
-
-Status: error. Exact match: unknown.
-
-Recorded error: {"type": "ResponseError", "message": "Model answer does not match the required JSON schema"}
-
-## Files
-
-Source chunks: journal.jsonl. State and memory: state.json, memory.json and memory_versions.jsonl. Execution trace: trace.jsonl. Requests, responses and usage: api_calls.jsonl.
+[Результаты JSON](results.json) · [Журнал текста](journal.jsonl) · [Трасса](trace.jsonl) · [Запросы и ответы](api_calls.jsonl)

@@ -1,79 +1,46 @@
-# Context memory — benchmark
+# Локальная проверка Llama 3.2 1B
 
-LOCAL MODEL (Ollama). API cost excludes local compute.
+Исторический запуск от 9 октября 2026 года. Завершение программы означает выполнение протокола; оно не означает правильный ответ.
 
-Model: `llama3.2:1b`. Provider: `ollama`.
+## Ответы
 
-Presentation: `question_first`. Reference tokens measure application limits; provider usage measures actual model requests.
+| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- |
+| summary | 1 | Where is Sandra?  | ∅ | insufficient_data | c001 |
 
-## Configuration
+## Условия
 
-```json
-{
-  "window_ref_tokens": 4096,
-  "memory_ref_tokens": 512,
-  "state_ref_tokens": 256,
-  "chunk_ref_tokens": 1024,
-  "max_output_tokens": 768,
-  "max_retrieval_rounds": 1,
-  "retrieval_top_k": 2,
-  "max_api_calls": 500
-}
-```
-
-## Measured totals
-
-| Metric | Value |
-| --- | ---: |
-| Maximum working memory (reference tokens) | 59 |
-| Maximum request incl. output reserve (reference tokens) | 2245 |
-| Original input (reference tokens) | 7588 |
-| Compressions | 9 |
-| Retrieval rounds | 1 |
-| Re-read text (reference tokens) | 1024 |
-| API calls / recorded attempts | 12 |
-| HTTP / mock attempts | 12 |
-| Provider prompt tokens | 11144 |
-| Provider completion tokens | 410 |
-| Provider total tokens | 11554 |
-| Total provider cost (USD) | 0 |
-| Known cost subtotal (USD) | 0 |
-| Calls with unknown cost | 0 |
-| Sum of request duration (seconds) | 30.581259 |
-| API / transport errors | 0 |
-| Invalid model output errors | 0 |
-
-Wall time: 31.316 seconds.
-
-### Usage by stage
-
-| Stage | Calls | Attempts | Prompt tokens | Completion tokens | Cost USD | Known cost USD | Seconds | API errors | Output errors |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| answer | 2 | 2 | 578 | 36 | 0 | 0 | 3.245031 | 0 | 0 |
-| plan | 1 | 1 | 118 | 39 | 0 | 0 | 2.319153 | 0 | 0 |
-| summary | 9 | 9 | 10448 | 335 | 0 | 0 | 25.017076 | 0 | 0 |
-
-## Answers and failures
-
-### qa1-8k-00005 · summary
-
-Status: completed. Exact match: False.
-
-Question: Where is Sandra?
-
-| Decision before retrieval | Final decision | Retrieved chunk IDs |
-| --- | --- | --- |
-| retrieve: ; IDs: ['c001'] | insufficient_data:  | ["c001"] |
-
-
-## Actual memory snapshot
-
-Reason: read. Stage: Read the current goal to understand what needs to be done..
-
-| Before compression | After compression |
+| Параметр | Значение |
 | --- | --- |
-| [{"text": "Sandra", "source_ids": ["c001"]}, {"text": "Sandra is missing", "source_ids": ["c001"]}] | [{"text": "Sandra is missing", "source_ids": ["c001"]}, {"text": "Sandra is presumed dead", "source_ids": ["c001"]}] |
+| Модель | llama3.2:1b |
+| Окно с резервом | 4096 |
+| Память | 512 |
+| Состояние | 256 |
+| Фрагмент | 1024 |
+| Резерв ответа | 768 |
 
-## Files
+## Работа программы
 
-Source chunks: journal.jsonl. State and memory: state.json, memory.json and memory_versions.jsonl. Execution trace: trace.jsonl. Requests, responses and usage: api_calls.jsonl.
+| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- |
+| summary | completed | 12 | 9 | 1 | 0.0 |
+
+## Пример изменения памяти
+
+Это фактические записи модели. Наличие записи не подтверждает её истинность.
+
+<details>
+<summary>Показать записи до и после обновления</summary>
+
+| Момент | Запись | Источники |
+| --- | --- | --- |
+| До | Sandra | c001 |
+| До | Sandra is missing | c001 |
+| После | Sandra is missing | c001 |
+| После | Sandra is presumed dead | c001 |
+
+</details>
+
+## Исходные материалы
+
+[Результаты JSON](results.json) · [Журнал текста](journal.jsonl) · [Версии памяти](memory_versions.jsonl) · [Трасса](trace.jsonl) · [Запросы и ответы](api_calls.jsonl)

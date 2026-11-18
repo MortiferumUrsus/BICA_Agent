@@ -1,0 +1,59 @@
+{
+  "source_commit": "60aa0c4",
+  "experiment_date": "2026-11-01",
+  "editorial_revision": "2026-11-18",
+  "main_runs": 686,
+  "unique_main_examples": 48,
+  "summary_groups": 45,
+  "paid_receipts": 9683,
+  "recorded_total_usd": 27.87631429,
+  "archive_records": 30,
+  "available_stage_records": 264,
+  "sources": [
+    {
+      "path": "examples/openai-20261101/results.json",
+      "sha256": "13e1286996ee3850c72a576af0a16da1d3e75006e34f752099cb81681b980a59"
+    },
+    {
+      "path": "examples/openai-20261101/predictions.csv",
+      "sha256": "8d17399e6e2934fba53b0b1d379f213d2889cc6b01286cd1f708272772b5c3b0"
+    },
+    {
+      "path": "examples/openai-20261101/receipts.csv",
+      "sha256": "79c6026bc21bea5b22bf7a27bad2d913a6e0d93802fc0e791a366eb859939f9d"
+    },
+    {
+      "path": "examples/openai-20261101/protocol.json",
+      "sha256": "629e503c0a8b36c41ad2900f32dd1a8c44b832b97a337b06c9011028c0dcdce6"
+    },
+    {
+      "path": "examples/openai-strong-20261101/results.json",
+      "sha256": "35ec82ed18b2989681b20ae7c8f2a9dae686ee0b7fe52d8d839afd41b90adc75"
+    },
+    {
+      "path": "examples/openai-strong-20261101/predictions.csv",
+      "sha256": "691829656ee8750a65cb36c30ac9f2946305aecdd68ba78009373f92fa9fcaa1"
+    },
+    {
+      "path": "examples/openai-strong-20261101/receipts.csv",
+      "sha256": "9e2da13522f5ff9cb687c23388668d08f692d4f9c91a5093095ddf2d67fc40af"
+    },
+    {
+      "path": "examples/openai-strong-20261101/protocol.json",
+      "sha256": "85fa6af045c6730e6cf00fe7a496dae8d2eaa60b0104eaa27bd5993ba86596ce"
+    }
+  ],
+  "checks": [
+    "Task IDs match protocols",
+    "No duplicate main run IDs",
+    "Answers rescored against saved targets",
+    "Summary counts and costs match rows",
+    "9683 unique receipt IDs",
+    "Receipt total matches recorded total"
+  ],
+  "limits": [
+    "Dataset exports and most paid traces are absent",
+    "Historical unit tests and full audits were not rerun",
+    "No model calls or external source verification"
+  ]
+}

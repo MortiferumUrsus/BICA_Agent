@@ -1,81 +1,44 @@
-# Context memory — demo
+# Проверка программы с заданными ответами
 
-MOCK: scripted responses.
+Ответы заданы программно. Пример проверяет обновление памяти, поиск и сохранение результатов; качество языковой модели здесь не измеряется.
 
-Model: `deterministic-demo-fixture`. Provider: `mock`.
+## Ответы
 
-Presentation: `question_first`. Reference tokens measure application limits; provider usage measures actual model requests.
+| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- |
+| reflexive | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
 
-## Configuration
+## Условия
 
-```json
-{
-  "window_ref_tokens": 4096,
-  "memory_ref_tokens": 512,
-  "state_ref_tokens": 256,
-  "chunk_ref_tokens": 1024,
-  "max_output_tokens": 768,
-  "max_retrieval_rounds": 1,
-  "retrieval_top_k": 2,
-  "max_api_calls": 200
-}
-```
-
-## Measured totals
-
-| Metric | Value |
-| --- | ---: |
-| Maximum working memory (reference tokens) | 30 |
-| Maximum request incl. output reserve (reference tokens) | 1257 |
-| Original input (reference tokens) | 62 |
-| Compressions | 4 |
-| Retrieval rounds | 0 |
-| Re-read text (reference tokens) | 0 |
-| API calls / recorded attempts | 14 |
-| HTTP / mock attempts | 14 |
-| Provider prompt tokens | 0 |
-| Provider completion tokens | 0 |
-| Provider total tokens | 0 |
-| Total provider cost (USD) | 0 |
-| Known cost subtotal (USD) | 0 |
-| Calls with unknown cost | 0 |
-| Sum of request duration (seconds) | 0 |
-| API / transport errors | 0 |
-| Invalid model output errors | 0 |
-
-Wall time: 0.077 seconds.
-
-### Usage by stage
-
-| Stage | Calls | Attempts | Prompt tokens | Completion tokens | Cost USD | Known cost USD | Seconds | API errors | Output errors |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| answer | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| assess | 4 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| compress | 4 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| plan | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| verify | 4 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-
-## Answers and failures
-
-### correction · reflexive
-
-Status: completed.
-
-Question: What is the current delivery date for Orion?
-
-| Decision before retrieval | Final decision | Retrieved chunk IDs |
-| --- | --- | --- |
-| answer: 19 November 2026 | answer: 19 November 2026 | [] |
-
-
-## Actual memory snapshot
-
-Reason: read. Stage: Read relevant evidence.
-
-| Before compression | After compression |
+| Параметр | Значение |
 | --- | --- |
-| [{"text": "Orion delivery date: 12 November 2026.", "source_ids": ["c001"]}] | [{"text": "Correction: Orion delivery date: 19 November 2026. The old date is cancelled.", "source_ids": ["c003"]}] |
+| Модель | deterministic-demo-fixture |
+| Окно с резервом | 4096 |
+| Память | 512 |
+| Состояние | 256 |
+| Фрагмент | 1024 |
+| Резерв ответа | 768 |
 
-## Files
+## Работа программы
 
-Source chunks: journal.jsonl. State and memory: state.json, memory.json and memory_versions.jsonl. Execution trace: trace.jsonl. Requests, responses and usage: api_calls.jsonl.
+| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- |
+| reflexive | completed | 14 | 4 | 0 | 0.0 |
+
+## Пример изменения памяти
+
+Это фактические записи модели. Наличие записи не подтверждает её истинность.
+
+<details>
+<summary>Показать записи до и после обновления</summary>
+
+| Момент | Запись | Источники |
+| --- | --- | --- |
+| До | Orion delivery date: 12 November 2026. | c001 |
+| После | Correction: Orion delivery date: 19 November 2026. The old date is cancelled. | c003 |
+
+</details>
+
+## Исходные материалы
+
+[Результаты JSON](results.json) · [Журнал текста](journal.jsonl) · [Версии памяти](memory_versions.jsonl) · [Трасса](trace.jsonl) · [Запросы и ответы](api_calls.jsonl)

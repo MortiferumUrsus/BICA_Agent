@@ -4,10 +4,12 @@
 
 ## Ответы
 
-| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
-| --- | --- | --- | --- | --- | --- |
-| reflexive | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
-| reflexive | 2 | What is the archive access code? | RIVER-17 | answer | c001 |
+ID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.
+
+| ID примера | Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- | --- |
+| [retrieval](results.json) | Reflexive | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
+| [retrieval](results.json) | Reflexive | 2 | What is the archive access code? | RIVER-17 | answer | c001 |
 
 ## Условия
 
@@ -22,9 +24,9 @@
 
 ## Работа программы
 
-| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
-| --- | --- | --- | --- | --- | --- |
-| reflexive | completed | 20 | 5 | 1 | 0.0 |
+| ID примера | Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- | --- |
+| [retrieval](results.json) | Reflexive | completed | 20 | 5 | 1 | 0.0 |
 
 ## Пример изменения памяти
 

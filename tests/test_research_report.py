@@ -4,6 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("research_report", ROOT / "tools/build_research_report.py")
@@ -88,6 +89,44 @@ class ResearchReportTests(unittest.TestCase):
         self.assertEqual(sol[2:5], ["12/12", "2/12", "12/12"])
         astra = next(r for r in table if r[:2] == ["GPT-6 Astra · low", "Reflexive"])
         self.assertEqual(astra[2:5], ["9/9", "2/9", "9/9"])
+
+    def test_saved_questions_have_provenance_without_inventing_missing_options(self):
+        _, _, rows, _, archived, _, _ = REPORT.load_data(ROOT)
+        before = copy.deepcopy(rows)
+        contexts = REPORT.example_contexts(ROOT, rows, archived)
+        self.assertEqual(rows, before)
+        self.assertEqual(len(contexts), 48)
+        available = {c["id"] for c in contexts if c["question"]}
+        self.assertEqual(available, {f"qa1-8k-{i:05d}" for i in range(5, 10)} |
+                         {"goal-shift-000", "goal-shift-001"})
+        for c in contexts:
+            if c["question"]:
+                self.assertTrue(c["question_sources"])
+                self.assertTrue(all((ROOT / p).is_file() for p in c["question_sources"]))
+            if c["dataset"] == "personamem":
+                self.assertIsNone(c["question"])
+
+    def test_different_dataset_revision_prevents_transferring_local_questions(self):
+        _, _, rows, _, archived, _, _ = REPORT.load_data(ROOT)
+        original_read = REPORT.read
+
+        def changed_manifest(path):
+            data = original_read(path)
+            if Path(path) == ROOT / "examples/babilong-manifest.json":
+                data["revision"] = "different-revision"
+            return data
+
+        with mock.patch.object(REPORT, "read", side_effect=changed_manifest):
+            contexts = REPORT.example_contexts(ROOT, rows, archived)
+        self.assertFalse(any(c["question"] for c in contexts if c["dataset"] == "babilong"))
+        self.assertEqual(sum(bool(c["question"]) for c in contexts), 2)
+
+    def test_conflicting_saved_questions_fail_instead_of_silently_overwriting(self):
+        _, _, rows, _, archived, _, _ = REPORT.load_data(ROOT)
+        duplicate = copy.deepcopy(next(r for r in archived if r["question"] and r["checkpoint"]))
+        duplicate["question"] = "A conflicting question"
+        with self.assertRaises(ValueError):
+            REPORT.example_contexts(ROOT, rows, archived + [duplicate])
 
 
 if __name__ == "__main__":

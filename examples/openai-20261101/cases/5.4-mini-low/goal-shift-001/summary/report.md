@@ -4,10 +4,12 @@
 
 ## Ответы
 
-| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
-| --- | --- | --- | --- | --- | --- |
-| summary | 1 | Which supplier is cheapest among those delivering within 5 days? Return its name only. | Vendor-01-D | answer | — |
-| summary | 2 | What is the contract code of the supplier with the shortest delivery time, regardless of price? Return only the exact code. | AG-68601-3 | answer | — |
+ID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.
+
+| ID примера | Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- | --- |
+| [goal-shift-001](results.json) | Summary | 1 | Which supplier is cheapest among those delivering within 5 days? Return its name only. | Vendor-01-D | answer | — |
+| [goal-shift-001](results.json) | Summary | 2 | What is the contract code of the supplier with the shortest delivery time, regardless of price? Return only the exact code. | AG-68601-3 | answer | — |
 
 ## Условия
 
@@ -22,9 +24,9 @@
 
 ## Работа программы
 
-| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
-| --- | --- | --- | --- | --- | --- |
-| summary | completed | 9 | 5 | 0 | 0.00840825 |
+| ID примера | Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- | --- |
+| [goal-shift-001](results.json) | Summary | completed | 9 | 5 | 0 | 0.00840825 |
 
 ## Пример изменения памяти
 

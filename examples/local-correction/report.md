@@ -4,10 +4,12 @@
 
 ## Ответы
 
-| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
-| --- | --- | --- | --- | --- | --- |
-| summary | 1 | What is the current delivery date for Orion? | ∅ | insufficient_data | c001, c002 |
-| reflexive | 1 | What is the current delivery date for Orion? | ∅ | insufficient_data | c002, c003 |
+ID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.
+
+| ID примера | Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- | --- |
+| [correction](summary/report.md) | Summary | 1 | What is the current delivery date for Orion? | ∅ | insufficient_data | c001, c002 |
+| [correction](reflexive/report.md) | Reflexive | 1 | What is the current delivery date for Orion? | ∅ | insufficient_data | c002, c003 |
 
 ## Условия
 
@@ -22,10 +24,10 @@
 
 ## Работа программы
 
-| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
-| --- | --- | --- | --- | --- | --- |
-| summary | completed | 9 | 6 | 1 | 0.0 |
-| reflexive | completed | 21 | 6 | 1 | 0.0 |
+| ID примера | Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- | --- |
+| [correction](summary/report.md) | Summary | completed | 9 | 6 | 1 | 0.0 |
+| [correction](reflexive/report.md) | Reflexive | completed | 21 | 6 | 1 | 0.0 |
 
 ## Исходные материалы
 

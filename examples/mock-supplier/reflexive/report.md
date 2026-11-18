@@ -4,10 +4,12 @@
 
 ## Ответы
 
-| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
-| --- | --- | --- | --- | --- | --- |
-| reflexive | 1 | Choose the cheapest supplier delivering within 5 days. Return its name only. | Cedar | answer | — |
-| reflexive | 2 | What payment terms and contract code should the order use for the chosen supplier? | Cedar: payment 30% advance, contract CD-104 | answer | — |
+ID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.
+
+| ID примера | Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- | --- |
+| [supplier](results.json) | Reflexive | 1 | Choose the cheapest supplier delivering within 5 days. Return its name only. | Cedar | answer | — |
+| [supplier](results.json) | Reflexive | 2 | What payment terms and contract code should the order use for the chosen supplier? | Cedar: payment 30% advance, contract CD-104 | answer | — |
 
 ## Условия
 
@@ -22,9 +24,9 @@
 
 ## Работа программы
 
-| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
-| --- | --- | --- | --- | --- | --- |
-| reflexive | completed | 19 | 5 | 0 | 0.0 |
+| ID примера | Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- | --- |
+| [supplier](results.json) | Reflexive | completed | 19 | 5 | 0 | 0.0 |
 
 ## Пример изменения памяти
 

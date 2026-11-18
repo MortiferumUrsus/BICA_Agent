@@ -8,6 +8,7 @@ import hashlib
 import html
 import json
 import math
+import os
 from pathlib import Path
 import re
 
@@ -219,7 +220,8 @@ def load_data(root):
             archived.append({
                 "run": p.parent.relative_to(root).as_posix(), "provider": r["provider"],
                 "model": r.get("model", ""), "mode": r["mode"], "checkpoint": None,
-                "question": None, "status": r["status"], "answer_status": None, "answer": None,
+                "question": r.get("state", {}).get("goal") if r.get("name", "").startswith("qa1-") else None,
+                "status": r["status"], "answer_status": None, "answer": None,
                 "before_retrieval": None, "retrieved_ids": [], "error": r.get("error")})
         raw_path = p.with_name("api_calls.jsonl")
         if raw_path.exists():
@@ -279,6 +281,92 @@ def verify(root, first, strong, rows, summaries):
     assert len(receipts) == 9683
     assert len({r["ledger_id"] for r in receipts}) == len(receipts)
     assert abs(sum(float(r["cost_usd"]) for r in receipts) - 27.87631429) < 1e-7
+
+
+def example_contexts(root, rows, archived):
+    """Attach only questions backed by saved traces, with explicit provenance."""
+    contexts = {}
+    for r in rows:
+        c = contexts.setdefault(r["id"], {"id": r["id"], "dataset": r["dataset"],
+            "target": r["target"], "question": None, "question_sources": [],
+            "first_question": None, "source_excerpt": [], "trace_reports": []})
+        if c["target"] != r["target"] or c["dataset"] != r["dataset"]:
+            raise ValueError(f'Conflicting identity or target: {r["id"]}')
+    local = read(root / "examples/babilong-manifest.json")
+    paid = read(root / "examples/openai-20261101/babilong-manifest.json")
+    same_babilong = all(local[k] == paid[k] for k in ("dataset", "revision", "sha256"))
+    for r in archived:
+        run = Path(r["run"])
+        identity = run.parent.name
+        if identity not in contexts or not r["question"]:
+            continue
+        c = contexts[identity]
+        if c["dataset"] == "babilong" and not same_babilong:
+            continue
+        if c["dataset"] == "goal_shift" and r["checkpoint"] != 2:
+            if r["checkpoint"] == 1:
+                c["first_question"] = r["question"]
+            continue
+        if c["question"] is not None and c["question"] != r["question"]:
+            raise ValueError(f"Conflicting saved questions: {identity}")
+        c["question"] = r["question"]
+        c["question_sources"].append((run / "results.json").as_posix())
+        c["trace_reports"].append((run / "report.md").as_posix())
+        if c["dataset"] == "goal_shift":
+            for chunk in lines(root / run / "journal.jsonl"):
+                for line in chunk["text"].splitlines():
+                    if c["target"] in line:
+                        item = {"source_id": chunk["chunk_id"], "text": line}
+                        if item not in c["source_excerpt"]:
+                            c["source_excerpt"].append(item)
+    for c in contexts.values():
+        c["question_sources"] = sorted(set(c["question_sources"]))
+        c["trace_reports"] = sorted(set(c["trace_reports"]))
+    return list(contexts.values())
+
+
+def answer_note(r):
+    if r["status"] != "completed":
+        return "Прогон остановлен; содержательный ответ не получен."
+    if r["answer_status"] == "insufficient_data":
+        return "Модель сообщила о нехватке данных."
+    if r["correct"]:
+        return "Засчитано исходной метрикой."
+    if r["dataset"] == "babilong":
+        if article_text(r["answer"]) == article_text(r["target"]):
+            return "Расхождение только в начальном артикле; строгая метрика не засчитала ответ."
+        if article_text(r["answer"]) in LOCATIONS:
+            return "Названо другое место."
+        return "Строка не совпала с эталоном; смысл фразы требует отдельного разбора."
+    if r["dataset"] == "personamem":
+        return "Не засчитано. Без вопроса и вариантов нельзя объяснить содержательную причину."
+    return "Ответ не совпал с точным кодом договора."
+
+
+def example_cards(contexts, rows):
+    out = ['<section class="sheet" id="examples"><h2>Разбор отдельных примеров</h2>',
+           '<p>Выберите ID, чтобы сопоставить ответы на одну задачу. Вопросы приведены дословно из сохранённых журналов. Вопросы BABILong связаны с платной серией по ID и совпадающим ревизии и SHA-256 датасета.</p>']
+    for c in contexts:
+        group = [r for r in rows if r["id"] == c["id"]]
+        availability = "вопрос сохранён" if c["question"] else "текст вопроса отсутствует"
+        out.append(f'<details class="example-card" id="example-{e(c["id"])}"><summary><strong>{e(c["id"])}</strong> · {DATASETS[c["dataset"]]} · {availability}</summary>')
+        if c["first_question"]:
+            out.append(f'<p><strong>Первая цель:</strong> {e(c["first_question"])}</p>')
+        out.append(f'<p><strong>Вопрос:</strong> {e(c["question"]) if c["question"] else "Точная формулировка не сохранена в доступном архиве."}</p>')
+        if c["dataset"] == "personamem":
+            out.append('<p class="caption">Варианты a–d также отсутствуют. Буквы ответа и эталона позволяют проверить оценку, но не содержание выбора.</p>')
+        out.append(f'<p><strong>Эталон:</strong> <code>{e(c["target"])}</code>. Источник эталона — сводные результаты платных серий.</p>')
+        for item in c["source_excerpt"]:
+            out.append(f'<p><strong>Фрагмент {e(item["source_id"])}:</strong> {e(item["text"])}</p>')
+        out.append(table(["Модель", "Метод", "Ответ → эталон", "Как понимать оценку"], [
+            [e(LABELS[r["profile"]]), METHODS[r["mode"]],
+             f'<code>{e(r["answer"] or "∅")} → {e(r["target"])}</code>', e(answer_note(r))] for r in group]))
+        links = [f'<a href="../../{e(p)}">{e(p)}</a>' for p in c["question_sources"]]
+        links += [f'<a href="../../{e(p)}">Разбор {e(Path(p).parent.name)}</a>' for p in c["trace_reports"]]
+        if links:
+            out.append('<p class="caption">Источники вопроса и трассы: ' + " · ".join(links) + '</p>')
+        out.append('</details>')
+    return "".join(out) + '</section>'
 
 
 def svg_start(width, height, title):
@@ -563,6 +651,38 @@ def narrative_sections(rows, summaries, analysis, comparisons):
     return sections
 
 
+def brief_sections(sections, summaries, analysis):
+    """A reader's summary: retain main evidence, put exhaustive tables in the full report."""
+    full = {key: (key, title, body) for key, title, body in sections}
+    methods = ('<h2>Что и как сравнивается</h2><p>При последовательном чтении истории модель оставляет факты в памяти 512 токенов. После смены цели ей может понадобиться ранее несущественная информация. Оба метода могут один раз обратиться к журналу и перечитать до двух фрагментов.</p>' +
+        table(["Метод", "Обновление памяти", "Вызовы"], [
+            ["Summary", "Старая память + новый текст → новая память", "1"],
+            ["Reflexive", "Отбор фактов → сжатие → проверка отбора", "3"]]) +
+        '<p>Проверка Reflexive охватывает выбранные факты и не гарантирует полноты самого отбора. Сравниваются целые процессы; эффект одной стадии verify отдельно не выделен.</p>' +
+        table(["Набор", "Выборка", "Вопрос известен", "Оценка"], [
+            ["PersonaMem", "16 персон", "После истории", "Буква a–d"],
+            ["BABILong", "20 примеров", "До истории", "Точный короткий ответ"],
+            ["Смена цели", "12 сценариев", "Новая цель после первого ответа", "Точный код договора"]]) +
+        '<p>Платные серии: окно с резервом 8192, память и состояние по 512, фрагмент и выход API по 2048 токенов cl100k_base. Разрешены до двух повторов формата. Полный контекст PersonaMem использует окно 65536, последнее окно — суффикс до 4096.</p>'
+        '<p>Первая серия — 512 прогонов на четырёх профилях. Продолжение — 128 Sol low, 28 Astra и 18 контролей Sol medium. Astra проверялась на части прежних примеров; это продолжение, а не независимая новая выборка. Эталоны не передавались агенту, итоговые ответы оценивались кодом.</p>')
+    metric = ('<h2>Форма ответа влияет на строгую оценку</h2><p>В BABILong строка the hallway не совпадает с hallway. Ретроспективный пересчёт удаляет только один начальный артикль the, a или an. Исходные оценки сохранены; это анализ чувствительности, а не новая основная метрика.</p>' +
+        table(SENSITIVITY_HEADERS, sensitivity_table(analysis)) +
+        '<h2>Какие ответы не были засчитаны</h2>' +
+        table(["Категория", "Ответов"], [[v, analysis["category_counts"][k]] for k, v in CATEGORY_LABELS.items()]) +
+        '<p>Всего 200 ответов на 20 повторяющихся примерах, не 200 независимых задач. Сложные фразы не объявлены содержательными ошибками автоматически. После удаления артикля различия nano low и none по точному McNemar не достигают p &lt; 0,05. Полные сравнения и девять сложных фраз — в полной версии и babilong_sensitivity.md.</p>')
+    goals = ('<h2>Что меняется после новой цели и поиска</h2><p>Сначала нужно выбрать дешёвого поставщика с доставкой до пяти дней. Затем — вернуть код договора самого быстрого, независимо от цены.</p>' +
+        table(GOAL_HEADERS, goal_table(summaries)) +
+        '<p>У Sol итог 12/12 в обоих методах, но до поиска — только 2/12 и 3/12. У Astra — 2/9 до поиска и 9/9 после. Итоговая точность поэтому не описывает одну лишь сохранность памяти.</p>'
+        '<p class="caption">Поиски учтены за весь прогон, включая первую цель. До/после — наблюдение в одном запуске. Контроля с отключённым поиском нет, поэтому причинный вклад повторного чтения отдельно не установлен.</p>')
+    context = full["context"][2] + ('<h2>Цена дополнительных стадий</h2><p>Reflexive дороже Summary в 2,2–3,3 раза в первой серии и в 2,3–3,1 раза у Sol. На девяти общих сценариях Astra обошлась примерно в пять раз дороже Sol при той же итоговой точности.</p>'
+        '<p>Две серии с отладкой: 9 683 запроса, $27,87631429 из $28. Это расчёт по историческим тарифам и сохранённому usage. Новых платных запросов при редактуре нет.</p>')
+    cases = full["cases"][2] + ('<h2>Границы вывода</h2><p>Дополнительные стадии не дали устойчивого выигрыша на этой выборке. Один прогон на комбинацию, малые выборки и несколько сравнений ограничивают обобщение. Полный контекст использует большее окно; сравнение не проводится при равных вычислительных расходах. Отдельных контролей без verify и без поиска нет.</p>'
+        '<p>Полная версия содержит 686 итоговых ответов, парные разницы с 95% bootstrap-интервалами, локальные проверки и сохранённые вопросы. HTML дополнительно содержит карточки всех 48 примеров и доступные промежуточные ответы. Большинство полных платных трасс и варианты PersonaMem отсутствуют в клоне.</p>')
+    return [full["overview"], ("methods", "Методы и условия", methods), full["accuracy"],
+            ("metric", "Метрика и типы ответов", metric), ("goals", "Смена цели и поиск", goals),
+            ("context", "Полный контекст и стоимость", context), ("cases", "Разбор случаев и ограничения", cases)]
+
+
 CSS = """
 :root{--ink:#20343e;--muted:#61717b;--line:#dbe3e7;--blue:#246f86;--rust:#bc6646}
 *{box-sizing:border-box}body{margin:0;color:var(--ink);background:#eef2f3;font:16px/1.65 Arial,sans-serif}
@@ -589,6 +709,7 @@ label.filter{font-size:12px;color:var(--muted)}label.filter input,label.filter s
 .filter-count{font-size:13px;color:var(--muted)}.download{display:flex;gap:18px;font-size:13px;flex-wrap:wrap}
 .answer-table{font-size:12px}.answer-table th{position:sticky;top:0;z-index:1}.answer-table td:nth-child(1){width:160px}
 .answer{font-family:ui-monospace,Menlo,monospace;overflow-wrap:anywhere;max-width:170px}
+.example-card{scroll-margin-top:20px}.example-card:target{border:1px solid #8eabb7;padding:12px}.example-card table{font-size:13px}
 .sub{display:block;color:var(--muted);font-size:10px;margin-top:3px}
 details{margin:8px 0;border-bottom:1px solid var(--line);padding:8px 0}summary{cursor:pointer;font-size:13px}
 pre{font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f7f8;padding:16px}
@@ -602,12 +723,16 @@ footer{font-size:12px;color:var(--muted);padding:12px 0 25px}
 JS = """
 const state={q:'',profile:'',dataset:'',mode:'',result:''};
 const norm=x=>String(x||'').toLowerCase();
+function revealExample(id){if(!id.startsWith('example-'))return;const card=document.getElementById(id);if(card){card.open=true;card.scrollIntoView({block:'start'})}}
+function openExample(){revealExample(decodeURIComponent(location.hash.slice(1)))}
+window.addEventListener('hashchange',openExample);openExample();
+document.querySelectorAll('a[href^="#example-"]').forEach(el=>el.addEventListener('click',()=>revealExample(el.getAttribute('href').slice(1))));
 function filterAnswers(){let shown=0;document.querySelectorAll('.answer-row').forEach(row=>{
-const ok=(!state.profile||row.dataset.profile===state.profile)&&(!state.dataset||row.dataset.dataset===state.dataset)&&(!state.mode||row.dataset.mode===state.mode)&&(!state.result||row.dataset.result===state.result)&&(!state.q||norm(row.textContent).includes(state.q));
+const ok=(!state.profile||row.dataset.profile===state.profile)&&(!state.dataset||row.dataset.dataset===state.dataset)&&(!state.mode||row.dataset.mode===state.mode)&&(!state.result||row.dataset.result===state.result)&&(!state.q||norm(row.dataset.question+' '+row.textContent).includes(state.q));
 row.hidden=!ok;if(ok)shown++});document.querySelector('#shown').textContent=shown}
 document.querySelectorAll('[data-filter]').forEach(el=>el.addEventListener('input',()=>{state[el.dataset.filter]=norm(el.value);filterAnswers()}));
 document.querySelector('#raw-query').addEventListener('input',event=>{const q=norm(event.target.value);let shown=0;document.querySelectorAll('.raw-record').forEach(el=>{el.hidden=!!q&&!norm(el.textContent).includes(q);if(!el.hidden)shown++});document.querySelector('#raw-shown').textContent=shown});
-document.querySelector('#download-filtered').addEventListener('click',()=>{const cell=x=>'"'+String(x??'').replaceAll('"','""')+'"';const out=[['id','profile','dataset','mode','answer','target','correct','answer_status','cost_usd']];
+document.querySelector('#download-filtered').addEventListener('click',()=>{const cell=x=>'"'+String(x??'').replaceAll('"','""')+'"';const out=[['id','profile','dataset','mode','answer','target','correct','answer_status','cost_usd','question','question_sources','answer_note']];
 document.querySelectorAll('.answer-row:not([hidden])').forEach(el=>out.push(JSON.parse(el.dataset.export)));
 const blob=new Blob(['\\ufeff'+out.map(r=>r.map(cell).join(',')).join('\\r\\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='filtered_answers.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
 """
@@ -616,9 +741,9 @@ const blob=new Blob(['\\ufeff'+out.map(r=>r.map(cell).join(',')).join('\\r\\n')]
 def answer_catalog(rows):
     out = ['<section class="sheet" id="answers"><p class="eyebrow">Приложение A</p><h2>Все 686 итоговых ответов</h2>',
            '<p>Каждая строка — основной прогон. Ответы и эталоны перенесены без перефразирования. Пустой ответ показан явно. При смене цели приведён ответ на второй, итоговый вопрос.</p>',
-           '<p class="caption">PersonaMem: ответ и эталон — буквы вариантов. Нет данных означает статус insufficient_data. Стоимость строк округлена; точные значения есть в CSV. Тексты большинства вопросов, вариантов и промежуточных ответов отсутствуют в опубликованных сводках и не восстановлены предположительно. Правильность первого этапа смены цели сохранена в CSV.</p>',
+           '<p class="caption">Нажмите на ID: откроется карточка задачи с доступным вопросом, эталоном, ответами моделей и пояснениями оценки. PersonaMem: ответ и эталон — буквы отсутствующих вариантов. Нет данных означает статус insufficient_data. Стоимость строк округлена; точные значения и доступные вопросы есть в CSV. Правильность первого этапа смены цели сохранена в CSV.</p>',
            '<div class="download"><a href="all_answers.csv" download>Все ответы CSV</a><a href="all_answers.json" download>Все ответы JSON</a><a href="verification.json">Происхождение и проверки</a></div>',
-           '<div class="filters"><label class="filter">Поиск<input data-filter="q" placeholder="ID, ответ, эталон, модель"></label>']
+           '<div class="filters"><label class="filter">Поиск<input data-filter="q" placeholder="ID, вопрос, ответ, эталон, модель"></label>']
     for key, title, values in [
         ("profile", "Модель", [(p, LABELS[p]) for p in PROFILES]),
         ("dataset", "Набор", list(DATASETS.items())), ("mode", "Метод", list(METHODS.items())),
@@ -630,11 +755,11 @@ def answer_catalog(rows):
     for r in rows:
         category = "correct" if r["correct"] else ("insufficient" if r["answer_status"] == "insufficient_data" else "wrong")
         badge, cls = ("Верно", "ok") if r["correct"] else (("Нет данных", "absent") if category == "insufficient" else ("Неверно", "bad"))
-        export = [r[k] for k in ("id", "profile", "dataset", "mode", "answer", "target", "correct", "answer_status", "cost_usd")]
-        out.append(f'<tr class="answer-row" data-profile="{e(r["profile"])}" data-dataset="{r["dataset"]}" data-mode="{r["mode"]}" data-result="{category}" data-export="{e(json.dumps(export, ensure_ascii=False))}">' +
-                   f'<td>{e(r["id"])}<span class="sub">{e(LABELS[r["profile"]])}</span><span class="sub">{DATASETS[r["dataset"]]}</span></td>' +
+        export = [r[k] for k in ("id", "profile", "dataset", "mode", "answer", "target", "correct", "answer_status", "cost_usd", "question", "question_sources", "answer_note")]
+        out.append(f'<tr class="answer-row" data-question="{e(r["question"] or "")}" data-profile="{e(r["profile"])}" data-dataset="{r["dataset"]}" data-mode="{r["mode"]}" data-result="{category}" data-export="{e(json.dumps(export, ensure_ascii=False))}">' +
+                   f'<td><a href="#example-{e(r["id"])}">{e(r["id"])}</a><span class="sub">{e(LABELS[r["profile"]])}</span><span class="sub">{DATASETS[r["dataset"]]}</span></td>' +
                    f'<td>{METHODS[r["mode"]]}</td><td class="answer">{e(r["answer"]) if r["answer"] else "∅ (пусто)"}</td><td class="answer">{e(r["target"])}</td>' +
-                   f'<td><span class="badge {cls}">{badge}</span></td><td>{r["cost_usd"]:.5f}</td></tr>')
+                   f'<td><span class="badge {cls}">{badge}</span><span class="sub">{e(r["answer_note"])}</span></td><td>{r["cost_usd"]:.5f}</td></tr>')
     return "".join(out) + "</tbody></table></div></section>"
 
 
@@ -644,7 +769,7 @@ def archive_catalog(archived, stages):
            '<p>Эти записи не входят в 686 основных платных прогонов. Mock — заданные ответы для проверки программы. У Llama показаны и завершённые контрольные точки, и остановки без ответа.</p>',
            '<div class="download"><a href="archived_answers.json">Контрольные точки JSON</a><a href="saved_stage_responses.json">Ответы стадий JSON</a></div>']
     out.append(table(["Прогон", "Метод / этап", "Вопрос", "Ответ / остановка"], [
-        [e(r["run"].replace("examples/", "")), f'{e(r["mode"])} / {r["checkpoint"] or "—"}',
+        [f'<a href="../../{e(r["run"])}/report.md">{e(r["run"].replace("examples/", ""))}</a>', f'{e(r["mode"])} / {r["checkpoint"] or "—"}',
          e(r["question"] or "Остановка до вопроса"),
          e(r["answer"] or ("Недостаточно данных" if r["answer_status"] == "insufficient_data" else
             (r["error"] or {}).get("message", "Ответ отсутствует")))]
@@ -719,31 +844,51 @@ def rewrite_run_reports(root):
             text += "Исторический запуск от 9 октября 2026 года. Завершение программы означает выполнение протокола; оно не означает правильный ответ.\n\n"
         else:
             text += "Показательный случай первой серии. Он объясняет поведение метода, но не заменяет оценку всей выборки.\n\n"
+        def identity(ex):
+            return ex.get("id") or ex.get("name") or path.parent.name
+
+        def run_link(ex, filename="report.md"):
+            if "examples" not in r:
+                target = path.with_name("results.json" if filename == "report.md" else filename)
+            else:
+                base = path.parent / identity(ex) if ex.get("kind") == "benchmark" else path.parent
+                target = base / ex["mode"] / filename
+            label = identity(ex)
+            return f'[{label}]({Path(os.path.relpath(target, path.parent)).as_posix()})' if target.exists() else label
+
         answer_rows = []
         for ex in examples:
             for i, a in enumerate(ex.get("answers", []), 1):
                 final = a.get("final")
                 answer = final.get("answer", "") if final else ""
                 status = final.get("status", "нет решения") if final else "нет решения"
-                answer_rows.append([ex.get("mode", "—"), i, a["question"], answer or "∅", status,
+                answer_rows.append([run_link(ex), METHODS.get(ex.get("mode"), ex.get("mode", "—")), i, a["question"], answer or "∅", status,
                                     ", ".join(a.get("retrieved_ids", [])) or "—"])
             if not ex.get("answers"):
-                answer_rows.append([ex.get("mode", "—"), "—", "Остановка до вопроса", "∅",
+                answer_rows.append([run_link(ex), METHODS.get(ex.get("mode"), ex.get("mode", "—")), "—", ex.get("state", {}).get("goal") or "Вопрос не сохранён", "∅",
                                     (ex.get("error") or {}).get("type", ex.get("status", "—")), "—"])
-        text += "## Ответы\n\n" + md_table(["Метод", "Этап", "Вопрос", "Ответ", "Статус", "Перечитаны"], answer_rows)
+        text += "## Ответы\n\nID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.\n\n"
+        text += md_table(["ID примера", "Метод", "Этап", "Вопрос", "Ответ", "Статус", "Перечитаны"], answer_rows)
         config = r.get("config", {})
         if config:
             text += "\n\n## Условия\n\n" + md_table(["Параметр", "Значение"], [
                 ["Модель", r.get("model", "—")], ["Окно с резервом", config.get("window_ref_tokens", "—")],
                 ["Память", config.get("memory_ref_tokens", "—")], ["Состояние", config.get("state_ref_tokens", "—")],
                 ["Фрагмент", config.get("chunk_ref_tokens", "—")], ["Резерв ответа", config.get("max_output_tokens", "—")]])
-        text += "\n\n## Работа программы\n\n" + md_table(["Метод", "Завершение", "Вызовы", "Сжатия", "Поиски", "USD"], [
-            [x.get("mode", "—"), x.get("status", "—"), x.get("metrics", {}).get("api_calls", "—"),
+        text += "\n\n## Работа программы\n\n" + md_table(["ID примера", "Метод", "Завершение", "Вызовы", "Сжатия", "Поиски", "USD"], [
+            [run_link(x), METHODS.get(x.get("mode"), x.get("mode", "—")), x.get("status", "—"), x.get("metrics", {}).get("api_calls", "—"),
              x.get("metrics", {}).get("compressions", "—"), x.get("metrics", {}).get("retrievals", "—"),
              x.get("metrics", {}).get("cost_usd", "—")] for x in examples])
+        errors = collections.defaultdict(list)
         for ex in examples:
             if ex.get("error"):
-                text += f'\n\n**Остановка {ex.get("mode", "")}:** {ex["error"]["type"]} — {ex["error"]["message"]}.\n'
+                errors[(ex["error"]["type"], ex["error"]["message"])].append(ex)
+        if errors:
+            text += "\n\n## Причины остановки\n\nОдинаковые ошибки объединены. Остановка по формату отличается от ответа insufficient_data: в первом случае протокол прерван, во втором модель явно сообщает о нехватке данных.\n\n"
+            text += md_table(["Ошибка", "Что произошло", "Прогонов", "Какие прогоны"], [
+                [kind, "Модель нарушила требуемую JSON-схему." if kind == "ResponseError" and "JSON schema" in message else message,
+                 len(group), "; ".join(f'{run_link(ex)} / {METHODS.get(ex["mode"], ex["mode"])}' for ex in group)]
+                for (kind, message), group in errors.items()])
         if r.get("summary_by_mode"):
             text += "\n\n## Оценка BABILong\n\n" + md_table(["Метод", "Запрошено", "Завершено", "Верно", "Ошибки формата"], [
                 [mode, s["requested"], s["processed"], s["correct"], s["model_output_errors"]]
@@ -814,6 +959,16 @@ def build(root=ROOT, output=None, rewrite=False):
     output.mkdir(parents=True, exist_ok=True)
     first, strong, rows, summaries, archived, stages, sources = load_data(root)
     verify(root, first, strong, rows, summaries)
+    contexts = example_contexts(root, rows, archived)
+    by_id = {c["id"]: c for c in contexts}
+    for r in rows:
+        c = by_id[r["id"]]
+        r.update(question=c["question"], question_sources="; ".join(c["question_sources"]), answer_note=answer_note(r))
+    context_sources = {"examples/babilong-manifest.json", "examples/openai-20261101/babilong-manifest.json"}
+    context_sources.update(p for c in contexts for p in c["question_sources"])
+    context_sources.update(str(Path(p).with_name("journal.jsonl")) for c in contexts if c["source_excerpt"] for p in c["question_sources"])
+    for name in sorted(context_sources):
+        sources.append({"path": name, "sha256": hashlib.sha256((root / name).read_bytes()).hexdigest()})
     analysis = analyze_babilong(rows)
     analysis["sources"] = sources
     write_sensitivity(output, analysis)
@@ -822,7 +977,7 @@ def build(root=ROOT, output=None, rewrite=False):
               "RETRIEVAL": retrieval_chart(summaries), "COST": cost_chart(summaries)}
     for name, svg in charts.items():
         (output / f"{name.lower()}.svg").write_text(svg, encoding="utf-8")
-    for filename, data in [("all_answers.json", rows), ("archived_answers.json", archived), ("saved_stage_responses.json", stages)]:
+    for filename, data in [("all_answers.json", rows), ("example_contexts.json", contexts), ("archived_answers.json", archived), ("saved_stage_responses.json", stages)]:
         save_json(output / filename, data)
     with (output / "all_answers.csv").open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
@@ -833,6 +988,9 @@ def build(root=ROOT, output=None, rewrite=False):
         "main_runs": len(rows), "unique_main_examples": len({r["id"] for r in rows}),
         "summary_groups": len(summaries), "paid_receipts": 9683, "recorded_total_usd": 27.87631429,
         "archive_records": len(archived), "available_stage_records": len(stages), "sources": sources,
+        "saved_questions": {"examples": sum(bool(c["question"]) for c in contexts),
+                            "runs": sum(bool(r["question"]) for r in rows),
+                            "file": "example_contexts.json"},
         "secondary_analysis": {"file": "babilong_sensitivity.json", "retrospective": True,
                                "primary_metric_unchanged": True, "runs": analysis["n_runs"],
                                "categories": analysis["category_counts"]},
@@ -847,11 +1005,11 @@ def build(root=ROOT, output=None, rewrite=False):
             body = body.replace(f"__{name}__", svg)
         sections[i] = (key, title, body)
     nav = [(key, title) for key, title, _ in sections] + [
-        ("answers", "Все ответы"), ("archive", "Локальные проверки"), ("stages", "Промежуточные ответы"), ("sources", "Источники")]
+        ("answers", "Все ответы"), ("examples", "Разбор примеров"), ("archive", "Локальные проверки"), ("stages", "Промежуточные ответы"), ("sources", "Источники")]
     doc = '<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Сжатие контекстной памяти — исследовательский отчёт</title><style>' + CSS + '</style></head><body><div class="layout"><nav aria-label="Содержание"><p class="brand">BICA Agent</p>' + "".join(f'<a href="#{key}">{e(title)}</a>' for key, title in nav) + '</nav><main>'
     for key, title, body in sections:
         doc += f'<section class="sheet" id="{key}">{body}</section>'
-    doc += answer_catalog(rows) + archive_catalog(archived, stages)
+    doc += answer_catalog(rows) + example_cards(contexts, rows) + archive_catalog(archived, stages)
     doc += '<section class="sheet" id="sources"><h2>Исходные файлы</h2><p>SHA-256 фиксирует использованные версии данных. В переносимой HTML-копии внешние файлы могут быть недоступны; ответы и графики встроены.</p><ul class="source-list">'
     doc += "".join(f'<li><a href="../../{e(s["path"])}">{e(s["path"])}</a><br>{s["sha256"]}</li>' for s in sources)
     doc += '</ul></section><footer>Редакция 18 ноября 2026 года. Новые эксперименты не проводились. Исходные ответы, эталоны и журналы не изменены.</footer></main></div><script>' + JS + "</script></body></html>"
@@ -889,7 +1047,8 @@ def build(root=ROOT, output=None, rewrite=False):
            "## Материалы\n\n[Все итоговые ответы JSON](all_answers.json). "
            "[Сохранённые контрольные точки](archived_answers.json). "
            "[Доступные промежуточные ответы](saved_stage_responses.json). "
-           "Отсутствующие вопросы и ответы не восстановлены предположительно.\n\n"
+           "[Карточки задач и источники вопросов](example_contexts.json). В HTML ID ответа открывает карточку с вопросом, эталоном, сопоставлением моделей и пояснением оценки. "
+           "Дословные вопросы найдены для пяти BABILong и двух смен цели; остальные вопросы и варианты не восстановлены предположительно.\n\n"
            "## Ограничения\n\nОдин прогон на комбинацию, небольшие выборки и несколько сравнений. Продолжение использует те же eval-примеры. "
            "Нет отдельного контроля без поиска. Astra прошла меньшую выборку. Большинство полных платных трасс и исходные датасеты "
            "отсутствуют в клоне. Полный независимый аудит всех стадий по сводкам невозможен.\n\n"
@@ -899,7 +1058,9 @@ def build(root=ROOT, output=None, rewrite=False):
     (output / "README.md").write_text(md, encoding="utf-8")
     save_json(output / "pdf_data.json", {
         "sections": [{"id": k, "title": t, "html": re.sub(r"<svg.*?</svg>", "", body, flags=re.S)} for k, t, body in sections],
-        "rows": rows, "summaries": summaries, "archived": archived, "stage_count": len(stages),
+        "brief_sections": [{"id": k, "title": t, "html": re.sub(r"<svg.*?</svg>", "", body, flags=re.S)}
+                           for k, t, body in brief_sections(sections, summaries, analysis)],
+        "rows": rows, "summaries": summaries, "archived": archived, "contexts": contexts, "stage_count": len(stages),
         "labels": LABELS, "datasets": DATASETS, "methods": METHODS})
     if rewrite:
         rewrite_run_reports(root)

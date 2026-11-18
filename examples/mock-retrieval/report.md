@@ -4,12 +4,14 @@
 
 ## Ответы
 
-| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
-| --- | --- | --- | --- | --- | --- |
-| summary | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
-| summary | 2 | What is the archive access code? | RIVER-17 | answer | c001 |
-| reflexive | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
-| reflexive | 2 | What is the archive access code? | RIVER-17 | answer | c001 |
+ID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.
+
+| ID примера | Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- | --- |
+| [retrieval](summary/report.md) | Summary | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
+| [retrieval](summary/report.md) | Summary | 2 | What is the archive access code? | RIVER-17 | answer | c001 |
+| [retrieval](reflexive/report.md) | Reflexive | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
+| [retrieval](reflexive/report.md) | Reflexive | 2 | What is the archive access code? | RIVER-17 | answer | c001 |
 
 ## Условия
 
@@ -24,10 +26,10 @@
 
 ## Работа программы
 
-| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
-| --- | --- | --- | --- | --- | --- |
-| summary | completed | 10 | 5 | 1 | 0.0 |
-| reflexive | completed | 20 | 5 | 1 | 0.0 |
+| ID примера | Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- | --- |
+| [retrieval](summary/report.md) | Summary | completed | 10 | 5 | 1 | 0.0 |
+| [retrieval](reflexive/report.md) | Reflexive | completed | 20 | 5 | 1 | 0.0 |
 
 ## Исходные материалы
 

@@ -4,10 +4,12 @@
 
 ## Ответы
 
-| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
-| --- | --- | --- | --- | --- | --- |
-| summary | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
-| reflexive | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
+ID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.
+
+| ID примера | Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- | --- |
+| [correction](summary/report.md) | Summary | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
+| [correction](reflexive/report.md) | Reflexive | 1 | What is the current delivery date for Orion? | 19 November 2026 | answer | — |
 
 ## Условия
 
@@ -22,10 +24,10 @@
 
 ## Работа программы
 
-| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
-| --- | --- | --- | --- | --- | --- |
-| summary | completed | 6 | 4 | 0 | 0.0 |
-| reflexive | completed | 14 | 4 | 0 | 0.0 |
+| ID примера | Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- | --- |
+| [correction](summary/report.md) | Summary | completed | 6 | 4 | 0 | 0.0 |
+| [correction](reflexive/report.md) | Reflexive | completed | 14 | 4 | 0 | 0.0 |
 
 ## Исходные материалы
 

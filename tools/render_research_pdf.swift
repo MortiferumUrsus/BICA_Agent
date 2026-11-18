@@ -160,7 +160,7 @@ final class Renderer {
         y+=12
     }
     func chart(_ kind:String) {
-        let hh:CGFloat=kind=="accuracy" ? 255 : (kind=="context" ? 187 : (kind=="retrieval" ? 230 : 263))
+        let hh:CGFloat=kind=="accuracy" ? 285 : (kind=="context" ? 210 : (kind=="retrieval" ? 255 : 290))
         ensure(hh+32)
         let start=y
         if kind=="accuracy" {
@@ -170,52 +170,52 @@ final class Renderer {
                 drawText(datasetLabels[dataset]!,x,start,span+20,10,true)
                 for tick in [0.0,0.5,1.0] {
                     let xx=x+CGFloat(tick)*span
-                    drawText("\(Int(tick*100))%",xx-8,start+15,27,6.6,false,false,muted)
-                    line(xx,start+24,xx,start+222)
+                    drawText("\(Int(tick*100))%",xx-8,start+15,27,8.0,false,false,muted)
+                    line(xx,start+24,xx,start+246)
                 }
                 for (i,profile) in profiles.enumerated() {
-                    let yy=start+37+CGFloat(i)*30
-                    if j==0{drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),margin,yy,86,7.3)}
+                    let yy=start+37+CGFloat(i)*34
+                    if j==0{drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),margin,yy,86,8.5)}
                     for (m,mode) in ["summary","reflexive"].enumerated() {
                         let item=summaries.first{string($0["profile"])==profile && string($0["dataset"])==dataset && string($0["mode"])==mode}
                         guard let s=item else{
-                            if m==0{drawText("нет прогона",x+10,yy,span,7,false,false,muted)};continue
+                            if m==0{drawText("нет прогона",x+10,yy,span,8,false,false,muted)};continue
                         }
                         let yp=yy+CGFloat(m)*10
                         rect(x,yp,CGFloat(num(s,"accuracy"))*span,7,colors[mode]!)
                         let ci=s["wilson_95_ci"] as! [Double]
                         line(x+CGFloat(ci[0])*span,yp+3.5,x+CGFloat(ci[1])*span,yp+3.5,ink,0.6)
-                        drawText("\(Int(num(s,"correct")))/\(Int(num(s,"n")))",x+span+3,yp-1,25,6.6)
+                        drawText("\(Int(num(s,"correct")))/\(Int(num(s,"n")))",x+span+3,yp-1,25,8.0)
                     }
                 }
             }
-            drawText("Summary",margin+91,start+229,90,8,true,false,colors["summary"])
-            drawText("Reflexive",margin+175,start+229,90,8,true,false,colors["reflexive"])
+            drawText("Summary",margin+91,start+254,90,8,true,false,colors["summary"])
+            drawText("Reflexive",margin+175,start+254,90,8,true,false,colors["reflexive"])
         } else if kind=="retrieval" {
             let left=margin+116, cw=(available-116)/2, span=cw-48
             for (j,mode) in ["summary","reflexive"].enumerated() {
                 let x=left+CGFloat(j)*cw
                 drawText(methods[mode]!,x,start,span+45,10,true,false,colors[mode])
                 for tick in [0.0,0.5,1.0] {
-                    drawText("\(Int(tick*100))%",x+CGFloat(tick)*span-8,start+20,27,6.8,false,false,muted)
+                    drawText("\(Int(tick*100))%",x+CGFloat(tick)*span-8,start+20,27,8.0,false,false,muted)
                 }
                 for (i,profile) in profiles.enumerated() {
-                    let yy=start+43+CGFloat(i)*27
+                    let yy=start+43+CGFloat(i)*31
                     if j==0{drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),margin,yy-6,108,8)}
                     let s=summaries.first{string($0["profile"])==profile && string($0["dataset"])=="goal_shift" && string($0["mode"])==mode}!
                     let a=x+CGFloat(num(s,"correct_before_retrieval")/num(s,"n"))*span
                     let z=x+CGFloat(num(s,"accuracy"))*span
                     line(x,yy,x+span,yy);line(a,yy,z,yy,colors[mode]!,2.7)
                     dot(a,yy,3.2,CGColor(gray:1,alpha:1),colors[mode]);dot(z,yy,3.2,colors[mode]!)
-                    drawText("\(Int(num(s,"correct_before_retrieval"))) → \(Int(num(s,"correct")))/\(Int(num(s,"n")))",x+span+7,yy-5,45,7.5)
+                    drawText("\(Int(num(s,"correct_before_retrieval"))) → \(Int(num(s,"correct")))/\(Int(num(s,"n")))",x+span+7,yy-5,45,8.5)
                 }
             }
-            drawText("Пустая точка — до поиска; закрашенная — итог. При равенстве точки совпадают.",margin,start+211,available,8,false,false,muted)
+            drawText("Пустая точка — до поиска; закрашенная — итог. При равенстве точки совпадают.",margin,start+235,available,8,false,false,muted)
         } else if kind=="context" {
             let groupW=available/5
             for (i,profile) in profiles.prefix(5).enumerated() {
                 let x=margin+CGFloat(i)*groupW
-                drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),x,start,groupW-4,7.8,true)
+                drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),x,start,groupW-4,8.8,true)
                 for (j,mode) in ["last_window","summary","reflexive","full_context"].enumerated() {
                     let s=summaries.first{string($0["profile"])==profile && string($0["dataset"])=="personamem" && string($0["mode"])==mode}!
                     let bar=CGFloat(num(s,"accuracy"))*115,xx=x+CGFloat(j)*20
@@ -236,15 +236,15 @@ final class Renderer {
                 drawText(datasetLabels[dataset]!,x,start,cw-5,10,true)
                 for tick in [0.0,0.5,1.0] {
                     let xx=x+CGFloat(tick)*span
-                    line(xx,start+32,xx,start+215)
+                    line(xx,start+32,xx,start+239)
                     let labelX=xx-(tick==0 ? 2 : (tick==1 ? 27 : 14))
-                    drawText("$"+fmt(maxVal*tick,3),labelX,start+18,36,6.6,false,false,muted)
+                    drawText("$"+fmt(maxVal*tick,3),labelX,start+18,36,8.0,false,false,muted)
                 }
                 for (i,profile) in profiles.enumerated() {
-                    let yy=start+43+CGFloat(i)*29
-                    if j==0 {drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),margin,yy,86,7.3)}
+                    let yy=start+43+CGFloat(i)*33
+                    if j==0 {drawText(labels[profile]!.replacingOccurrences(of:"GPT-",with:""),margin,yy,86,8.5)}
                     if !values.contains(where:{string($0["profile"])==profile}) {
-                        drawText("нет прогона",x+12,yy,span,7,false,false,muted)
+                        drawText("нет прогона",x+12,yy,span,8,false,false,muted)
                     }
                     for (m,mode) in ["summary","reflexive"].enumerated() {
                         if let s=values.first(where:{string($0["profile"])==profile && string($0["mode"])==mode}) {
@@ -254,9 +254,9 @@ final class Renderer {
                     }
                 }
             }
-            drawText("Summary",left,start+230,90,8,true,false,colors["summary"])
-            drawText("Reflexive",left+84,start+230,90,8,true,false,colors["reflexive"])
-            drawText("Средняя стоимость, USD. Шкалы панелей различаются; префикс GPT опущен.",margin,start+248,available,7.7,false,false,muted)
+            drawText("Summary",left,start+254,90,8,true,false,colors["summary"])
+            drawText("Reflexive",left+84,start+254,90,8,true,false,colors["reflexive"])
+            drawText("Средняя стоимость, USD. Шкалы панелей различаются; префикс GPT опущен.",margin,start+274,available,8.3,false,false,muted)
         }
         y=start+hh+8
     }
@@ -311,7 +311,7 @@ for (index,section) in (report["sections"] as! [[String:Any]]).enumerated() {
 }
 renderer.newPage("Приложение A · Все итоговые ответы",true)
 renderer.heading("Все 686 итоговых ответов")
-renderer.paragraph("Одна строка — один основной прогон. Сначала указан ответ модели, затем эталон. При смене цели это второй вопрос. ∅ — пустой ответ; «нет данных» — статус insufficient_data. Стоимость округлена, точные значения есть в CSV. Отсутствующие вопросы и варианты PersonaMem не восстановлены.",9.5)
+renderer.paragraph("Одна строка — один основной прогон. Сначала указан ответ модели, затем эталон. При смене цели это второй вопрос. ∅ — пустой ответ; «нет данных» — статус insufficient_data. Сохранённые вопросы и пояснения оценки находятся в приложении C, в HTML ID открывает карточку задачи. Стоимость округлена; точные значения и доступные вопросы есть в CSV.",9.5)
 let rows=report["rows"] as! [[String:Any]]
 let answerRows=rows.map{r->[String] in
     let correct=(r["correct"] as? Bool)==true
@@ -337,9 +337,31 @@ let archiveRows=archive.map{r->[String] in
     return [run,string(r["mode"]),string(r["checkpoint"]),string(r["question"]).isEmpty ? "Остановка до вопроса":string(r["question"]),answer]
 }
 renderer.table(["Прогон","Метод","Этап","Вопрос","Ответ или остановка"],archiveRows,[180,66,35,266,206],8.7,"Локальные проверки · продолжение")
+let contexts=report["contexts"] as! [[String:Any]]
+for c in contexts where !string(c["question"]).isEmpty {
+    renderer.newPage("Приложение C · Сохранённые вопросы")
+    renderer.anchorPages["question:"+string(c["id"])]=renderer.page-1
+    renderer.heading(string(c["id"]))
+    if !string(c["first_question"]).isEmpty {renderer.paragraph("Первая цель: "+string(c["first_question"]),9.5)}
+    renderer.paragraph("Вопрос: "+string(c["question"]),10.5,true)
+    renderer.paragraph("Эталон: "+string(c["target"])+". Вопрос взят из сохранённой трассы, эталон — из платных сводок.",9.5)
+    for excerpt in c["source_excerpt"] as! [[String:Any]] {
+        renderer.paragraph("Фрагмент "+string(excerpt["source_id"])+": "+string(excerpt["text"]),9.5)
+    }
+    let values=rows.filter{string($0["id"])==string(c["id"])}.map{r->[String] in
+        [labels[string(r["profile"])]!,methods[string(r["mode"])]!,
+         string(r["answer"]).isEmpty ? "∅" : string(r["answer"]),string(r["answer_note"])]
+    }
+    renderer.table(["Модель","Метод","Ответ","Как понимать оценку"],values,[129,88,90,renderer.available-307],9,nil)
+    renderer.paragraph("Источники точного вопроса:",9,true)
+    for source in c["question_sources"] as! [String] {renderer.paragraph(source,8.5,false,false,muted,4)}
+    if string(c["dataset"])=="babilong" {
+        renderer.paragraph("В локальной и платной сериях совпадают ID, ревизия и SHA-256 исходного датасета. Это основание связать вопрос с платными ответами. Оценка самого ответа сохранена без изменения.",9,false,false,muted)
+    }
+}
 renderer.newPage("Материалы и воспроизведение")
 renderer.heading("Как найти отдельный ответ")
-renderer.paragraph("HTML-версия содержит фильтры по модели, набору, методу и правильности, а также поиск по ID и содержимому ответа. Выбранные строки можно выгрузить в CSV. Все 686 записей отдельно доступны в all_answers.csv и all_answers.json.")
+renderer.paragraph("HTML-версия содержит фильтры по модели, набору, методу и правильности. Нажатие на ID открывает карточку задачи с вопросом, эталоном, ответами моделей и пояснениями оценки. Выбранные строки можно выгрузить в CSV. Все 686 записей доступны в all_answers.csv и all_answers.json; вопросы и источники — в example_contexts.json.")
 renderer.heading("Дополнительный анализ BABILong")
 renderer.paragraph("В babilong_sensitivity.csv сохранены 200 индивидуальных записей с исходной оценкой, дополнительным результатом без начального артикля и категорией ответа. Правила, все сложные фразы и парные сравнения находятся в babilong_sensitivity.md и babilong_sensitivity.json. Это ретроспективный анализ; первичные оценки не заменены.")
 renderer.heading("Промежуточные ответы")
@@ -413,22 +435,34 @@ func addNavigation(_ doc:PDFDocument,_ entries:[ContentsEntry],_ groupPages:[Str
                 }
             }
         }
+        if entry.title.hasPrefix("Приложение C") {
+            for c in contexts where !string(c["question"]).isEmpty {
+                if let page=groupPages["question:"+string(c["id"])] {
+                    let child=PDFOutline();child.label=string(c["id"]);child.destination=destination(doc,page)
+                    item.insertChild(child,at:item.numberOfChildren)
+                }
+            }
+        }
         outline.insertChild(item,at:index)
     }
     doc.outlineRoot=outline
 }
 
-// Build both versions before attaching links so their destinations remain local.
+// Render the summary independently: its concise sections retain the main evidence.
 let outputURL=URL(fileURLWithPath:argv[2])
 let pdf=PDFDocument(url:outputURL)!
-let appendixStart=renderer.starts.first(where:{$0.0.hasPrefix("Приложение A")})!.1
-let brief=PDFDocument(data:pdf.dataRepresentation()!)!
-for index in stride(from:brief.pageCount-1,through:appendixStart,by:-1) {brief.removePage(at:index)}
+let briefURL=outputURL.deletingPathExtension().appendingPathExtension("summary.pdf")
+let briefRenderer=Renderer(briefURL.path)
+for (index,section) in (report["brief_sections"] as! [[String:Any]]).enumerated() {
+    briefRenderer.renderSection(section)
+    if index==0 {briefRenderer.newPage("Содержание")}
+}
+briefRenderer.finish()
+let brief=PDFDocument(url:briefURL)!
 let entries=renderer.starts.map{(title:$0.0,page:$0.1)}
 addNavigation(pdf,entries,renderer.anchorPages)
-addNavigation(brief,entries.filter{$0.page<appendixStart})
+addNavigation(brief,briefRenderer.starts.map{(title:$0.0,page:$0.1)})
 try pdf.dataRepresentation()!.write(to:outputURL,options:.atomic)
-let briefURL=outputURL.deletingPathExtension().appendingPathExtension("summary.pdf")
 try brief.dataRepresentation()!.write(to:briefURL,options:.atomic)
 print("PDF pages: \(pdf.pageCount); summary: \(brief.pageCount). Contents links and bookmarks added.")
 

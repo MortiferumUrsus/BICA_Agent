@@ -4,10 +4,12 @@
 
 ## Ответы
 
-| Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
-| --- | --- | --- | --- | --- | --- |
-| reflexive | 1 | Which supplier is cheapest among those delivering within 5 days? Return its name only. | Vendor-00-A | answer | — |
-| reflexive | 2 | What is the contract code of the supplier with the shortest delivery time, regardless of price? Return only the exact code. | Vendor-00-H | answer | — |
+ID ведёт к материалам конкретного прогона. Этап — номер контрольного вопроса; прочерк означает остановку до ответа.
+
+| ID примера | Метод | Этап | Вопрос | Ответ | Статус | Перечитаны |
+| --- | --- | --- | --- | --- | --- | --- |
+| [goal-shift-000](results.json) | Reflexive | 1 | Which supplier is cheapest among those delivering within 5 days? Return its name only. | Vendor-00-A | answer | — |
+| [goal-shift-000](results.json) | Reflexive | 2 | What is the contract code of the supplier with the shortest delivery time, regardless of price? Return only the exact code. | Vendor-00-H | answer | — |
 
 ## Условия
 
@@ -22,9 +24,9 @@
 
 ## Работа программы
 
-| Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
-| --- | --- | --- | --- | --- | --- |
-| reflexive | completed | 19 | 5 | 0 | 0.00697125 |
+| ID примера | Метод | Завершение | Вызовы | Сжатия | Поиски | USD |
+| --- | --- | --- | --- | --- | --- | --- |
+| [goal-shift-000](results.json) | Reflexive | completed | 19 | 5 | 0 | 0.00697125 |
 
 ## Пример изменения памяти
 

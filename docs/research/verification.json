@@ -43,6 +43,20 @@
       "sha256": "85fa6af045c6730e6cf00fe7a496dae8d2eaa60b0104eaa27bd5993ba86596ce"
     }
   ],
+  "secondary_analysis": {
+    "file": "babilong_sensitivity.json",
+    "retrospective": true,
+    "primary_metric_unchanged": true,
+    "runs": 200,
+    "categories": {
+      "strict_match": 117,
+      "article_only": 42,
+      "other_location": 18,
+      "insufficient_data": 14,
+      "other_mismatch": 9,
+      "execution_error": 0
+    }
+  },
   "checks": [
     "Task IDs match protocols",
     "No duplicate main run IDs",

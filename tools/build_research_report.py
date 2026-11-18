@@ -7,6 +7,7 @@ import csv
 import hashlib
 import html
 import json
+import math
 from pathlib import Path
 import re
 
@@ -22,6 +23,15 @@ METHODS = {"summary": "Summary", "reflexive": "Reflexive",
            "full_context": "Полный контекст", "last_window": "Последнее окно"}
 COLORS = {"summary": "#246f86", "reflexive": "#bc6646",
           "full_context": "#448267", "last_window": "#87919a"}
+CATEGORY_LABELS = {
+    "strict_match": "Строгое совпадение",
+    "article_only": "Различие только в артикле",
+    "other_location": "Указано другое место",
+    "insufficient_data": "Недостаточно данных",
+    "other_mismatch": "Требуется разбор фразы",
+    "execution_error": "Ошибка выполнения / статуса",
+}
+LOCATIONS = frozenset({"bathroom", "bedroom", "garden", "hallway", "kitchen", "office"})
 
 
 def read(path):
@@ -57,6 +67,130 @@ def md_table(headers, rows):
     return "\n".join(["| " + " | ".join(map(cell, headers)) + " |",
                       "| " + " | ".join("---" for _ in headers) + " |"] +
                      ["| " + " | ".join(map(cell, row)) + " |" for row in rows])
+
+
+def exact_text(value):
+    """The frozen BABILong normalization; do not broaden the primary metric."""
+    return (value or "").lower().strip().removesuffix(".")
+
+
+def article_text(value):
+    """Remove one leading article only, after the frozen normalization."""
+    return re.sub(r"^(?:the|a|an)\s+", "", exact_text(value), count=1)
+
+
+def exact_paired(first, second):
+    ids = sorted(first.keys() & second.keys())
+    if not ids:
+        raise ValueError("No shared IDs for paired analysis")
+    differences = [int(second[i]) - int(first[i]) for i in ids]
+    wins, losses = differences.count(1), differences.count(-1)
+    discordant = wins + losses
+    p = min(1, 2 * sum(math.comb(discordant, k) for k in range(min(wins, losses) + 1)) / 2**discordant) if discordant else 1.0
+    return {"n": len(ids), "first_correct": sum(first[i] for i in ids),
+            "second_correct": sum(second[i] for i in ids),
+            "delta_accuracy": sum(differences) / len(ids), "second_only_correct": wins,
+            "first_only_correct": losses, "mcnemar_exact_p_unadjusted": p}
+
+
+def analyze_babilong(rows):
+    records, identities = [], set()
+    for r in rows:
+        if r["dataset"] != "babilong":
+            continue
+        identity = (r["profile"], r["mode"], r["id"])
+        if identity in identities:
+            raise ValueError(f"Duplicate BABILong run: {identity}")
+        identities.add(identity)
+        eligible = r["status"] == "completed" and r["answer_status"] == "answer"
+        strict = bool(eligible and r["answer"] and exact_text(r["answer"]) == exact_text(r["target"]))
+        normalized = bool(eligible and r["answer"] and article_text(r["answer"]) == article_text(r["target"]))
+        if strict != r["correct"]:
+            raise ValueError(f"Frozen score differs for {identity}")
+        if r["status"] != "completed":
+            category = "execution_error"
+        elif r["answer_status"] == "insufficient_data":
+            category = "insufficient_data"
+        elif not eligible:
+            category = "execution_error"
+        elif strict:
+            category = "strict_match"
+        elif normalized:
+            category = "article_only"
+        elif article_text(r["answer"]) in LOCATIONS and article_text(r["target"]) in LOCATIONS:
+            category = "other_location"
+        else:
+            category = "other_mismatch"
+        records.append({"id": r["id"], "profile": r["profile"], "mode": r["mode"],
+                        "answer": r["answer"], "target": r["target"], "status": r["status"],
+                        "answer_status": r["answer_status"], "strict_correct": strict,
+                        "article_correct": normalized, "category": category})
+    summaries = []
+    for profile in PROFILES:
+        for mode in ("summary", "reflexive"):
+            group = [r for r in records if r["profile"] == profile and r["mode"] == mode]
+            if group:
+                counts = collections.Counter(r["category"] for r in group)
+                summaries.append({"profile": profile, "mode": mode, "n": len(group),
+                                  "strict_correct": sum(r["strict_correct"] for r in group),
+                                  "article_correct": sum(r["article_correct"] for r in group),
+                                  "categories": {k: counts[k] for k in CATEGORY_LABELS}})
+    specs = [("methods", profile, "summary", profile, "reflexive") for profile in PROFILES]
+    specs += [("reasoning", "5.4-nano-none", mode, "5.4-nano-low", mode) for mode in ("summary", "reflexive")]
+    specs += [("models", "5.4-mini-low", mode, "6.1-sol-low", mode) for mode in ("summary", "reflexive")]
+    comparisons = []
+    for kind, first_profile, first_mode, second_profile, second_mode in specs:
+        first = {r["id"]: r for r in records if (r["profile"], r["mode"]) == (first_profile, first_mode)}
+        second = {r["id"]: r for r in records if (r["profile"], r["mode"]) == (second_profile, second_mode)}
+        if not first or not second:
+            continue
+        comparisons.append({"kind": kind, "first_profile": first_profile, "first_mode": first_mode,
+                            "second_profile": second_profile, "second_mode": second_mode,
+                            "strict": exact_paired({k: v["strict_correct"] for k, v in first.items()},
+                                                   {k: v["strict_correct"] for k, v in second.items()}),
+                            "article": exact_paired({k: v["article_correct"] for k, v in first.items()},
+                                                    {k: v["article_correct"] for k, v in second.items()})})
+    totals = collections.Counter(r["category"] for r in records)
+    return {"analysis_date": "2026-11-18", "dataset": "babilong", "retrospective": True,
+            "primary_metric_unchanged": True,
+            "normalization": "Frozen lowercase/strip/one final period; then remove one initial the, a or an followed by whitespace from answer and target.",
+            "category_rules": {**CATEGORY_LABELS,
+                "other_location_rule": "Answer and target name different members of the fixed six-room vocabulary after article normalization.",
+                "other_mismatch_rule": "Unresolved wording or content; no semantic correctness is assigned automatically."},
+            "n_runs": len(records), "n_examples": len({r["id"] for r in records}),
+            "category_counts": {k: totals[k] for k in CATEGORY_LABELS},
+            "summaries": summaries, "comparisons": comparisons, "rows": records}
+
+
+def sensitivity_table(analysis):
+    result = []
+    for profile in PROFILES:
+        ss = [next((s for s in analysis["summaries"] if s["profile"] == profile and s["mode"] == m), None)
+              for m in ("summary", "reflexive")]
+        if all(ss):
+            result.append([LABELS[profile]] + [f'{s[k]}/{s["n"]}' for s in ss for k in ("strict_correct", "article_correct")])
+    return result
+
+
+SENSITIVITY_HEADERS = ["Профиль", "Summary: строго", "Summary: без артикля", "Reflexive: строго", "Reflexive: без артикля"]
+GOAL_HEADERS = ["Профиль", "Метод", "Первая цель", "Новая: до поиска", "Новая: итог", "Поиски"]
+PAIR_HEADERS = ["Набор", "Профиль", "Пар", "Δ, п.п.", "95% bootstrap, п.п.", "p"]
+
+
+def goal_table(summaries):
+    return [[LABELS[p], METHODS[m], f'{s["first_goal_correct"]}/{s["n"]}',
+             f'{s["correct_before_retrieval"]}/{s["n"]}', f'{s["correct"]}/{s["n"]}', s["retrievals"]]
+            for p in PROFILES for m in ("summary", "reflexive") for s in summaries
+            if s["dataset"] == "goal_shift" and s["profile"] == p and s["mode"] == m]
+
+
+def pp_interval(c):
+    return " … ".join(f"{100*v:+.2f}" for v in c["bootstrap_95_ci"])
+
+
+def pair_table(comparisons):
+    return [[DATASETS[c["dataset"]], LABELS[c["profile"]], c["n"], f'{100*c["delta_accuracy"]:+.2f}',
+             pp_interval(c), f'{c["mcnemar_exact_p_unadjusted"]:.4f}'] for c in comparisons]
 
 
 def load_data(root):
@@ -287,8 +421,51 @@ def profile_costs(rows):
     return result
 
 
-def narrative_sections(rows, summaries):
+def analysis_sections(analysis, summaries, comparisons):
+    reasoning = [c for c in analysis["comparisons"] if c["kind"] == "reasoning"]
+    p_rows = [[METHODS[c["first_mode"]], f'{100*c["strict"]["delta_accuracy"]:+.1f}',
+               f'{c["strict"]["mcnemar_exact_p_unadjusted"]:.4f}',
+               f'{100*c["article"]["delta_accuracy"]:+.1f}',
+               f'{c["article"]["mcnemar_exact_p_unadjusted"]:.4f}'] for c in reasoning]
+    counts = analysis["category_counts"]
     return [
+        ("metric", "Метрика и форма ответа",
+         '<h2>Часть различий BABILong связана с формой ответа</h2>'
+         '<p>Исходная метрика сохраняется: нижний регистр, удаление пробелов по краям и одной конечной точки, затем точное совпадение. Ответ the hallway не совпадает с эталоном hallway, хотя называет то же место.</p>'
+         '<p>В дополнительном пересчёте после прежней нормализации удаляется только один начальный артикль the, a или an с пробелом. Статусы выполнения учитываются. Это ретроспективный анализ чувствительности, а не новая основная метрика.</p>' +
+         table(SENSITIVITY_HEADERS, sensitivity_table(analysis)) +
+         '<h2>Сравнение nano low и none зависит от метрики</h2>' +
+         table(["Метод", "Δ строго, п.п.", "p строго", "Δ без артикля, п.п.", "p без артикля"], p_rows) +
+         '<p>Разница — low минус none на тех же 20 ID. p — точный парный McNemar без поправки. После удаления артикля оба p выше 0,05; исходные различия по строгой метрике нельзя целиком приписать качеству памяти.</p>'
+         '<p class="caption">Полные материалы: <a href="babilong_sensitivity.md">правила и сложные фразы</a>, <a href="babilong_sensitivity.json">результаты JSON</a> и <a href="babilong_sensitivity.csv">200 ответов CSV</a>. Astra на BABILong не запускалась.</p>'),
+        ("errors", "Типы ответов BABILong",
+         '<h2>Несовпадение строки не всегда означает забытый факт</h2>'
+         '<p>Здесь 200 ответов на 20 повторяющихся примерах: пять профилей и два метода. Подсчёт описывает состав ответов; это не 200 независимых задач.</p>' +
+         table(["Категория", "Ответов"], [[v, counts[k]] for k, v in CATEGORY_LABELS.items()]) +
+         '<p>«Другое место» означает, что ответ и эталон называют разные элементы фиксированного словаря: bathroom, bedroom, garden, hallway, kitchen, office. Отказы insufficient_data и ошибки выполнения выделены отдельно.</p>'
+         '<h2>Сложные фразы остаются для отдельного разбора</h2>' +
+         table(["Ответ", "Эталон", "Что можно установить"], [
+             ["the hallway", "hallway", "Различие только в начальном артикле"],
+             ["Daniel is in the office.", "office", "Фраза называет эталонное место; строгая и дополнительная метрики её не засчитывают"],
+             ["hallway, then kitchen", "kitchen", "Перечислены два места; одной нормализации артикля недостаточно"]]) +
+         '<p>Девять сложных несовпадений не объявлены автоматически содержательными ошибками. Два из них — фразы Daniel is in the office. и Mary is in the hallway. — явно содержат эталонный ответ. Это показывает границу даже дополнительного пересчёта. Все девять записей приведены в babilong_sensitivity.md.</p>'),
+        ("goals", "Два этапа смены цели",
+         '<h2>От исходной задачи к новой цели</h2>'
+         '<p>Сначала нужен самый дешёвый поставщик с доставкой до пяти дней, затем — код договора самого быстрого независимо от цены. Для каждого метода показаны первая цель, новая цель до поиска и итоговый ответ.</p>' +
+         table(GOAL_HEADERS, goal_table(summaries)) +
+         '<p>Например, Sol с Summary решил первую задачу в 12/12 случаях. На новую цель до поиска правильно ответил в 2/12, после повторного чтения — в 12/12. Итоговую точность нельзя целиком интерпретировать как сохранность сведений в короткой памяти.</p>'
+         '<p class="caption">Поиски — число запросов повторного чтения за весь прогон, включая первую цель. До/после — наблюдение внутри одного запуска. Отдельное условие без поиска отсутствует; Astra проверена на девяти сценариях.</p>'),
+        ("paired", "Парные различия методов",
+         '<h2>Размер эффекта и его неопределённость</h2>'
+         '<p>Δ — точность Reflexive минус точность Summary в процентных пунктах, на общих ID и по исходной метрике. Показаны все 16 сравнений методов двух серий. Интервалы перенесены из сохранённого анализа: парный bootstrap, 10 000 повторов.</p>' +
+         table(PAIR_HEADERS, pair_table(comparisons)) +
+         '<p>Например, у Sol на PersonaMem Δ = −6,25 п.п., а интервал — от −25 до +12,5 п.п. Эти данные совместимы с эффектами в обе стороны. p = 1 не доказывает равенство методов.</p>'
+         '<p class="caption">p — точный McNemar без поправки на множественные проверки. Bootstrap-интервал и p рассчитаны разными способами; на малой выборке их выводы могут различаться. Интервал [0; 0] при одинаково верных ответах описывает наблюдаемую выборку; неопределённость на новых задачах остаётся. Wilson-интервалы отдельных точностей не заменяют интервал парной разницы.</p>'),
+    ]
+
+
+def narrative_sections(rows, summaries, analysis, comparisons):
+    sections = [
         ("overview", "Результат исследования",
          """<p class="eyebrow">BICA Agent · Эксперименты 9 октября — 1 ноября 2026 года</p>
          <h1>Сжатие контекстной памяти языковых моделей</h1>
@@ -296,8 +473,9 @@ def narrative_sections(rows, summaries):
          <p class="lead">При одинаковом размере памяти три стадии обновления не дали устойчивого выигрыша в точности. Reflexive обходился в 2,2–3,3 раза дороже Summary в первой серии. Сильная модель улучшила оба метода; при смене цели заметную роль сыграло повторное чтение источников.</p>
          <div class="facts"><div><strong>48</strong><span>основных примеров</span></div><div><strong>686</strong><span>прогонов моделей</span></div><div><strong>5</strong><span>моделей</span></div><div><strong>$27,88</strong><span>две серии с отладкой</span></div></div>
          <h2>Зачем сравнивать эти методы</h2>
-         <p>При последовательном чтении длинной истории модель должна решать, какие сведения оставить в короткой памяти. Факт, ненужный для первой задачи, может стать необходимым после смены цели. Мы проверяем, помогает ли предварительный отбор фактов и последующая проверка лучше сохранить такие сведения, чем одношаговое обновление памяти.</p>
+         <p>При последовательном чтении длинной истории модель должна решать, какие сведения оставить в короткой памяти. Факт, ненужный для первой задачи, может стать необходимым после смены цели. Вопрос исследования: помогает ли трёхстадийное обновление точнее отвечать после смены цели при одинаковом размере памяти и оправдывает ли результат дополнительные расходы?</p>
          <p>Основное сравнение — Summary и Reflexive на одинаковых примерах и с памятью 512 токенов. Для PersonaMem добавлены полный контекст и последнее окно. Итоговые ответы оцениваются кодом по эталонам; отдельная модель-судья не используется.</p>
+         <p>Отдельно рассматриваются ответ на первую цель, ответ на новую цель до поиска и итог после повторного чтения. Сравниваются два полных процесса обновления; вклад одной проверяющей стадии не изолирован. У BABILong дополнительно проверена чувствительность к форме ответа.</p>
          <p class="caption">686 — число прогонов на повторяющейся выборке, а не число независимых задач. Включены все основные прогоны двух платных серий; отладка учитывается отдельно в расходах.</p>"""),
         ("methods", "Методы и данные",
          """<h2>Как обновляется память</h2>
@@ -327,10 +505,10 @@ def narrative_sections(rows, summaries):
         ("accuracy", "Точность методов",
          """<h2>Дополнительная проверка памяти не обеспечила общего выигрыша</h2>
          <p>В первой серии Reflexive иногда помогал, иногда ухудшал результат. Ни одно из 12 точных парных сравнений методов не достигло p &lt; 0,05. В продолжении Sol решил все BABILong и все сценарии смены цели в обоих режимах, а на PersonaMem Reflexive дал на один верный ответ меньше.</p>
-         <figure>__ACCURACY__<figcaption>Рисунок 1. Верные ответы и 95% интервалы Wilson. Astra проверялась на меньшей выборке; прямые сравнения моделей требуют одинаковых ID.</figcaption></figure>
+         <figure>__ACCURACY__<figcaption>Рисунок 1. Исходная строгая метрика: верные ответы и 95% интервалы Wilson. Astra проверялась на меньшей выборке; прямые сравнения моделей требуют одинаковых ID.</figcaption></figure>
          <p class="caption">В таблице сначала Summary, затем Reflexive. Прочерк — отсутствие прогона.</p>""" +
          result_grid(summaries) +
-         """<p>Для Sol против GPT-5.4 mini на BABILong/Reflexive сохранено p = 0,0078 без поправки на множественные сравнения. Это сравнение моделей, а не доказательство преимущества метода Reflexive.</p>"""),
+         """<p>Для Sol против GPT-5.4 mini на BABILong/Reflexive по исходной метрике p = 0,0078, после удаления начального артикля — 0,03125. Оба значения без поправки на множественные сравнения. Это сравнение моделей; часть различий зависит от формы ответа.</p>"""),
         ("context", "Полный контекст",
          """<h2>Для одного вопроса вся история оказалась полезнее сжатой памяти</h2>
          <p>На PersonaMem полный контекст дал больше верных ответов, чем Summary, у всех пяти основных профилей. По сравнению с Reflexive исключением стал nano none: 6/16 у полного контекста против 8/16. Здесь пять профилей включают две настройки nano.</p>
@@ -369,12 +547,20 @@ def narrative_sections(rows, summaries):
          <p>Трёхстадийное обновление памяти не показало устойчивого преимущества перед одношаговым. Более сильная модель улучшила оба метода. После смены цели успешный ответ часто требовал повторного чтения, а для одного вопроса по истории PersonaMem полный контекст оказался конкурентным по точности и стоимости.</p>
          <h2>Что пока не установлено</h2>
          <p>Для каждой комбинации выполнен один прогон. Выборки — 16, 20 и 12; Astra прошла только часть задач. Повторение на тех же примерах не заменяет новый независимый набор. Нулевой bootstrap-интервал при одинаково правильных ответах не означает отсутствия неопределённости на новых задачах.</p>
-         <p>Методы используют одинаковую память, но разное число вызовов. Отдельного контроля без поиска нет. Собственная смена цели — короткая текстовая задача; действия в среде AgentChangeBench не исследовались. Недатированные ID Sol и Astra не фиксируют веса для будущего повторения.</p>
+         <p>Методы используют одинаковую память, но разное число вызовов. Сравнение целых процессов не выделяет эффект одной стадии verify. Отдельного контроля без поиска нет. Собственная смена цели — короткая текстовая задача; действия в среде AgentChangeBench не исследовались. Недатированные ID Sol и Astra не фиксируют веса для будущего повторения.</p>
+         <p>Строгое совпадение BABILong зависит от формы ответа. Нормализация начального артикля введена после просмотра результатов и показана отдельно. Она не заменяет смысловую оценку; сложные несовпадения оставлены для разбора.</p>
          <h2>Материалы и следующая проверка</h2>
          <p>Источники — результаты, протоколы, CSV предсказаний и расходов, доступные трассы. Сверены состав заданий, 686 ответов с сохранёнными эталонами, сводные числа и расходы. Полные истории и журналы большинства платных запусков отсутствуют в клоне; полный аудит их промежуточных стадий невозможен.</p>
          <p>Следующий эксперимент: новый набор более сложных смен цели, несколько повторов и сравнение с отключённым поиском. Это позволит отделить сохранность памяти от умения модели вовремя перечитать источник.</p>
          <p class="caption">Источники наборов: bowen-upenn/PersonaMem, 32k; RMT-team/babilong-1k-samples, qa1/8k. Ревизии и SHA-256 находятся в manifests. Внешние источники и исторические цены при редактуре заново не проверялись.</p>"""),
     ]
+    # Place evaluation beside accuracy, and the three checkpoints beside retrieval.
+    additions = analysis_sections(analysis, summaries, comparisons)
+    position = next(i for i, s in enumerate(sections) if s[0] == "context")
+    sections[position:position] = additions[:2] + additions[3:]
+    position = next(i for i, s in enumerate(sections) if s[0] == "retrieval")
+    sections.insert(position, additions[2])
+    return sections
 
 
 CSS = """
@@ -485,25 +671,35 @@ def rewrite_run_reports(root):
                  f'{s["accuracy"]:.1%}', f'{100*s["wilson_95_ci"][0]:.1f}–{100*s["wilson_95_ci"][1]:.1f}%',
                  money(s["cost_usd"]), s["api_calls"]] for s in r["summaries"]])
             comparisons = r.get("paired_comparisons", r.get("paired_method_comparisons", []))
-            text += "\n\n## Парное сравнение методов\n\nПоложительная разница — в пользу Reflexive. p — точный McNemar без поправки на множественные сравнения.\n\n"
-            text += md_table(["Набор", "Профиль", "Пар", "Разница, п.п.", "Только Reflexive", "Только Summary", "p"], [
-                [DATASETS[c["dataset"]], LABELS[c["profile"]], c["n"], f'{100*c["delta_accuracy"]:+.1f}',
-                 c["second_only_correct"], c["first_only_correct"], f'{c["mcnemar_exact_p_unadjusted"]:.4f}'] for c in comparisons])
+            text += "\n\n## Парное сравнение методов\n\nПоложительная разница — в пользу Reflexive. Интервал — сохранённый парный bootstrap (10 000 повторов); p — точный McNemar без поправки на множественные сравнения. Используется исходная строгая метрика.\n\n"
+            text += md_table(PAIR_HEADERS + ["Только Reflexive", "Только Summary"], [
+                row + [c["second_only_correct"], c["first_only_correct"]]
+                for row, c in zip(pair_table(comparisons), comparisons)])
+            text += "\n\n## Два этапа смены цели\n\n" + md_table(GOAL_HEADERS, goal_table(r["summaries"]))
+            text += "\n\nПервая цель — дешёвый поставщик с доставкой до пяти дней; новая — код договора самого быстрого. Поиски учитываются за весь прогон, включая первую цель. До/после поиска — наблюдение внутри одного запуска, а не отдельный контроль без поиска.\n"
             text += "\n\n## До и после повторного чтения\n\n" + md_table(
                 ["Набор", "Профиль", "Метод", "Верно до → после", "Поиски"], [
                     [DATASETS[s["dataset"]], LABELS[s["profile"]], METHODS[s["mode"]],
                      f'{s["correct_before_retrieval"]} → {s["correct"]} из {s["n"]}', s["retrievals"]]
                     for s in r["summaries"] if s["mode"] in ("summary", "reflexive")])
             if "reasoning_comparisons" in r:
-                text += "\n\n## Reasoning low и none у nano\n\n" + md_table(["Набор", "Метод", "Разница low − none, п.п.", "p"], [
-                    [DATASETS[c["dataset"]], METHODS[c["mode"]], f'{100*c["delta_accuracy"]:+.1f}',
-                     f'{c["mcnemar_exact_p_unadjusted"]:.4f}'] for c in r["reasoning_comparisons"]])
+                text += "\n\n## Reasoning low и none у nano\n\n" + md_table(["Набор", "Метод", "Разница low − none, п.п.", "95% bootstrap, п.п.", "p"], [
+                    [DATASETS[c["dataset"]], METHODS[c["mode"]], f'{100*c["delta_accuracy"]:+.2f}',
+                     pp_interval(c), f'{c["mcnemar_exact_p_unadjusted"]:.4f}'] for c in r["reasoning_comparisons"]])
             if "matched_model_comparisons" in r:
                 text += "\n\n## Модели на общих примерах\n\n" + md_table(
-                    ["Набор", "Метод", "Сравнение", "Общих ID", "Верно раньше → сейчас", "p"], [
+                    ["Набор", "Метод", "Сравнение", "Общих ID", "Верно раньше → сейчас", "Δ, п.п.", "95% bootstrap, п.п.", "p"], [
                         [DATASETS[c["dataset"]], METHODS[c["mode"]], f'{LABELS[c["first"]]} → {LABELS[c["second"]]}',
-                         c["n"], f'{c["old_correct"]} → {c["new_correct"]}', f'{c["mcnemar_exact_p_unadjusted"]:.4f}']
+                         c["n"], f'{c["old_correct"]} → {c["new_correct"]}', f'{100*c["delta_accuracy"]:+.2f}',
+                         pp_interval(c), f'{c["mcnemar_exact_p_unadjusted"]:.4f}']
                         for c in r["matched_model_comparisons"]])
+            analysis = analyze_babilong(r["rows"])
+            text += "\n\n## BABILong: чувствительность к форме ответа\n\n"
+            text += ("Исходные оценки не изменены. Дополнительно после прежней нормализации удалён один начальный артикль the, a или an с пробелом. "
+                     "Пересчёт ретроспективный; сложные фразы автоматически не переоцениваются.\n\n")
+            text += md_table(SENSITIVITY_HEADERS, sensitivity_table(analysis))
+            text += "\n\n" + md_table(["Категория", "Ответов"], [[v, analysis["category_counts"][k]] for k, v in CATEGORY_LABELS.items()])
+            text += "\n\n[Правила, сложные фразы и парные сравнения обеих серий](../../docs/research/babilong_sensitivity.md).\n"
             text += ("\n\n## Как читать результаты\n\nОдин прогон на комбинацию. Ошибки остаются в знаменателе. "
                      "Точности разных наборов не объединяются: они проверяют разные задачи. Полный контекст использует большее окно. "
                      "Небольшие выборки и несколько сравнений ограничивают выводы. До/после поиска — наблюдение в одном прогоне, не отдельный контроль без поиска.\n\n"
@@ -573,11 +769,55 @@ def rewrite_run_reports(root):
         path.write_text(text + "\n", encoding="utf-8")
 
 
+def write_sensitivity(output, analysis):
+    save_json(output / "babilong_sensitivity.json", analysis)
+    with (output / "babilong_sensitivity.csv").open("w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(analysis["rows"][0]))
+        writer.writeheader()
+        writer.writerows(analysis["rows"])
+    md = ("# BABILong: чувствительность к форме ответа\n\n"
+          "Ретроспективный анализ от 18 ноября 2026 года. Исходная метрика и оценки сохранены. "
+          "200 прогонов используют одни и те же 20 примеров; это не 200 независимых задач. Новых запросов к моделям нет.\n\n"
+          "## Правило дополнительного пересчёта\n\n"
+          "Сначала применяется исходное приведение к нижнему регистру, удаление пробелов по краям и одной конечной точки. "
+          "Затем из ответа и эталона удаляется один начальный артикль the, a или an с пробелом. "
+          "Ответ засчитывается только при status=completed и answer_status=answer. Отказы и ошибки остаются в знаменателе. "
+          "Числа не подменяют результаты замороженного протокола.\n\n")
+    md += md_table(SENSITIVITY_HEADERS, sensitivity_table(analysis))
+    md += "\n\n## Категории ответов\n\n" + md_table(["Категория", "Ответов"], [[v, analysis["category_counts"][k]] for k, v in CATEGORY_LABELS.items()])
+    md += ("\n\n«Другое место» означает несовпадение разных элементов словаря bathroom, bedroom, garden, hallway, kitchen, office "
+           "после нормализации артикля. Остальные фразы требуют разбора; они не объявляются автоматически содержательными ошибками.\n\n"
+           "## Все сложные несовпадения\n\n")
+    md += md_table(["ID", "Профиль", "Метод", "Ответ", "Эталон"], [
+        [r["id"], LABELS[r["profile"]], METHODS[r["mode"]], r["answer"], r["target"]]
+        for r in analysis["rows"] if r["category"] == "other_mismatch"])
+    md += ("\n\nНапример, Daniel is in the office. и Mary is in the hallway. называют эталонное место, "
+           "но не засчитываются даже после удаления артикля. Это ограничение данного пересчёта; семантическая оценка не добавлялась.\n\n"
+           "## Парные сравнения\n\nΔ — второе условие минус первое. Все сравнения используют пересечение ID; "
+           "p — точный парный McNemar без поправки на множественные проверки. Анализ после просмотра результатов, без новой независимой выборки.\n\n")
+    md += md_table(["Первое условие", "Второе условие", "Пар", "Δ строго, п.п.", "p строго", "Δ без артикля, п.п.", "p без артикля"], [
+        [f'{LABELS[c["first_profile"]]} / {METHODS[c["first_mode"]]}',
+         f'{LABELS[c["second_profile"]]} / {METHODS[c["second_mode"]]}', c["strict"]["n"],
+         f'{100*c["strict"]["delta_accuracy"]:+.2f}', f'{c["strict"]["mcnemar_exact_p_unadjusted"]:.5f}',
+         f'{100*c["article"]["delta_accuracy"]:+.2f}', f'{c["article"]["mcnemar_exact_p_unadjusted"]:.5f}']
+        for c in analysis["comparisons"]])
+    md += ("\n\n## Файлы и ограничения\n\n[Индивидуальные ответы CSV](babilong_sensitivity.csv) · "
+           "[Результаты, правила и контрольные суммы источников JSON](babilong_sensitivity.json) · [Общий отчёт](report.html#metric).\n\n"
+           "Исходные вопросы и полные истории большинства платных прогонов отсутствуют. Правильность сверяется с сохранёнными эталонами; "
+           "их извлечение из датасета заново не проверялось. Уменьшение p не является доказательством практической пользы, "
+           "а p выше 0,05 не доказывает равенство. Первичные результаты и расходы не редактировались.\n")
+    (output / "babilong_sensitivity.md").write_text(md, encoding="utf-8")
+
+
 def build(root=ROOT, output=None, rewrite=False):
     output = output or root / "docs/research"
     output.mkdir(parents=True, exist_ok=True)
     first, strong, rows, summaries, archived, stages, sources = load_data(root)
     verify(root, first, strong, rows, summaries)
+    analysis = analyze_babilong(rows)
+    analysis["sources"] = sources
+    write_sensitivity(output, analysis)
+    comparisons = first["paired_comparisons"] + strong["paired_method_comparisons"]
     charts = {"ACCURACY": accuracy_chart(summaries), "CONTEXT": context_chart(summaries),
               "RETRIEVAL": retrieval_chart(summaries), "COST": cost_chart(summaries)}
     for name, svg in charts.items():
@@ -593,12 +833,15 @@ def build(root=ROOT, output=None, rewrite=False):
         "main_runs": len(rows), "unique_main_examples": len({r["id"] for r in rows}),
         "summary_groups": len(summaries), "paid_receipts": 9683, "recorded_total_usd": 27.87631429,
         "archive_records": len(archived), "available_stage_records": len(stages), "sources": sources,
+        "secondary_analysis": {"file": "babilong_sensitivity.json", "retrospective": True,
+                               "primary_metric_unchanged": True, "runs": analysis["n_runs"],
+                               "categories": analysis["category_counts"]},
         "checks": ["Task IDs match protocols", "No duplicate main run IDs", "Answers rescored against saved targets",
                    "Summary counts and costs match rows", "9683 unique receipt IDs", "Receipt total matches recorded total"],
         "limits": ["Dataset exports and most paid traces are absent", "Historical unit tests and full audits were not rerun",
                    "No model calls or external source verification"]}
     save_json(output / "verification.json", verification)
-    sections = narrative_sections(rows, summaries)
+    sections = narrative_sections(rows, summaries, analysis, comparisons)
     for i, (key, title, body) in enumerate(sections):
         for name, svg in charts.items():
             body = body.replace(f"__{name}__", svg)
@@ -616,8 +859,11 @@ def build(root=ROOT, output=None, rewrite=False):
     md = ("# Сжатие контекстной памяти языковых моделей\n\n"
           "При памяти 512 токенов Reflexive не показал устойчивого выигрыша перед Summary. Дополнительные стадии "
           "увеличили расходы. Две серии включают 686 прогонов на 48 основных примерах.\n\n"
+          "Вопрос исследования: помогает ли трёхстадийное обновление точнее отвечать после смены цели "
+          "при одинаковом размере памяти и оправдывает ли результат дополнительные расходы? "
+          "Сравниваются полные процессы; вклад одной проверяющей стадии отдельно не установлен.\n\n"
           "[Наглядный отчёт HTML](report.html) · [Краткий отчёт PDF](report.summary.pdf) · [PDF со всеми ответами](report.pdf) · [Все ответы CSV](all_answers.csv)\n\n"
-          "## Основные результаты\n\nСначала Summary, затем Reflexive. У Astra девять сценариев смены цели.\n\n")
+          "## Основные результаты\n\nИсходная строгая метрика. Сначала Summary, затем Reflexive. У Astra девять сценариев смены цели.\n\n")
     mrows = []
     for profile in PROFILES[:6]:
         cells = [LABELS[profile]]
@@ -626,6 +872,14 @@ def build(root=ROOT, output=None, rewrite=False):
             cells.append(" / ".join(f'{s["correct"]}/{s["n"]}' if s else "—" for s in ss))
         mrows.append(cells)
     md += md_table(["Модель", "PersonaMem", "BABILong", "Смена цели"], mrows)
+    md += ("\n\n## BABILong: форма ответа\n\nИсходные строгие оценки сохранены. Отдельный ретроспективный пересчёт "
+           "удаляет только один начальный английский артикль после прежней нормализации. Это не полная смысловая оценка.\n\n")
+    md += md_table(SENSITIVITY_HEADERS, sensitivity_table(analysis))
+    md += "\n\n[Категории ответов, сложные фразы и сравнения](babilong_sensitivity.md).\n\n## Два этапа смены цели\n\n"
+    md += md_table(GOAL_HEADERS, goal_table(summaries))
+    md += "\n\nПоиски учитываются за весь прогон, включая первую цель. Различие до/после поиска не изолирует его причинный эффект.\n\n## Парные различия методов\n\n"
+    md += md_table(PAIR_HEADERS, pair_table(comparisons))
+    md += "\n\nΔ — Reflexive минус Summary, исходная метрика. Интервалы — сохранённый парный bootstrap; p без поправок. Нулевое различие на выборке не доказывает равенства методов.\n"
     md += ("\n\n## Как объяснить результат\n\nПроверка Reflexive сохраняет отобранные факты, но не гарантирует полноту самого отбора. "
            "После смены цели нужное поле может отсутствовать в памяти. У Sol повторное чтение подняло результат с 2/12 до 12/12 "
            "для Summary и с 3/12 до 12/12 для Reflexive.\n\n![Точность](accuracy.svg)\n\n![Повторное чтение](retrieval.svg)\n\n"

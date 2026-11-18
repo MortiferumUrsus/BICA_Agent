@@ -288,6 +288,12 @@ final class Renderer {
                     if id=="methods" && parsed[0].count==3{ws=[75,available-126,51]}
                     if id=="methods" && parsed[0].count==4{ws=[91,126,157,available-374]}
                     if id=="accuracy"{ws=[155,115,115,available-385]}
+                    if id=="metric" && parsed[0].first=="Профиль" {ws=[145,80,100,80,available-405]}
+                    if id=="metric" && parsed[0].first=="Метод" {ws=[68,107,75,145,available-395]}
+                    if id=="errors" && parsed[0].count==2 {ws=[available-80,80]}
+                    if id=="errors" && parsed[0].count==3 {ws=[172,65,available-237]}
+                    if id=="goals" {ws=[145,62,72,90,82,available-451]}
+                    if id=="paired" {ws=[82,138,30,58,137,available-445]}
                     if id=="cost"{ws=[205,65,80,available-350]}
                     table(parsed[0],Array(parsed.dropFirst()),ws,9)
                 }
@@ -334,6 +340,8 @@ renderer.table(["Прогон","Метод","Этап","Вопрос","Отве�
 renderer.newPage("Материалы и воспроизведение")
 renderer.heading("Как найти отдельный ответ")
 renderer.paragraph("HTML-версия содержит фильтры по модели, набору, методу и правильности, а также поиск по ID и содержимому ответа. Выбранные строки можно выгрузить в CSV. Все 686 записей отдельно доступны в all_answers.csv и all_answers.json.")
+renderer.heading("Дополнительный анализ BABILong")
+renderer.paragraph("В babilong_sensitivity.csv сохранены 200 индивидуальных записей с исходной оценкой, дополнительным результатом без начального артикля и категорией ответа. Правила, все сложные фразы и парные сравнения находятся в babilong_sensitivity.md и babilong_sensitivity.json. Это ретроспективный анализ; первичные оценки не заменены.")
 renderer.heading("Промежуточные ответы")
 renderer.paragraph("В электронное приложение включены \(string(report["stage_count"])) записи вызовов из доступных локальных и mock-журналов, а также четырёх показательных платных прогонов. В saved_stage_responses.json сохранены исходные запросы и ответы. Большинство полных платных трасс в клоне отсутствует. Эти трассы не реконструировались.")
 renderer.heading("Что проверено при сборке")

@@ -68,6 +68,12 @@ python3 tools/build_research_report.py
 
 Эта команда использует только сохранённые файлы. Она не вызывает модели. В `docs/research/` появятся HTML, графики, CSV и JSON. Для обновления производных Markdown-отчётов есть `--rewrite-run-reports`.
 
+Сборка также создаёт `babilong_sensitivity.md`, `.json` и `.csv`: отдельный ретроспективный разбор формы ответов с неизменной основной метрикой. Проверки этого анализа используют стандартную библиотеку Python и запускаются без зависимостей моделей:
+
+```bash
+python3 -m unittest discover -s tests -p test_research_report.py -v
+```
+
 В macOS PDF собирается системным Swift-рендерером. После сборки HTML выполните:
 
 ```bash
